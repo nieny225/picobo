@@ -2,6 +2,7 @@ import { mountRules } from './ui/rules.js';
 import { mountFormats } from './ui/formats.js';
 import { mountScoreboard } from './ui/scoreboard.js';
 import { mountDraw } from './ui/draw.js';
+import { autoHideTopbar } from './ui/topbar.js';
 import { RULEBOOK } from './data/rules.js';
 
 const ROUTES = ['rules', 'formats', 'score', 'draw'];
@@ -19,6 +20,7 @@ function parseHash() {
   return ROUTES.includes(top) ? { route: top, sub } : { route: 'rules', sub: '' };
 }
 
+const topbar = autoHideTopbar(document.querySelector('.topbar'));
 const rules = mountRules(document.getElementById('view-rules'));
 mountFormats(document.getElementById('view-formats'));
 mountScoreboard(document.getElementById('view-score'));
@@ -33,6 +35,7 @@ function show() {
   }
   if (route === 'rules') rules.show(sub);
   window.scrollTo({ top: 0 });
+  topbar.show();
 }
 
 for (const tab of document.querySelectorAll('.tab')) {

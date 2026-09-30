@@ -5,6 +5,14 @@ export const RULES_INDEX = {
   more: '更多',
 };
 
+// 左側可收合的規則目錄。
+export const DRAWER = {
+  open: '目錄',
+  title: '規則目錄',
+  close: '關閉目錄',
+  home: '目錄首頁',
+};
+
 export const RULE_PAGE = {
   back: '目錄',
   prev: '上一條',

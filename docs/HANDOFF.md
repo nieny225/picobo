@@ -107,6 +107,10 @@ The rules tab was one 16,800 px page on a phone. Now:
   #rules/<id>, with 目錄 back link and 上一條／下一條 at the bottom.
 - v1 links #rules-<id> are rewritten to #rules/<id> (#rules-formats to
   #formats). Unknown ids fall back to the index.
+- A floating 目錄 button (bottom-left, rules tab only) opens a left drawer
+  (`<dialog>`) listing every rules page; the current one is highlighted.
+- The top bar and the floating button hide while scrolling down and come
+  back on any scroll up (`src/ui/topbar.js`).
 - Page heights at 390 px: index ~2,100, a rule page ~1,350, formats ~3,400.
 
 ## Live on picobo.net (2026-09-30)

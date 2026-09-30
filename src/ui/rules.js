@@ -1,7 +1,7 @@
 import { renderCourt } from '../court.js';
 import { SECTIONS } from '../data/rules.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
-import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES } from '../data/nav.js';
+import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER } from '../data/nav.js';
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -125,7 +125,32 @@ function wireScene(wrap, scenes) {
 
 // Renders the index (sub = '') or one page (sub = page id). An unknown id is
 // a bad link, not a bad state, so it falls back to the index.
+// Left drawer listing every page, reachable from any rules page. It is a
+// modal <dialog>, so focus, Esc and the backdrop come from the browser.
+function drawerHtml() {
+  const group = (title, pages) => `<h3>${esc(title)}</h3>
+    <ul>${pages.map(p => `<li><a href="#rules/${p.id}" data-id="${p.id}">${esc(p.title)}</a></li>`).join('')}</ul>`;
+  return `<dialog class="drawer" aria-label="${esc(DRAWER.title)}">
+    <div class="drawer-head"><b>${esc(DRAWER.title)}</b><button class="drawer-close" type="button" aria-label="${esc(DRAWER.close)}">×</button></div>
+    <nav class="drawer-body">
+      <a class="drawer-home" href="#rules" data-id="">${esc(DRAWER.home)}</a>
+      ${SECTIONS.map(sec => group(sec.title, PAGES.filter(p => p.sec === sec))).join('')}
+      ${group(RULES_INDEX.more, PAGES.filter(p => !p.sec))}
+    </nav>
+  </dialog>
+  <button class="drawer-open" type="button" aria-haspopup="dialog">${esc(DRAWER.open)}</button>`;
+}
+
+// Renders the index (sub = '') or one page (sub = page id). An unknown id is
+// a bad link, not a bad state, so it falls back to the index.
 export function mountRules(root) {
+  root.innerHTML = `<div class="rules-page"></div>${drawerHtml()}`;
+  const pageEl = root.querySelector('.rules-page');
+  const drawer = root.querySelector('.drawer');
+  root.querySelector('.drawer-open').addEventListener('click', () => drawer.showModal());
+  root.querySelector('.drawer-close').addEventListener('click', () => drawer.close());
+  // A click on the backdrop lands on the dialog element itself.
+  drawer.addEventListener('click', e => { if (e.target === drawer || e.target.closest('a')) drawer.close(); });
   let current = null;
   return {
     show(sub) {
@@ -133,10 +158,13 @@ export function mountRules(root) {
       const key = i < 0 ? '' : sub;
       if (key === current) return;
       current = key;
-      root.innerHTML = i < 0 ? indexHtml() : pageHtml(i);
+      pageEl.innerHTML = i < 0 ? indexHtml() : pageHtml(i);
+      for (const a of drawer.querySelectorAll('a[data-id]')) {
+        if (a.dataset.id === key) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      }
       const page = PAGES[i];
       if (page?.kind === 'rule') {
-        const wrap = root.querySelector('.scene-wrap');
+        const wrap = pageEl.querySelector('.scene-wrap');
         if (wrap) wireScene(wrap, page.item.scenes);
       }
     },
