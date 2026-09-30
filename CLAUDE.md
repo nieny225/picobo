@@ -37,19 +37,20 @@ static site later. There is no backend and no build step.
 
 ```
 index.html              the page; hash-routed tabs: #rules #formats #score #draw
-                        (sub-pages as #rules/<id>, e.g. #rules/kitchen)
+                        (sub-pages as #rules/<id> and #formats/<id>)
 styles/main.css         design tokens on :root, dark mode, mobile-first
 src/app.js              router; mounts the four views
 src/court.js            SVG court renderer shared by rules + scoreboard
 src/scoring.js          pure scoring state machines (no DOM)
 src/draw.js             pure draw / round-robin / king-of-court logic (no DOM)
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes
-src/ui/formats.js       fun formats view
+src/ui/formats.js       fun formats index + one page per format with court scenes
+src/ui/scenes.js        court scene carousel shared by rules and formats
 src/ui/scoreboard.js    scoreboard view
 src/ui/draw.js          draw + rotation view
 src/ui/topbar.js        hides the top bar and floating buttons while scrolling down
 src/data/rules.js       rule copy + court scene definitions
-src/data/formats.js     fun formats (國王球場, 輪轉賽, 3 人制, 半場單打, 廚房戰, 快打短局)
+src/data/formats.js     fun formats + their court scenes (國王球場, 輪轉賽, 3 人制, 半場單打, 廚房戰, 快打短局)
 src/data/glossary.js    中英術語對照 + 常見誤解
 src/data/nav.js         目錄、上一條／下一條、玩法頁的介面文字
 tests/*.test.js         node:test for the pure modules

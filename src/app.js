@@ -22,7 +22,7 @@ function parseHash() {
 
 const topbar = autoHideTopbar(document.querySelector('.topbar'));
 const rules = mountRules(document.getElementById('view-rules'));
-mountFormats(document.getElementById('view-formats'));
+const formats = mountFormats(document.getElementById('view-formats'));
 mountScoreboard(document.getElementById('view-score'));
 mountDraw(document.getElementById('view-draw'));
 document.getElementById('footer').textContent = `正統規則依據 ${RULEBOOK}。趣味玩法各球場做法不同，開打前先講好。`;
@@ -34,6 +34,7 @@ function show() {
     tab.setAttribute('aria-selected', String(tab.dataset.route === route));
   }
   if (route === 'rules') rules.show(sub);
+  if (route === 'formats') formats.show(sub);
   window.scrollTo({ top: 0 });
   topbar.show();
 }

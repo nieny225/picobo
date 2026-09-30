@@ -6,6 +6,13 @@ export const RULES_INDEX = {
   moreEn: 'More',
 };
 
+// 球場圖步驟輪播。step 裡的 {n} 換成第幾步。
+export const SCENE_NAV = {
+  prev: '上一步',
+  next: '下一步',
+  step: '第 {n} 步',
+};
+
 // 左側可收合的規則目錄。
 export const DRAWER = {
   open: '目錄',
@@ -29,5 +36,8 @@ export const EXTRA_PAGES = {
 
 export const FORMATS_PAGE = {
   title: '趣味玩法',
+  back: '玩法',
+  unofficial: '各球場做法不同',
+  scoring: '計分：',
   intro: '人數不對、場地不夠、想練特定球路的時候用。這些都不是官方規則，各球場做法不同，開打前先講好版本。',
 };

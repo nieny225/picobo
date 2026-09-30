@@ -1,23 +1,8 @@
-import { renderCourt } from '../court.js';
 import { SECTIONS } from '../data/rules.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
 import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER } from '../data/nav.js';
+import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
 
-// English term after a title, e.g. 發球（Serve）.
-const enTag = en => (en ? `<span class="en-tag">（${esc(en)}）</span>` : '');
-
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-function sceneBlock(item) {
-  if (!item.scenes || item.scenes.length === 0) return '';
-  const steps = item.scenes.map((sc, i) =>
-    `<div class="step"><p class="step-caption"><span class="step-no">${i + 1}/${item.scenes.length}</span>${esc(sc.caption)}</p></div>`).join('');
-  const dots = item.scenes.map((_, i) => `<button class="dot${i === 0 ? ' active' : ''}" data-i="${i}" aria-label="第 ${i + 1} 步"></button>`).join('');
-  const nav = item.scenes.length > 1
-    ? `<div class="scene-nav"><button class="btn btn-ghost" data-dir="-1">上一步</button><div class="dots">${dots}</div><button class="btn btn-ghost" data-dir="1">下一步</button></div>`
-    : '';
-  return `<div class="scene-wrap" data-scene="${item.id}"><div class="court-wrap"></div><div class="steps">${steps}</div>${nav}</div>`;
-}
 
 function ruleCard(item) {
   const detail = item.detail?.length
@@ -87,62 +72,6 @@ function pageHtml(i) {
     <nav class="rule-top"><a class="back" href="#rules">${esc(RULE_PAGE.back)}</a>${p.sec ? `<span class="muted small">${esc(p.sec.title)}</span>` : ''}</nav>
     ${pageBody(p)}
     <nav class="pager">${step(prev, RULE_PAGE.prev, 'prev')}${step(next, RULE_PAGE.next, 'next')}</nav>`;
-}
-
-// Calls back with +1 (swipe left, next) or -1 (swipe right, previous) for a
-// clearly horizontal touch swipe. The element has touch-action: pan-y, so
-// vertical drags still scroll the page.
-function onHorizontalSwipe(el, cb) {
-  let x0 = null, y0 = 0;
-  el.addEventListener('touchstart', e => {
-    if (e.touches.length !== 1) { x0 = null; return; }
-    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
-  }, { passive: true });
-  el.addEventListener('touchend', e => {
-    if (x0 === null) return;
-    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
-    x0 = null;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > 1.5 * Math.abs(dy)) cb(dx < 0 ? 1 : -1);
-  }, { passive: true });
-  el.addEventListener('touchcancel', () => { x0 = null; });
-}
-
-function wireScene(wrap, scenes) {
-  const court = wrap.querySelector('.court-wrap');
-  const steps = wrap.querySelector('.steps');
-  const dots = [...wrap.querySelectorAll('.dot')];
-  const prev = wrap.querySelector('[data-dir="-1"]');
-  const next = wrap.querySelector('[data-dir="1"]');
-  let current = -1;
-  const setStep = i => {
-    i = Math.max(0, Math.min(scenes.length - 1, i));
-    if (i === current) return;
-    current = i;
-    renderCourt(court, scenes[i]);
-    dots.forEach((d, k) => d.classList.toggle('active', k === i));
-    if (prev) prev.disabled = i === 0;
-    if (next) next.disabled = i === scenes.length - 1;
-  };
-  const goTo = i => {
-    i = Math.max(0, Math.min(scenes.length - 1, i));
-    steps.scrollTo({ left: i * steps.clientWidth, behavior: 'smooth' });
-    setStep(i);
-  };
-  let raf = 0;
-  steps.addEventListener('scroll', () => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => setStep(Math.round(steps.scrollLeft / steps.clientWidth)));
-  });
-  dots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
-  onHorizontalSwipe(court, dir => goTo(current + dir));
-  if (prev) prev.addEventListener('click', () => goTo(current - 1));
-  if (next) next.addEventListener('click', () => goTo(current + 1));
-  wrap.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight') goTo(current + 1);
-    if (e.key === 'ArrowLeft') goTo(current - 1);
-  });
-  wrap.tabIndex = 0;
-  setStep(0);
 }
 
 // Swipe left to dismiss: the drawer follows the finger and closes once it

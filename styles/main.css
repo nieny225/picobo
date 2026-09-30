@@ -233,7 +233,7 @@ svg.court { width: 100%; height: auto; display: block; overflow: visible; }
 .player text { font-size: 13px; font-weight: 700; fill: var(--team-fg); font-family: var(--font-body); }
 .player.serving circle:first-child { stroke: var(--ball); stroke-width: 4; }
 .player .serve-mark { fill: var(--ball); stroke: var(--ball-stroke); stroke-width: 1.5; }
-.player.dim { opacity: 0.45; }
+.player.dim { opacity: 0.6; }
 
 /* Scene carousel */
 .scene-wrap { display: grid; gap: 10px; }
