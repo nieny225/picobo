@@ -1,5 +1,8 @@
 # Picobo — Pickleball rules & court tools (zh-TW)
 
+**Resuming work? Read `docs/HANDOFF.md` first.** `docs/PLAN.md` is the
+approved v1 plan.
+
 ## What this is
 
 A single-page web app, in Traditional Chinese (Taiwan usage), that is both the
