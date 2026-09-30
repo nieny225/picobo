@@ -87,12 +87,12 @@ function playHtml(state) {
       <button class="score-btn team-A" id="win-A"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.A}</span><span class="name">${esc(A)} 贏這球</span></button>
       <button class="score-btn team-B" id="win-B"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.B}</span><span class="name">${esc(B)} 贏這球</span></button>
     </div>
-    ${state.mode === 'fun' ? '' : '<div class="court-wrap" id="board-court"></div>'}
     <div class="toolbar">
       <button class="btn" id="undo"${state.history.length ? '' : ' disabled'}>復原上一球</button>
       ${state.finished ? '<button class="btn btn-primary" id="again">再來一局</button>' : ''}
       <button class="btn btn-ghost" id="reset">重新設定</button>
     </div>
+    ${state.mode === 'fun' ? '' : '<div class="court-wrap" id="board-court"></div>'}
   </div>`;
 }
 
