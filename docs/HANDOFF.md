@@ -67,7 +67,7 @@ Direct fetches of usapickleball.org were blocked by the sandbox network
 policy; only search summaries were available. Rule numbers other than 4.B.6
 are cited at section level in the copy for that reason.
 
-## Design style exploration (mockups delivered, waiting on the user's pick)
+## Design style (decided: C 新粗野, applied)
 
 The user asked: 「設計風格，你可以先上網搜尋最流行的幾個 style guideline，然後給我幾個
 mockup 讓我挑選」
@@ -87,14 +87,21 @@ https://claude.ai/artifact/F9LVrRNbXu3Mhq1zNmU8WD
 | D | 夜場便當格 Bento, dark | near-black tiles, neon ball-yellow LED numerals | Chakra Petch + Noto Sans TC |
 
 Court images in the mockups were generated from `src/court.js` itself, so the
-geometry is the real one. Next: the user picks (or mixes) one; then rewrite
-the tokens in `styles/main.css` and the font link in `index.html`, keep a
-light and a dark palette for the chosen style, re-run the layout check.
+geometry is the real one.
+
+The user picked **C 新粗野**. Applied in `styles/main.css` (tokens at the top:
+cream paper, 3px ink borders `--bw`, hard offset shadows `--shadow`,
+ball-yellow `--mark` for the current tab / chip / step, blue `--accent` for
+primary actions) and `index.html` (Noto Sans TC 500/700/900 + Space Grotesk
+700). Dark mode swaps ink to cream and the shadow colour to ball-yellow.
+Layout check passed at 360, 390 and 1280 px, light and dark, all three tabs,
+no horizontal overflow. Google Fonts are blocked in the sandbox, so the
+screenshots used the system fallbacks; the real faces are still unseen.
 
 ## Known gaps and ideas not yet scheduled
 
-- Google Fonts were blocked in the sandbox, so the display face has not been
-  seen rendered; system fallbacks looked fine.
+- Google Fonts were blocked in the sandbox, so Noto Sans TC / Space Grotesk
+  have not been seen rendered; system fallbacks looked fine.
 - Scoreboard has no sound or vibration on score; intentionally left out.
 - Round-robin pairing is a randomized search, not a perfect schedule.
 - Scene animations are simple position transitions; ball flight is static.
