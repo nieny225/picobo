@@ -21,7 +21,7 @@ python3 -m http.server 8080
 ## 測試
 
 ```
-node --test tests/
+node --test
 ```
 
 ## 規則來源

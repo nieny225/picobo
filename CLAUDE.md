@@ -18,8 +18,9 @@ static site later. There is no backend and no build step.
 
 - Plain HTML, CSS and JavaScript ES modules. No framework, no bundler, no npm
   dependencies, no TypeScript, no CSS preprocessor.
-- No backend, no analytics, no external requests at runtime. Fonts and scripts
-  are local or inline; the page must work fully offline once loaded.
+- No backend, no analytics, no runtime requests except the two Google Fonts
+  faces linked in `index.html`, each with a full system fallback stack so the
+  page reads fine offline or when fonts are blocked.
 - Persistence is `localStorage` only, every read/write wrapped in try/catch,
   and the page must render correctly when storage is empty or throws.
 - No i18n framework. All user-facing copy is zh-TW and lives in `src/data/`.
@@ -57,7 +58,9 @@ tests/*.test.js         node:test for the pure modules
 - Scoring: `pointWon(state, team)` returns a new state and never mutates. The
   history stack for undo lives inside the state. Side-out doubles: after a
   side-out the first server is whoever is currently in the right court; only
-  the serving team swaps positions, and only when it scores.
+  the serving team swaps positions, and only when it scores. Rally doubles
+  follows the USA Pickleball provisional rule (2026): every rally scores, no
+  second server, the hand-over server is the player on the parity side.
 - CSS: colors and spacing are custom properties on `:root`, redefined for
   dark mode. Tap targets are at least 44px. No horizontal page scroll at
   360px width. Prefer `scroll-snap` carousels for step-by-step rule scenes.
@@ -81,7 +84,7 @@ tests/*.test.js         node:test for the pure modules
 
 ```
 python3 -m http.server 8080        # run: open http://localhost:8080
-node --test tests/                 # unit tests for scoring.js and draw.js
+node --test                 # unit tests for scoring.js and draw.js
 ```
 
 Layout check: drive the local server with Playwright and the preinstalled
