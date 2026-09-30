@@ -209,7 +209,7 @@ details[open] summary::before { content: "－"; }
 
 /* Court */
 .court-wrap { width: 100%; max-width: 420px; margin: 0 auto; }
-.scene-wrap .court-wrap { max-width: 300px; }
+.scene-wrap .court-wrap { max-width: 300px; touch-action: pan-y; }
 svg.court { width: 100%; height: auto; display: block; overflow: visible; }
 .court-surface { fill: var(--court); stroke: var(--ink); stroke-width: 8; }
 .court-nvz { fill: var(--court-nvz); }

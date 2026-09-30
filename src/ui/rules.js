@@ -86,6 +86,24 @@ function pageHtml(i) {
     <nav class="pager">${step(prev, RULE_PAGE.prev, 'prev')}${step(next, RULE_PAGE.next, 'next')}</nav>`;
 }
 
+// Calls back with +1 (swipe left, next) or -1 (swipe right, previous) for a
+// clearly horizontal touch swipe. The element has touch-action: pan-y, so
+// vertical drags still scroll the page.
+function onHorizontalSwipe(el, cb) {
+  let x0 = null, y0 = 0;
+  el.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) { x0 = null; return; }
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+  }, { passive: true });
+  el.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0;
+    x0 = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > 1.5 * Math.abs(dy)) cb(dx < 0 ? 1 : -1);
+  }, { passive: true });
+  el.addEventListener('touchcancel', () => { x0 = null; });
+}
+
 function wireScene(wrap, scenes) {
   const court = wrap.querySelector('.court-wrap');
   const steps = wrap.querySelector('.steps');
@@ -113,6 +131,7 @@ function wireScene(wrap, scenes) {
     raf = requestAnimationFrame(() => setStep(Math.round(steps.scrollLeft / steps.clientWidth)));
   });
   dots.forEach(d => d.addEventListener('click', () => goTo(Number(d.dataset.i))));
+  onHorizontalSwipe(court, dir => goTo(current + dir));
   if (prev) prev.addEventListener('click', () => goTo(current - 1));
   if (next) next.addEventListener('click', () => goTo(current + 1));
   wrap.addEventListener('keydown', e => {
