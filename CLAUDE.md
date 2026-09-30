@@ -105,6 +105,13 @@ not create a second artifact for updates.
 
 Current artifact: https://claude.ai/artifact/W4LaC8XBDpJiVMLHmdeVKD
 
+## Static site
+
+Live at https://picobo.net via GitHub Pages: branch `main`, folder `/`, no
+build. `CNAME` holds the domain, `.nojekyll` skips Jekyll. DNS is at Gandi
+(apex A/AAAA to GitHub Pages, `www` CNAME to `nieny225.github.io`); the full
+setup is in `docs/DEPLOY.md`. Anything merged to `main` goes live.
+
 ## Git
 
 - Work on the branch given for the session; never push elsewhere.
