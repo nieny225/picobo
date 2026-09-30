@@ -123,6 +123,46 @@ function wireScene(wrap, scenes) {
   setStep(0);
 }
 
+// Swipe left to dismiss: the drawer follows the finger and closes once it
+// has been dragged a quarter of its width. Vertical drags are left to the
+// browser (touch-action: pan-y) so the list still scrolls.
+function swipeToClose(drawer) {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  let startX = null, startY = 0, dx = 0, dragging = false, swallowUntil = 0;
+  const reset = () => { drawer.style.transform = ''; drawer.style.transition = ''; };
+  drawer.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'touch') return;
+    startX = e.clientX; startY = e.clientY; dx = 0; dragging = false;
+  });
+  drawer.addEventListener('pointermove', e => {
+    if (startX === null) return;
+    const x = e.clientX - startX, y = e.clientY - startY;
+    if (!dragging) {
+      if (Math.abs(x) < 10 || Math.abs(x) < Math.abs(y)) return;
+      dragging = true;
+    }
+    dx = Math.min(0, x);
+    drawer.style.transition = 'none';
+    drawer.style.transform = `translateX(${dx}px)`;
+  });
+  const end = () => {
+    if (startX === null) return;
+    startX = null;
+    if (!dragging) return;
+    dragging = false;
+    swallowUntil = performance.now() + 400;
+    drawer.style.transition = '';
+    if (dx > -drawer.offsetWidth / 4) { drawer.style.transform = ''; return; }
+    if (reduced.matches) { drawer.close(); reset(); return; }
+    drawer.style.transform = 'translateX(-100%)';
+    setTimeout(() => { drawer.close(); reset(); }, 200);
+  };
+  drawer.addEventListener('pointerup', end);
+  drawer.addEventListener('pointercancel', end);
+  // A drag that ends over a link must not also follow it.
+  drawer.addEventListener('click', e => { if (performance.now() < swallowUntil) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+}
+
 // Renders the index (sub = '') or one page (sub = page id). An unknown id is
 // a bad link, not a bad state, so it falls back to the index.
 // Left drawer listing every page, reachable from any rules page. It is a
@@ -151,6 +191,7 @@ export function mountRules(root) {
   root.querySelector('.drawer-close').addEventListener('click', () => drawer.close());
   // A click on the backdrop lands on the dialog element itself.
   drawer.addEventListener('click', e => { if (e.target === drawer || e.target.closest('a')) drawer.close(); });
+  swipeToClose(drawer);
   let current = null;
   return {
     show(sub) {
