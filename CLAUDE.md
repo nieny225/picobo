@@ -97,6 +97,8 @@ Publish `index.html` with the Artifact tool and pass `styles/**` and `src/**`
 through `files` so ES module imports resolve. Re-publish to the same URL; do
 not create a second artifact for updates.
 
+Current artifact: https://claude.ai/artifact/PJXBm8ZHFXikZ4WEiVYEcM
+
 ## Git
 
 - Work on the branch given for the session; never push elsewhere.
