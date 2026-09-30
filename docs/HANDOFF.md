@@ -109,12 +109,15 @@ The rules tab was one 16,800 px page on a phone. Now:
   #formats). Unknown ids fall back to the index.
 - Page heights at 390 px: index ~2,100, a rule page ~1,350, formats ~3,400.
 
-## Going live (in progress, 2026-09-30)
+## Live on picobo.net (2026-09-30)
 
 The user bought picobo.net at Gandi and chose: make the repo public and host
 on GitHub Pages (branch `main`, root). Repo side is ready (`CNAME`,
-`.nojekyll`, favicon). The user does the GitHub settings and Gandi DNS by
-following `docs/DEPLOY.md`. Before that, `picobo.net` pointed at Gandi's
+`.nojekyll`, favicon). GitHub Pages deploys `main` (first successful
+deploy of `main` at 03b44ef, 07:01 UTC); Gandi apex A records point at GitHub
+Pages and the DNS check passed. Still to do by the user: tick Enforce HTTPS
+once the certificate is issued, set the default branch to `main`, optional
+apex AAAA records and the account-level domain verification TXT. Before that, `picobo.net` pointed at Gandi's
 parking IP 217.70.184.38. There was no `main` branch yet; the remote default
 branch was the old session branch `ccr-e7df49dc-8t69j2`.
 
