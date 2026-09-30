@@ -5,6 +5,10 @@ approved v1 plan.
 
 ## What this is
 
+Brand name: **Picobo 痞克柏** (the Chinese name is 痞克柏, not 匹克球; 匹克球
+stays the name of the sport in all copy).
+
+
 A single-page web app, in Traditional Chinese (Taiwan usage), that is both the
 place to *learn* pickleball rules and a *tool people use on court*: visual rule
 explanations on a court diagram, a scoreboard that shows who serves from where,

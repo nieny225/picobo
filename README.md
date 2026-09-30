@@ -1,4 +1,4 @@
-# Picobo
+# Picobo 痞克柏
 
 台灣繁體中文的匹克球（Pickleball）規則教學與球場工具。
 
