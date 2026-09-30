@@ -1,6 +1,6 @@
 # Handoff — read this first when resuming
 
-Last updated: 2026-09-30, branch `ccr-e7df49dc-8t69j2`, 4 commits.
+Last updated: 2026-09-30, branch `ccr-7b6d14a5-myo5fh`.
 The previous session ran under a different claude.ai account; this document
 is the full context needed to continue from a new session.
 
@@ -67,21 +67,29 @@ Direct fetches of usapickleball.org were blocked by the sandbox network
 policy; only search summaries were available. Rule numbers other than 4.B.6
 are cited at section level in the copy for that reason.
 
-## Next task (requested, not started)
+## Design style exploration (mockups delivered, waiting on the user's pick)
 
-Design style exploration. The user asked:
+The user asked: 「設計風格，你可以先上網搜尋最流行的幾個 style guideline，然後給我幾個
+mockup 讓我挑選」
 
-> 設計風格，你可以先上網搜尋最流行的幾個 style guideline，然後給我幾個
-> mockup 讓我挑選
+Done 2026-09-30: web search of 2026 UI trends (Liquid Glass in iOS 26,
+Material 3 Expressive, neubrutalism / structural UI, bento grids; thumb-zone
+bottom navigation as the common pattern). Four directions, each drawn as a
+390×844 phone mockup of the 學規則 card (kitchen rule, step 2) and the
+scoreboard (4-2-1), on a design canvas:
+https://claude.ai/artifact/F9LVrRNbXu3Mhq1zNmU8WD
 
-Suggested approach: search current popular UI style directions (2026),
-pick 3 to 4 that suit a phone-on-court sports tool, and produce one mockup
-each as a small artifact or a set of screenshots of the existing rules and
-scoreboard views restyled (only `styles/main.css` and the font links in
-`index.html` need to change per mockup). Let the user pick before applying
-one to the whole app. The current style is described at the top of
-`styles/main.css` (court-blue palette, orange and mint teams, Chocolate
-Classical Sans display face, Chakra Petch numerals).
+| | Style | Look | Fonts |
+|---|---|---|---|
+| A | 液態玻璃 Liquid Glass | frosted panels over court blue, floating bottom tab bar | system / Noto Sans TC, ui-rounded numerals |
+| B | 表現派 Material 3 Expressive | warm cream, lime tonal chips, mixed big radii, green court | Lexend + Noto Sans TC |
+| C | 新粗野 Neubrutalism | cream, 3px black borders, hard offset shadows, ball-yellow | Space Grotesk + Noto Sans TC |
+| D | 夜場便當格 Bento, dark | near-black tiles, neon ball-yellow LED numerals | Chakra Petch + Noto Sans TC |
+
+Court images in the mockups were generated from `src/court.js` itself, so the
+geometry is the real one. Next: the user picks (or mixes) one; then rewrite
+the tokens in `styles/main.css` and the font link in `index.html`, keep a
+light and a dark palette for the chosen style, re-run the layout check.
 
 ## Known gaps and ideas not yet scheduled
 
