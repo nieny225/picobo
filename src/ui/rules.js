@@ -124,32 +124,35 @@ function wireScene(wrap, scenes) {
 }
 
 // Swipe left to dismiss: the drawer follows the finger and closes once it
-// has been dragged a quarter of its width. Vertical drags are left to the
-// browser (touch-action: pan-y) so the list still scrolls.
+// has been dragged a quarter of its width. Touch events (not pointer events)
+// so the scrolling list cannot cancel the gesture: once a drag reads as
+// horizontal, touchmove is prevented and the browser does not scroll.
 function swipeToClose(drawer) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let startX = null, startY = 0, dx = 0, dragging = false, swallowUntil = 0;
+  let startX = null, startY = 0, dx = 0, mode = null, swallowUntil = 0;
   const reset = () => { drawer.style.transform = ''; drawer.style.transition = ''; };
-  drawer.addEventListener('pointerdown', e => {
-    if (e.pointerType !== 'touch') return;
-    startX = e.clientX; startY = e.clientY; dx = 0; dragging = false;
-  });
-  drawer.addEventListener('pointermove', e => {
-    if (startX === null) return;
-    const x = e.clientX - startX, y = e.clientY - startY;
-    if (!dragging) {
-      if (Math.abs(x) < 10 || Math.abs(x) < Math.abs(y)) return;
-      dragging = true;
+  drawer.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) { startX = null; return; }
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY; dx = 0; mode = null;
+  }, { passive: true });
+  drawer.addEventListener('touchmove', e => {
+    if (startX === null || mode === 'scroll') return;
+    const x = e.touches[0].clientX - startX, y = e.touches[0].clientY - startY;
+    if (!mode) {
+      if (Math.abs(x) < 8 && Math.abs(y) < 8) return;
+      mode = Math.abs(x) > Math.abs(y) ? 'swipe' : 'scroll';
+      if (mode === 'scroll') return;
     }
+    e.preventDefault();
     dx = Math.min(0, x);
     drawer.style.transition = 'none';
     drawer.style.transform = `translateX(${dx}px)`;
-  });
+  }, { passive: false });
   const end = () => {
     if (startX === null) return;
     startX = null;
-    if (!dragging) return;
-    dragging = false;
+    if (mode !== 'swipe') return;
+    mode = null;
     swallowUntil = performance.now() + 400;
     drawer.style.transition = '';
     if (dx > -drawer.offsetWidth / 4) { drawer.style.transform = ''; return; }
@@ -157,8 +160,8 @@ function swipeToClose(drawer) {
     drawer.style.transform = 'translateX(-100%)';
     setTimeout(() => { drawer.close(); reset(); }, 200);
   };
-  drawer.addEventListener('pointerup', end);
-  drawer.addEventListener('pointercancel', end);
+  drawer.addEventListener('touchend', end);
+  drawer.addEventListener('touchcancel', end);
   // A drag that ends over a link must not also follow it.
   drawer.addEventListener('click', e => { if (performance.now() < swallowUntil) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 }
