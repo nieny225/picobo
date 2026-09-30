@@ -97,6 +97,18 @@ Layout check passed at 360, 390 and 1280 px, light and dark, all three tabs,
 no horizontal overflow. Google Fonts are blocked in the sandbox, so the
 screenshots used the system fallbacks; the real faces are still unseen.
 
+## Navigation (2026-09-30)
+
+The rules tab was one 16,800 px page on a phone. Now:
+
+- Four top tabs: 規則 #rules, 玩法 #formats, 計分 #score, 抽籤 #draw.
+- #rules is an index (grouped by section, one tappable row per rule, plus
+  the compare table, 常見誤解 and 術語表). Each opens its own page,
+  #rules/<id>, with 目錄 back link and 上一條／下一條 at the bottom.
+- v1 links #rules-<id> are rewritten to #rules/<id> (#rules-formats to
+  #formats). Unknown ids fall back to the index.
+- Page heights at 390 px: index ~2,100, a rule page ~1,350, formats ~3,400.
+
 ## Known gaps and ideas not yet scheduled
 
 - Google Fonts were blocked in the sandbox, so Noto Sans TC / Space Grotesk

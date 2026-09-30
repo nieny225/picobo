@@ -13,14 +13,16 @@
   <div class="topbar-inner">
     <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Picobo 匹克球</h1></div>
     <nav class="tabs" role="tablist" aria-label="主選單">
-      <button class="tab" role="tab" data-route="rules" aria-selected="true">學規則</button>
-      <button class="tab" role="tab" data-route="score" aria-selected="false">計分板</button>
-      <button class="tab" role="tab" data-route="draw" aria-selected="false">抽籤輪轉</button>
+      <button class="tab" role="tab" data-route="rules" aria-selected="true">規則</button>
+      <button class="tab" role="tab" data-route="formats" aria-selected="false">玩法</button>
+      <button class="tab" role="tab" data-route="score" aria-selected="false">計分</button>
+      <button class="tab" role="tab" data-route="draw" aria-selected="false">抽籤</button>
     </nav>
   </div>
 </header>
 <main class="page">
   <section class="view" id="view-rules" role="tabpanel"></section>
+  <section class="view" id="view-formats" role="tabpanel" hidden></section>
   <section class="view" id="view-score" role="tabpanel" hidden></section>
   <section class="view" id="view-draw" role="tabpanel" hidden></section>
   <footer id="footer"></footer>

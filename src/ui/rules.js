@@ -1,7 +1,7 @@
 import { renderCourt } from '../court.js';
 import { SECTIONS } from '../data/rules.js';
-import { FORMATS } from '../data/formats.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
+import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES } from '../data/nav.js';
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
@@ -35,35 +35,55 @@ function compareTable(c) {
   </table></div></article>`;
 }
 
-function formatCard(f) {
-  return `<article class="card format" id="rules-${f.id}">
-    <div class="card-head"><h3>${esc(f.name)} <span class="muted small">${esc(f.en)}</span></h3></div>
-    <div class="format-meta"><span>${esc(f.group)}</span><span>${esc(f.players)}</span></div>
-    <p class="summary">${esc(f.tagline)}</p>
-    <ol>${f.rules.map(r => `<li>${esc(r)}</li>`).join('')}</ol>
-    <p><b>計分：</b>${esc(f.scoring)}</p>
-    <p class="format-tip">${esc(f.tip)}</p>
-  </article>`;
+// Every page reachable from the index, in reading order: the rules of each
+// section (plus its compare table), then the FAQ and the glossary.
+const PAGES = [
+  ...SECTIONS.flatMap(sec => [
+    ...sec.items.map(item => ({ id: item.id, kind: 'rule', sec, item, title: item.title, summary: item.summary, rule: item.rule })),
+    ...(sec.compare ? [{ id: 'compare', kind: 'compare', sec, title: sec.compare.title, summary: EXTRA_PAGES.compare.summary }] : []),
+  ]),
+  { id: 'faq', kind: 'faq', title: EXTRA_PAGES.faq.title, summary: EXTRA_PAGES.faq.summary },
+  { id: 'glossary', kind: 'glossary', title: EXTRA_PAGES.glossary.title, summary: EXTRA_PAGES.glossary.summary },
+];
+
+const link = p => `<a class="rule-link" href="#rules/${p.id}">
+  <span class="rule-link-text"><b>${esc(p.title)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span>
+  ${p.rule ? `<span class="rule-no">${esc(p.rule)}</span>` : ''}</a>`;
+
+function indexHtml() {
+  const groups = SECTIONS.map(sec => `
+    <section class="rule-group" id="rules-${sec.id}">
+      <h3>${esc(sec.title)}${sec.subtitle ? ` <span class="muted small">${esc(sec.subtitle)}</span>` : ''}</h3>
+      <div class="rule-list">${PAGES.filter(p => p.sec === sec).map(link).join('')}</div>
+    </section>`).join('');
+  return `
+    <div class="section-head"><h2>${esc(RULES_INDEX.title)}</h2><p class="intro">${esc(RULES_INDEX.intro)}</p></div>
+    ${groups}
+    <section class="rule-group"><h3>${esc(RULES_INDEX.more)}</h3>
+      <div class="rule-list">${PAGES.filter(p => !p.sec).map(link).join('')}</div>
+    </section>`;
 }
 
-function html() {
-  const sections = SECTIONS.map(sec => `
-    <div class="section-head" id="rules-${sec.id}"><h2>${esc(sec.title)}</h2>${sec.subtitle ? `<p class="sub">${esc(sec.subtitle)}</p>` : ''}<p class="intro">${esc(sec.intro)}</p></div>
-    ${sec.items.map(ruleCard).join('')}
-    ${sec.compare ? compareTable(sec.compare) : ''}
-  `).join('');
-  const nav = [...SECTIONS.map(s => [s.id, s.title]), ['formats', '趣味玩法'], ['faq', '常見誤解'], ['glossary', '術語表']]
-    .map(([id, t]) => `<a class="chip" href="#rules-${id}">${esc(t)}</a>`).join('');
+function pageBody(p) {
+  if (p.kind === 'rule') return ruleCard(p.item);
+  if (p.kind === 'compare') return compareTable(p.sec.compare);
+  if (p.kind === 'faq') {
+    return `<div class="section-head"><h2>${esc(p.title)}</h2></div>
+      <div class="faq">${MISCONCEPTIONS.map(m => `<details><summary>${esc(m.q)}</summary><p>${esc(m.a)}</p></details>`).join('')}</div>`;
+  }
+  return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="intro">${esc(EXTRA_PAGES.glossary.intro)}</p></div>
+    <div class="glossary">${GLOSSARY.map(g => `<div class="term"><b>${esc(g.zh)} <span class="en">${esc(g.en)}</span></b>${g.alias ? `<span class="muted small">${esc(g.alias)}</span>` : ''}<span class="small">${esc(g.def)}</span></div>`).join('')}</div>`;
+}
+
+function pageHtml(i) {
+  const p = PAGES[i], prev = PAGES[i - 1], next = PAGES[i + 1];
+  const step = (q, label, cls) => q
+    ? `<a class="pager-link ${cls}" href="#rules/${q.id}"><span class="muted small">${esc(label)}</span><b>${esc(q.title)}</b></a>`
+    : '<span></span>';
   return `
-    <nav class="chips" aria-label="規則章節">${nav}</nav>
-    ${sections}
-    <div class="section-head" id="rules-formats"><h2>趣味玩法</h2><p class="intro">人數不對、場地不夠、想練特定球路的時候用。這些都不是官方規則，開打前先講好版本。</p></div>
-    <div class="formats">${FORMATS.map(formatCard).join('')}</div>
-    <div class="section-head" id="rules-faq"><h2>常見誤解</h2></div>
-    <div class="faq">${MISCONCEPTIONS.map(m => `<details><summary>${esc(m.q)}</summary><p>${esc(m.a)}</p></details>`).join('')}</div>
-    <div class="section-head" id="rules-glossary"><h2>術語表</h2><p class="intro">球場上中英文混著講很正常，這裡對照一下。</p></div>
-    <div class="glossary">${GLOSSARY.map(g => `<div class="term"><b>${esc(g.zh)} <span class="en">${esc(g.en)}</span></b>${g.alias ? `<span class="muted small">${esc(g.alias)}</span>` : ''}<span class="small">${esc(g.def)}</span></div>`).join('')}</div>
-  `;
+    <nav class="rule-top"><a class="back" href="#rules">${esc(RULE_PAGE.back)}</a>${p.sec ? `<span class="muted small">${esc(p.sec.title)}</span>` : ''}</nav>
+    ${pageBody(p)}
+    <nav class="pager">${step(prev, RULE_PAGE.prev, 'prev')}${step(next, RULE_PAGE.next, 'next')}</nav>`;
 }
 
 function wireScene(wrap, scenes) {
@@ -103,11 +123,22 @@ function wireScene(wrap, scenes) {
   setStep(0);
 }
 
+// Renders the index (sub = '') or one page (sub = page id). An unknown id is
+// a bad link, not a bad state, so it falls back to the index.
 export function mountRules(root) {
-  root.innerHTML = html();
-  const byId = {};
-  for (const sec of SECTIONS) for (const it of sec.items) byId[it.id] = it;
-  for (const wrap of root.querySelectorAll('.scene-wrap')) {
-    wireScene(wrap, byId[wrap.dataset.scene].scenes);
-  }
+  let current = null;
+  return {
+    show(sub) {
+      const i = PAGES.findIndex(p => p.id === sub);
+      const key = i < 0 ? '' : sub;
+      if (key === current) return;
+      current = key;
+      root.innerHTML = i < 0 ? indexHtml() : pageHtml(i);
+      const page = PAGES[i];
+      if (page?.kind === 'rule') {
+        const wrap = root.querySelector('.scene-wrap');
+        if (wrap) wireScene(wrap, page.item.scenes);
+      }
+    },
+  };
 }
