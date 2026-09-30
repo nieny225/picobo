@@ -3,6 +3,7 @@ export const RULES_INDEX = {
   title: '學規則',
   intro: '挑一條看圖解。每一條都有自己的網址，可以直接傳給球友。',
   more: '更多',
+  moreEn: 'More',
 };
 
 // 左側可收合的規則目錄。
@@ -22,8 +23,8 @@ export const RULE_PAGE = {
 // 目錄裡不屬於單一規則的頁面。
 export const EXTRA_PAGES = {
   compare: { summary: '兩種計分方式差在哪，一張表看完。' },
-  faq: { title: '常見誤解', summary: '雙打誰先發、碰線算不算，球場上最常吵的幾題。' },
-  glossary: { title: '術語表', summary: 'dink、side-out、ATP 這些詞的中文對照。', intro: '球場上中英文混著講很正常，這裡對照一下。' },
+  faq: { title: '常見誤解', en: 'Common Misconceptions', summary: '雙打誰先發、碰線算不算，球場上最常吵的幾題。' },
+  glossary: { title: '術語表', en: 'Glossary', summary: 'dink、side-out、ATP 這些詞的中文對照。', intro: '球場上中英文混著講很正常，這裡對照一下。' },
 };
 
 export const FORMATS_PAGE = {

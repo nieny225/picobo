@@ -1,6 +1,7 @@
 // 規則內容與球場示意圖場景。正統規則以 USA Pickleball Official Rulebook 2026 為準，
 // 括號內是規則書章節。場景的位置名稱由 src/court.js 定義。
 // 甲隊（A）在球場下半（near），乙隊（B）在上半（far）。
+// en：英文術語，顯示在標題後的括號裡，用詞以 glossary.js 為準。
 
 export const RULEBOOK = 'USA Pickleball Official Rulebook 2026';
 
@@ -16,11 +17,13 @@ export const SECTIONS = [
   {
     id: 'court',
     title: '球場與基本',
+    en: 'Court Basics',
     intro: '先認識場地。後面每一條規則的圖，都是這一張球場。',
     items: [
       {
         id: 'dimensions',
         title: '球場長什麼樣',
+        en: 'Court Dimensions',
         summary: '球場 13.41 × 6.10 公尺，跟羽球雙打場一樣大。網子兩邊各有一塊 2.13 公尺深的「廚房」。',
         detail: [
           '正式名稱是非截擊區（Non-Volley Zone），大家都叫廚房（Kitchen）。它是匹克球最重要的一塊地：人在裡面不能把球在空中直接打回去。',
@@ -36,6 +39,7 @@ export const SECTIONS = [
       {
         id: 'lines',
         title: '線算界內還是界外',
+        en: 'Line Calls',
         summary: '球碰到任何線都算界內。唯一例外：發球碰到廚房線算失誤。',
         detail: [
           '線寬 5 公分，球有碰到線的任何一點就算界內（第 6 節）。',
@@ -52,12 +56,14 @@ export const SECTIONS = [
   {
     id: 'sideout',
     title: '正統規則',
+    en: 'Side-out Scoring',
     subtitle: 'USA Pickleball 側出計分',
     intro: '正式比賽和大多數球場用的規則。只有發球方能得分，雙打每次拿到發球權兩個人都可以發。',
     items: [
       {
         id: 'serve',
         title: '發球',
+        en: 'Serve',
         rule: '第 4 節',
         summary: '站在底線後，低手把球對角發到對面的發球區，要越過廚房和廚房線。只有一次機會。',
         detail: [
@@ -76,6 +82,7 @@ export const SECTIONS = [
       {
         id: 'two-bounce',
         title: '雙彈跳',
+        en: 'Two-Bounce Rule',
         rule: '第 7 節',
         summary: '發球要落地一次，回球也要落地一次，之後才可以在空中截擊。',
         detail: [
@@ -92,6 +99,7 @@ export const SECTIONS = [
       {
         id: 'kitchen',
         title: '廚房（非截擊區）',
+        en: 'Kitchen',
         rule: '第 9 節',
         summary: '人碰到廚房或廚房線的時候，不能把球在空中直接打回去。球落地之後隨便你站哪裡。',
         detail: [
@@ -108,6 +116,7 @@ export const SECTIONS = [
       {
         id: 'scoring',
         title: '計分與喊分',
+        en: 'Scoring',
         rule: '第 4 節',
         summary: '只有發球方能得分。打到 11 分、要贏 2 分。雙打喊三個數字：「我方分數、對方分數、第幾發球員」。',
         detail: [
@@ -125,6 +134,7 @@ export const SECTIONS = [
       {
         id: 'positions',
         title: '發球順序與站位',
+        en: 'Serving Order & Positions',
         rule: '第 4 節',
         summary: '拿回發球權時，站在右邊的人先發。得分才換位，接球的隊伍不動。',
         detail: [
@@ -145,6 +155,7 @@ export const SECTIONS = [
       {
         id: 'ends',
         title: '換場',
+        en: 'Changing Ends',
         rule: '第 5 節',
         summary: '每局打完換場。決勝局打到一方 6 分時換場（11 分制）。',
         detail: [
@@ -158,6 +169,7 @@ export const SECTIONS = [
       {
         id: 'faults',
         title: '常見犯規',
+        en: 'Faults',
         rule: '第 7 節',
         summary: '球出界、掛網、廚房截擊、雙彈跳違規，還有球打到身上，都是這一球結束。',
         detail: [
@@ -175,6 +187,7 @@ export const SECTIONS = [
       {
         id: 'singles',
         title: '單打的差別',
+        en: 'Singles',
         summary: '一個人顧全場。分數偶數從右邊發、奇數從左邊發，喊兩個數字。',
         detail: [
           '單打沒有第二發球員，發球方輸一球就直接 side-out。',
@@ -191,12 +204,14 @@ export const SECTIONS = [
   {
     id: 'rally',
     title: '每球得分制',
+    en: 'Rally Scoring',
     subtitle: 'Rally Scoring',
     intro: '每一球都有人得分，一局比較快結束，很多球場的社交球用這個。USA Pickleball 2025 年起把它列為暫行規則（provisional），2026 年繼續沿用。',
     items: [
       {
         id: 'rally-basics',
         title: '基本規則',
+        en: 'Rally Scoring Basics',
         summary: '每一球結束都有一隊得 1 分，誰贏這球誰發下一球。沒有第二發球員。',
         detail: [
           '打到 11、15 或 21 分，要贏 2 分。社交球最常用 15 或 21。',
@@ -216,6 +231,7 @@ export const SECTIONS = [
       {
         id: 'rally-pro',
         title: '職業賽怎麼打',
+        en: 'Pro Play (MLP)',
         summary: '職業聯盟 MLP 曾經用 21 分制加「凍結」規則，2026 年改回側出計分。',
         collapsed: true,
         detail: [
@@ -228,6 +244,7 @@ export const SECTIONS = [
     ],
     compare: {
       title: '側出計分 vs 每球得分',
+      en: 'Side-out vs Rally',
       rows: [
         ['誰能得分', '只有發球方', '每一球都有人得分'],
         ['喊分', '三個數字：我方、對方、第幾發球員', '兩個數字：我方、對方'],

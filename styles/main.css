@@ -117,6 +117,7 @@ button { cursor: pointer; }
 .intro { color: var(--muted); max-width: 60ch; }
 
 /* Rules index and single-rule pages */
+.en-tag { font-family: var(--font-num); font-weight: 700; font-size: 0.8em; opacity: 0.7; overflow-wrap: anywhere; }
 .rule-group { display: grid; gap: 10px; }
 .rule-group h3 { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .rule-list { display: grid; gap: 10px; }
@@ -181,7 +182,7 @@ button { cursor: pointer; }
 .drawer-body h3 { font-size: 0.9rem; color: var(--muted); margin: 14px 4px 4px; }
 .drawer-body ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .drawer-body a {
-  display: flex; align-items: center; min-height: 44px; padding: 6px 12px; border: 2px solid transparent; border-radius: var(--radius-sm);
+  display: block; min-height: 44px; padding: 9px 12px; line-height: 1.45; border: 2px solid transparent; border-radius: var(--radius-sm);
   color: var(--fg); text-decoration: none; font-weight: 700;
 }
 .drawer-body a:hover { border-color: var(--ink); }

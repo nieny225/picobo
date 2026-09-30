@@ -3,6 +3,9 @@ import { SECTIONS } from '../data/rules.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
 import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER } from '../data/nav.js';
 
+// English term after a title, e.g. 發球（Serve）.
+const enTag = en => (en ? `<span class="en-tag">（${esc(en)}）</span>` : '');
+
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 function sceneBlock(item) {
@@ -21,7 +24,7 @@ function ruleCard(item) {
     ? `<details${item.collapsed ? '' : ''}><summary>更多說明</summary><div class="detail"><ul>${item.detail.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div></details>`
     : '';
   return `<article class="card rule" id="rules-${item.id}">
-    <div class="card-head"><h3>${esc(item.title)}</h3>${item.rule ? `<span class="rule-no">${esc(item.rule)}</span>` : ''}</div>
+    <div class="card-head"><h3>${esc(item.title)}${enTag(item.en)}</h3>${item.rule ? `<span class="rule-no">${esc(item.rule)}</span>` : ''}</div>
     <p class="summary">${esc(item.summary)}</p>
     ${sceneBlock(item)}
     ${detail}
@@ -29,7 +32,7 @@ function ruleCard(item) {
 }
 
 function compareTable(c) {
-  return `<article class="card"><h3>${esc(c.title)}</h3><div class="table-wrap"><table>
+  return `<article class="card"><h3>${esc(c.title)}${enTag(c.en)}</h3><div class="table-wrap"><table>
     <thead><tr><th></th><th>側出計分</th><th>每球得分</th></tr></thead>
     <tbody>${c.rows.map(r => `<tr>${r.map(x => `<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</tbody>
   </table></div></article>`;
@@ -39,15 +42,15 @@ function compareTable(c) {
 // section (plus its compare table), then the FAQ and the glossary.
 const PAGES = [
   ...SECTIONS.flatMap(sec => [
-    ...sec.items.map(item => ({ id: item.id, kind: 'rule', sec, item, title: item.title, summary: item.summary, rule: item.rule })),
-    ...(sec.compare ? [{ id: 'compare', kind: 'compare', sec, title: sec.compare.title, summary: EXTRA_PAGES.compare.summary }] : []),
+    ...sec.items.map(item => ({ id: item.id, kind: 'rule', sec, item, title: item.title, en: item.en, summary: item.summary, rule: item.rule })),
+    ...(sec.compare ? [{ id: 'compare', kind: 'compare', sec, title: sec.compare.title, en: sec.compare.en, summary: EXTRA_PAGES.compare.summary }] : []),
   ]),
-  { id: 'faq', kind: 'faq', title: EXTRA_PAGES.faq.title, summary: EXTRA_PAGES.faq.summary },
-  { id: 'glossary', kind: 'glossary', title: EXTRA_PAGES.glossary.title, summary: EXTRA_PAGES.glossary.summary },
+  { id: 'faq', kind: 'faq', title: EXTRA_PAGES.faq.title, en: EXTRA_PAGES.faq.en, summary: EXTRA_PAGES.faq.summary },
+  { id: 'glossary', kind: 'glossary', title: EXTRA_PAGES.glossary.title, en: EXTRA_PAGES.glossary.en, summary: EXTRA_PAGES.glossary.summary },
 ];
 
 const link = p => `<a class="rule-link" href="#rules/${p.id}">
-  <span class="rule-link-text"><b>${esc(p.title)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span>
+  <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span>
   ${p.rule ? `<span class="rule-no">${esc(p.rule)}</span>` : ''}</a>`;
 
 function indexHtml() {
@@ -68,10 +71,10 @@ function pageBody(p) {
   if (p.kind === 'rule') return ruleCard(p.item);
   if (p.kind === 'compare') return compareTable(p.sec.compare);
   if (p.kind === 'faq') {
-    return `<div class="section-head"><h2>${esc(p.title)}</h2></div>
+    return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="sub">${esc(p.en)}</p></div>
       <div class="faq">${MISCONCEPTIONS.map(m => `<details><summary>${esc(m.q)}</summary><p>${esc(m.a)}</p></details>`).join('')}</div>`;
   }
-  return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="intro">${esc(EXTRA_PAGES.glossary.intro)}</p></div>
+  return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="sub">${esc(p.en)}</p><p class="intro">${esc(EXTRA_PAGES.glossary.intro)}</p></div>
     <div class="glossary">${GLOSSARY.map(g => `<div class="term"><b>${esc(g.zh)} <span class="en">${esc(g.en)}</span></b>${g.alias ? `<span class="muted small">${esc(g.alias)}</span>` : ''}<span class="small">${esc(g.def)}</span></div>`).join('')}</div>`;
 }
 
@@ -190,14 +193,14 @@ function swipeToClose(drawer) {
 // Left drawer listing every page, reachable from any rules page. It is a
 // modal <dialog>, so focus, Esc and the backdrop come from the browser.
 function drawerHtml() {
-  const group = (title, pages) => `<h3>${esc(title)}</h3>
-    <ul>${pages.map(p => `<li><a href="#rules/${p.id}" data-id="${p.id}">${esc(p.title)}</a></li>`).join('')}</ul>`;
+  const group = (title, en, pages) => `<h3>${esc(title)}${enTag(en)}</h3>
+    <ul>${pages.map(p => `<li><a href="#rules/${p.id}" data-id="${p.id}">${esc(p.title)}${enTag(p.en)}</a></li>`).join('')}</ul>`;
   return `<dialog class="drawer" aria-label="${esc(DRAWER.title)}">
     <div class="drawer-head"><b>${esc(DRAWER.title)}</b><button class="drawer-close" type="button" aria-label="${esc(DRAWER.close)}">×</button></div>
     <nav class="drawer-body">
       <a class="drawer-home" href="#rules" data-id="">${esc(DRAWER.home)}</a>
-      ${SECTIONS.map(sec => group(sec.title, PAGES.filter(p => p.sec === sec))).join('')}
-      ${group(RULES_INDEX.more, PAGES.filter(p => !p.sec))}
+      ${SECTIONS.map(sec => group(sec.title, sec.en, PAGES.filter(p => p.sec === sec))).join('')}
+      ${group(RULES_INDEX.more, RULES_INDEX.moreEn, PAGES.filter(p => !p.sec))}
     </nav>
   </dialog>
   <button class="drawer-open" type="button" aria-haspopup="dialog">${esc(DRAWER.open)}</button>`;
@@ -219,6 +222,7 @@ export function mountRules(root) {
     show(sub) {
       const i = PAGES.findIndex(p => p.id === sub);
       const key = i < 0 ? '' : sub;
+      if (drawer.open) drawer.close();
       if (key === current) return;
       current = key;
       pageEl.innerHTML = i < 0 ? indexHtml() : pageHtml(i);
