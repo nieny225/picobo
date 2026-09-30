@@ -19,22 +19,21 @@ code follows it except where noted under "Decisions" below.
 | Draw / round-robin / king-of-court + 6 tests | done, all green |
 | Rules view with step carousel, scoreboard view, draw view | done |
 | Layout check at 390px and 1280px, light and dark | done, no overflow |
-| Artifact | published from the OLD account (see below) |
+| Artifact | republished from the new account with style C (see below) |
 
 Run locally: `python3 -m http.server 8080`, tests: `node --test`.
 
-## Artifact ownership
+## Artifact
 
-The v1 artifact (`https://claude.ai/artifact/PJXBm8ZHFXikZ4WEiVYEcM`) belongs
-to the previous account. A session on the new account cannot republish to
-that URL. On the first publish from the new account, create a new artifact
-from `index.html` with the same `files` map (`styles/main.css` and every file
-under `src/`), then replace the URL in `CLAUDE.md`.
+Current artifact (new account, published 2026-09-30 with style C):
+https://claude.ai/artifact/W4LaC8XBDpJiVMLHmdeVKD. Republish to this URL;
+the old v1 artifact (PJXBm8ZHFXikZ4WEiVYEcM) belongs to the previous account
+and is no longer updated.
 
-Not yet verified anywhere: that the artifact host serves the ES module files
-correctly. It worked in a local browser. If the artifact opens blank, the
-fallback is to concatenate the modules into one inline script for publishing
-only (keep the repo multi-file).
+Still not verified: that the artifact host serves the ES module files
+correctly (a sandbox session cannot open the artifact page). If it opens
+blank, the fallback is to concatenate the modules into one inline script for
+publishing only (keep the repo multi-file).
 
 ## Decisions made with the user (do not re-litigate)
 
