@@ -128,6 +128,14 @@ The rules tab was one 16,800 px page on a phone. Now:
   index, the drawer and prev/next; the choice is kept in localStorage
   (`picobo.rulesFilter`). Data: section `scoring` and rule `play` fields.
   Each rule page shows 適用：<play>｜<scoring>.
+- Home (#home, the default route): slogan "Pick one, pick a place, picobo.",
+  tagline 挑個人，挑個場，打一場。, a hero court from court.js, entry cards to
+  rules / score / draw. The slogan hints at future social play, court
+  matching and events; the user wants that kept unsaid for now.
+- Main navigation is 首頁／規則／計分／抽籤: header tabs on desktop, a fixed
+  bottom bar with icons on phones (< 768px). Fun formats moved under the
+  rules tab (a 趣味玩法 group in the rules index and drawer); bare #formats
+  redirects to #rules.
 - Page heights at 390 px: index ~2,100, a rule page ~1,350, formats ~3,400.
 
 ## Live on picobo.net (2026-09-30)

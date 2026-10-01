@@ -1,3 +1,4 @@
+import { mountHome } from './ui/home.js';
 import { mountRules } from './ui/rules.js';
 import { mountFormats } from './ui/formats.js';
 import { mountScoreboard } from './ui/scoreboard.js';
@@ -5,7 +6,9 @@ import { mountDraw } from './ui/draw.js';
 import { autoHideTopbar } from './ui/topbar.js';
 import { RULEBOOK } from './data/rules.js';
 
-const ROUTES = ['rules', 'formats', 'score', 'draw'];
+const ROUTES = ['home', 'rules', 'formats', 'score', 'draw'];
+// Fun formats live under the rules tab.
+const TAB_OF = { formats: 'rules' };
 
 // Hash shape: #<route> or #<route>/<sub>, e.g. #rules/kitchen. Links from v1
 // used #rules-<id>; those are rewritten in place.
@@ -13,14 +16,17 @@ function parseHash() {
   let h = location.hash.replace(/^#/, '');
   const legacy = h.match(/^rules-(.+)$/);
   if (legacy) {
-    h = legacy[1] === 'formats' ? 'formats' : `rules/${legacy[1]}`;
+    h = legacy[1] === 'formats' ? 'rules' : `rules/${legacy[1]}`;
     history.replaceState(null, '', `#${h}`);
   }
+  // The formats index moved into the rules index.
+  if (h === 'formats') { h = 'rules'; history.replaceState(null, '', '#rules'); }
   const [top, sub = ''] = h.split('/');
-  return ROUTES.includes(top) ? { route: top, sub } : { route: 'rules', sub: '' };
+  return ROUTES.includes(top) ? { route: top, sub } : { route: 'home', sub: '' };
 }
 
 const topbar = autoHideTopbar(document.querySelector('.topbar'));
+mountHome(document.getElementById('view-home'));
 const rules = mountRules(document.getElementById('view-rules'));
 const formats = mountFormats(document.getElementById('view-formats'));
 mountScoreboard(document.getElementById('view-score'));
@@ -31,7 +37,7 @@ function show() {
   const { route, sub } = parseHash();
   for (const r of ROUTES) document.getElementById(`view-${r}`).hidden = r !== route;
   for (const tab of document.querySelectorAll('.tab')) {
-    tab.setAttribute('aria-selected', String(tab.dataset.route === route));
+    tab.setAttribute('aria-selected', String(tab.dataset.route === (TAB_OF[route] ?? route)));
   }
   if (route === 'rules') rules.show(sub);
   if (route === 'formats') formats.show(sub);

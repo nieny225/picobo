@@ -20,7 +20,7 @@ function pageHtml(i) {
     ? `<a class="pager-link ${cls}" href="#formats/${q.id}"><span class="muted small">${esc(label)}</span><b>${esc(q.name)}</b></a>`
     : '<span></span>';
   return `
-    <nav class="rule-top"><a class="back" href="#formats">${esc(FORMATS_PAGE.back)}</a><span class="muted small">${esc(f.group)}</span></nav>
+    <nav class="rule-top"><a class="back" href="#rules">${esc(RULE_PAGE.back)}</a><span class="muted small">${esc(f.group)}</span></nav>
     <article class="card format" id="formats-${f.id}">
       <div class="card-head"><h3>${esc(f.name)}${enTag(f.en)}</h3><span class="rule-no">${esc(FORMATS_PAGE.unofficial)}</span></div>
       <div class="format-meta"><span>${esc(f.players)}</span></div>

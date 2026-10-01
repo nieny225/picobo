@@ -1,6 +1,7 @@
 import { SECTIONS, COMPARE } from '../data/rules.js';
+import { FORMATS } from '../data/formats.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
-import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER, FILTER } from '../data/nav.js';
+import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER, FILTER, FORMATS_PAGE } from '../data/nav.js';
 import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
 
 
@@ -56,7 +57,11 @@ const optionById = (k, id) => FILTER[k].options.find(o => o.id === id);
 const sectionShown = (sec, f) => !sec.scoring || sec.scoring === f.scoring;
 const pageShown = (p, f) => p.kind !== 'rule' || (sectionShown(p.sec, f) && (!p.item.play || p.item.play === f.play));
 
-const link = p => `<a class="rule-link" href="#rules/${p.id}">
+// Fun formats have their own pages (#formats/<id>) but are listed here, under
+// the rules tab, whatever the filter.
+const FORMAT_LINKS = FORMATS.map(f => ({ href: `#formats/${f.id}`, id: `formats/${f.id}`, title: f.name, en: f.en, summary: f.tagline }));
+
+const link = p => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}">
   <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span>
   ${p.rule ? `<span class="rule-no">${esc(p.rule)}</span>` : ''}</a>`;
 
@@ -77,6 +82,10 @@ function indexHtml(f) {
     <div class="section-head"><h2>${esc(RULES_INDEX.title)}</h2><p class="intro">${esc(RULES_INDEX.intro)}</p></div>
     ${filterHtml(f)}
     ${groups}
+    <section class="rule-group" id="rules-formats"><h3>${esc(FORMATS_PAGE.title)}${enTag(FORMATS_PAGE.en)}</h3>
+      <p class="muted small">${esc(FORMATS_PAGE.note)}</p>
+      <div class="rule-list">${FORMAT_LINKS.map(link).join('')}</div>
+    </section>
     <section class="rule-group"><h3>${esc(RULES_INDEX.more)}${enTag(RULES_INDEX.moreEn)}</h3>
       <div class="rule-list">${PAGES.filter(p => !p.sec).map(link).join('')}</div>
     </section>`;
@@ -168,10 +177,11 @@ function swipeToClose(drawer) {
 // modal <dialog>, so focus, Esc and the backdrop come from the browser.
 function drawerNavHtml(f) {
   const group = (title, en, pages) => `<h3>${esc(title)}${enTag(en)}</h3>
-    <ul>${pages.map(p => `<li><a href="#rules/${p.id}" data-id="${p.id}">${esc(p.title)}${enTag(p.en)}</a></li>`).join('')}</ul>`;
+    <ul>${pages.map(p => `<li><a href="${p.href ?? `#rules/${p.id}`}" data-id="${p.id}">${esc(p.title)}${enTag(p.en)}</a></li>`).join('')}</ul>`;
   return `<p class="drawer-note">${esc(FILTER.showing)}<b>${optionHtml(optionById('play', f.play))}・${optionHtml(optionById('scoring', f.scoring))}</b></p>
     <a class="drawer-home" href="#rules" data-id="">${esc(DRAWER.home)}</a>
     ${SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => group(sec.title, sec.en, PAGES.filter(p => p.sec === sec && pageShown(p, f)))).join('')}
+    ${group(FORMATS_PAGE.title, FORMATS_PAGE.en, FORMAT_LINKS)}
     ${group(RULES_INDEX.more, RULES_INDEX.moreEn, PAGES.filter(p => !p.sec))}`;
 }
 
