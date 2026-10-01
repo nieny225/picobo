@@ -8,7 +8,7 @@
 // "far" is the top half (player faces down). A player's "right" is their own
 // right when facing the net, so the far team's right court is on the viewer's
 // left. Region ids: nvz, nvz:near, nvz:far, serviceBox:<side>:<pos>,
-// baseline:<side>, court, net.
+// baseline:<side>, kitchenLine:<side>, centerline:<side>, court, net.
 
 const M = 40;                 // margin
 const W = 200;                // court width
@@ -54,6 +54,8 @@ const REGIONS = {
   'baseline:far': [X0, Y0 - 3, W, 6],
   'kitchenLine:near': [X0, YK_NEAR - 3, W, 6],
   'kitchenLine:far': [X0, YK_FAR - 3, W, 6],
+  'centerline:near': [XC - 3, YK_NEAR, 6, L / 2 - NVZ],
+  'centerline:far': [XC - 3, Y0, 6, L / 2 - NVZ],
   net: [X0 - 12, YN - 3, W + 24, 6],
 };
 
