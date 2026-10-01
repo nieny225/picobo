@@ -40,6 +40,12 @@ export const SHARE = {
   manual: '複製這個網址分享：',
 };
 
+// 右上角的淺色／深色切換。按鈕上寫的是按下去會變成什麼。
+export const THEME = {
+  toDark: '切換成深色',
+  toLight: '切換成淺色',
+};
+
 // 球場圖步驟輪播。step 裡的 {n} 換成第幾步。
 export const SCENE_NAV = {
   prev: '上一步',

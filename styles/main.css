@@ -103,6 +103,13 @@ button { cursor: pointer; }
 .topbar.is-hidden { transform: translateY(calc(-100% - 6px)); }
 @media (prefers-reduced-motion: reduce) { .topbar { transition: none; } }
 .brand { color: var(--fg); text-decoration: none; min-height: 44px; }
+.theme-btn {
+  flex: none; display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0;
+  border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--surface); color: var(--fg); box-shadow: var(--shadow);
+}
+.theme-btn[hidden] { display: none; }
+.theme-btn svg { width: 22px; height: 22px; }
+.theme-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--shadow-ink); }
 .tab span { pointer-events: none; }
 
 /* Bottom navigation on phones: the four destinations in the thumb zone. The
@@ -110,6 +117,7 @@ button { cursor: pointer; }
 .bottom-nav { display: none; }
 @media (max-width: 767px) {
   .topbar .tabs { display: none; }
+  .theme-btn { margin-left: auto; }
   .topbar { padding-top: 8px; padding-bottom: 8px; }
   .bottom-nav {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;

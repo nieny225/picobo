@@ -7,6 +7,7 @@
 <meta name="description" content="台灣繁體中文的匹克球規則教學與球場工具：球場圖解、計分板、抽籤輪轉。">
 <meta name="theme-color" content="#fffbe8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151510" media="(prefers-color-scheme: dark)">
+<script>try { var t = localStorage.getItem('picobo.theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Space+Grotesk:wght@700&display=swap">
 <link rel="stylesheet" href="styles/main.css">
@@ -21,6 +22,7 @@
       <button class="tab" role="tab" data-route="score" aria-selected="false"><span>計分</span></button>
       <button class="tab" role="tab" data-route="draw" aria-selected="false"><span>抽籤</span></button>
     </nav>
+    <button class="theme-btn" type="button" id="theme-toggle" hidden></button>
   </div>
 </header>
 <main class="page">

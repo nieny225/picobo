@@ -152,6 +152,10 @@ The rules tab was one 16,800 px page on a phone. Now:
   button sits over its half. After the side switch the buttons swap with the
   court (`.score-row.switched`). Desktop keeps the upright court under the
   buttons.
+- Light/dark toggle (`src/ui/theme.js`), top right on phones and after the
+  tabs on desktop. Follows the system until tapped; the choice is stored as
+  `picobo.theme` and applied as `data-theme` on `<html>` by an inline script in
+  `index.html` before first paint. Works without storage (this visit only).
 - `tests/scoring-oracle.test.js` cross-checks the engine against a separate
   rulebook reference over 300 random games per play x scoring combination
   (calls, server, server's court, positions, scores, game end, undo). It
