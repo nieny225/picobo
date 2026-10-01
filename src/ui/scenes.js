@@ -6,7 +6,7 @@ import { SCENE_NAV } from '../data/nav.js';
 
 // On phones the court is drawn lying down so a whole step (court, caption,
 // buttons) fits on one screen; desktop keeps it upright.
-const LANDSCAPE = matchMedia('(max-width: 767px)');
+export const LANDSCAPE = matchMedia('(max-width: 767px)');
 
 export const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 

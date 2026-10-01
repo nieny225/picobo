@@ -145,8 +145,13 @@ The rules tab was one 16,800 px page on a phone. Now:
 - On phones (< 768px) rule and format scenes draw the court lying down
   (`renderCourt(..., { landscape: true })`): near side on the left, labels
   upright, bigger players, off-court queue under the court left to right. A
-  whole step (court, caption, buttons) now fits on one screen. Desktop, the
-  home hero and the scoreboard stay upright.
+  whole step (court, caption, buttons) now fits on one screen. Desktop and
+  the home hero stay upright.
+- The scoreboard does the same on phones: the court lies down between the call
+  and the score buttons, so the whole board fits on one screen and each team's
+  button sits over its half. After the side switch the buttons swap with the
+  court (`.score-row.switched`). Desktop keeps the upright court under the
+  buttons.
 - `tests/scoring-oracle.test.js` cross-checks the engine against a separate
   rulebook reference over 300 random games per play x scoring combination
   (calls, server, server's court, positions, scores, game end, undo). It

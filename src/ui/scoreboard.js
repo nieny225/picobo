@@ -2,6 +2,7 @@ import { renderCourt } from '../court.js';
 import { createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other } from '../scoring.js';
 import { coinFlip } from '../draw.js';
 import { FILTER, SCORE_SETUP } from '../data/nav.js';
+import { LANDSCAPE } from './scenes.js';
 
 const KEY = 'picobo.match';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -105,7 +106,8 @@ function playHtml(state) {
     <p class="mode-tag">${esc(modeLabel(state))}</p>
     <div class="announce"><div class="big num" id="big">${esc(announce(state))}</div><div class="who">${who}</div></div>
     ${banner}${winner}
-    <div class="score-row">
+    ${state.mode === 'fun' ? '' : '<div class="court-wrap" id="board-court"></div>'}
+    <div class="score-row${state.sidesSwitched ? ' switched' : ''}">
       <button class="score-btn team-A" id="win-A"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.A}</span><span class="name">${esc(A)} 贏這球</span></button>
       <button class="score-btn team-B" id="win-B"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.B}</span><span class="name">${esc(B)} 贏這球</span></button>
     </div>
@@ -114,7 +116,6 @@ function playHtml(state) {
       ${state.finished ? '<button class="btn btn-primary" id="again">再來一局</button>' : ''}
       <button class="btn btn-ghost" id="reset">重新設定</button>
     </div>
-    ${state.mode === 'fun' ? '' : '<div class="court-wrap" id="board-court"></div>'}
   </div>`;
 }
 
@@ -166,7 +167,7 @@ export function mountScoreboard(root) {
   const renderPlay = () => {
     root.innerHTML = `<div class="section-head"><h2>計分板</h2></div><div class="card">${playHtml(state)}</div>`;
     const court = root.querySelector('#board-court');
-    if (court) renderCourt(court, courtScene(state));
+    if (court) renderCourt(court, courtScene(state), { landscape: LANDSCAPE.matches });
     const update = next => { state = next; save(state); renderPlay(); };
     root.querySelector('#win-A').addEventListener('click', () => update(pointWon(state, 'A')));
     root.querySelector('#win-B').addEventListener('click', () => update(pointWon(state, 'B')));
@@ -184,6 +185,13 @@ export function mountScoreboard(root) {
       state = null; save(null); renderSetup();
     });
   };
+
+  // Phones lie the court down (甲 on the left, under 甲's button); redraw
+  // when the width crosses the breakpoint.
+  LANDSCAPE.addEventListener('change', () => {
+    const court = root.querySelector('#board-court');
+    if (court && state) renderCourt(court, courtScene(state), { landscape: LANDSCAPE.matches });
+  });
 
   if (state) renderPlay(); else renderSetup();
 }
