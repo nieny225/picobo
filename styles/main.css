@@ -223,10 +223,10 @@ button { cursor: pointer; }
   transition: top 0.2s ease;
 }
 .chrome-hidden .rules-bar { top: 0; }
-/* Phones, reading rules or formats: no top bar at all; the 目錄 bar sits at
-   the top and the bottom bar handles navigation. */
+/* Phones, under 規則 and 抽籤: no top bar at all; the bottom bar handles
+   navigation and, under 規則, the 目錄 bar sits at the top. */
 @media (max-width: 767px) {
-  html[data-tab="rules"] .topbar { display: none; }
+  html[data-tab="rules"] .topbar, html[data-tab="draw"] .topbar { display: none; }
   html[data-tab="rules"] .rules-bar { top: env(safe-area-inset-top, 0px); }
 }
 @media (prefers-reduced-motion: reduce) { .rules-bar { transition: none; } }

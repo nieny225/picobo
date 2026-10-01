@@ -163,8 +163,8 @@ The rules tab was one 16,800 px page on a phone. Now:
   so partners split, played/won counts per player. Saved as `picobo.openplay`.
   Adding or removing a roster name joins or leaves the session (a player on
   court leaves after that game). Court count defaults to 1.
-- Phones under the 規則 tab (rules index, rule pages, fun formats) drop the top
-  bar entirely (`html[data-tab="rules"]`, set by the router); the 目錄 bar
+- Phones under the 規則 tab (rules index, rule pages, fun formats) and the 抽籤
+  tab drop the top bar entirely (`html[data-tab="rules"]`, set by the router); the 目錄 bar
   sits at the top and the bottom bar handles navigation.
 - Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
