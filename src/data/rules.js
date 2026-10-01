@@ -17,6 +17,10 @@ const S = (extra = {}) => A1({ label: '甲', ...extra });
 const R = (extra = {}) => B1({ label: '乙', ...extra });
 const srv = { depth: 'behind', serving: true };
 
+// 雙彈跳：發球彈一次、回球彈一次、第三拍飛到乙（1）面前、第四拍在空中截擊回去。
+// 第三拍的落點用座標放在乙（1）身前，不然球會被人蓋住。
+const TWO_BOUNCE = ['near:right:behind', 'far:right:mid', 'near:right:mid', [124, 184], 'near:left:kitchenLine'];
+
 // 雙打四人都站底線的預設站位
 const four = (serving = {}) => [A1(serving.A1), A2(serving.A2), B1(serving.B1), B2(serving.B2)];
 
@@ -113,14 +117,16 @@ export const SECTIONS = [
           '球碰到線算界內（第 6 節）。唯一例外是發球碰到廚房線，算發球失誤。',
         ],
         singlesScenes: [
-          { caption: '第一拍：發球，球在對面落地一次。', players: [S(srv), R()], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 1 } },
-          { caption: '第二拍：乙等球落地再回，落在甲這邊界內哪裡都可以，甲也要等它落地。', players: [S({ depth: 'behind' }), R()], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 2 } },
-          { caption: '第三拍起：兩次落地都完成，之後可以在空中直接截擊。', players: [S({ depth: 'mid' }), R({ pos: 'left', depth: 'kitchenLine' })], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 3 } },
+          { caption: '第一拍：發球。球要在對面彈一次（圈起來的地方），乙才能打。', players: [S(srv), R()], ball: { path: TWO_BOUNCE, bounces: [1, 2], step: 1 } },
+          { caption: '第二拍：回球。球也要在甲這邊彈一次，所以甲發完球先留在底線等。乙回完球往前走。', players: [S(), R({ depth: 'mid' })], ball: { path: TWO_BOUNCE, bounces: [1, 2], step: 2 } },
+          { caption: '第三拍：甲等球彈過再打。兩次彈跳到這裡都完成了，乙已經站到廚房線。', players: [S(), R({ depth: 'kitchenLine' })], ball: { path: TWO_BOUNCE, bounces: [1, 2], step: 3 } },
+          { caption: '第四拍起可以截擊：乙不等落地，在空中直接把第三拍打回去。沒有圈的地方就是球沒落地。', players: [S(), R({ depth: 'kitchenLine' })], ball: { path: TWO_BOUNCE, bounces: [1, 2], step: 4 } },
         ],
         scenes: [
-          { caption: '第一拍：發球，球在對面落地一次。', players: [A1({ depth: 'behind', serving: true }), A2(), B1(), B2()], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 1 } },
-          { caption: '第二拍：接發球的人等球落地再回，落在對面界內哪裡都可以，發球方也要等它落地。', players: [A1({ depth: 'behind' }), A2(), B1(), B2()], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 2 } },
-          { caption: '第三拍起：兩次落地都完成，之後可以在空中直接截擊。', players: [A1({ depth: 'mid' }), A2(), B1({ depth: 'kitchenLine' }), B2({ depth: 'kitchenLine' })], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 3 } },
+          { caption: '第一拍：發球。球要在對面彈一次（圈起來的地方），乙隊才能打。', players: [A1(srv), A2(), B1(), B2()], ball: { path: TWO_BOUNCE, bounces: [1, 2], step: 1 } },
+          { caption: '第二拍：回球。球也要在甲隊這邊彈一次，所以甲隊發完球先留在底線等。乙隊回完球往前走。', players: [A1(), A2(), B1({ depth: 'mid' }), B2({ depth: 'mid' })], ball: { path: TWO_BOUNCE, bounces: [1, 2], step: 2 } },
+          { caption: '第三拍：甲隊等球彈過再打。兩次彈跳到這裡都完成了，乙隊已經站到廚房線。', players: [A1(), A2(), B1({ depth: 'kitchenLine' }), B2({ depth: 'kitchenLine' })], ball: { path: TWO_BOUNCE, bounces: [1, 2], step: 3 } },
+          { caption: '第四拍起可以截擊：乙1 不等落地，在空中直接把第三拍打回去。沒有圈的地方就是球沒落地。', players: [A1(), A2(), B1({ depth: 'kitchenLine' }), B2({ depth: 'kitchenLine' })], ball: { path: TWO_BOUNCE, bounces: [1, 2], step: 4 } },
         ],
       },
       {
