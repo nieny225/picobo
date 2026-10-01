@@ -163,6 +163,12 @@ The rules tab was one 16,800 px page on a phone. Now:
   so partners split, played/won counts per player. Saved as `picobo.openplay`.
   Adding or removing a roster name joins or leaves the session (a player on
   court leaves after that game). Court count defaults to 1.
+- Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
+  `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
+  screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;
+  precache list checked by `tests/sw.test.js`). The home page shows an install
+  card: a button where the browser offers a prompt (Chrome, Edge, Android),
+  Share > Add to Home Screen steps on iPhone/iPad, nothing once installed.
 - Light/dark toggle (`src/ui/theme.js`), top right on phones and after the
   tabs on desktop. Follows the system until tapped; the choice is stored as
   `picobo.theme` and applied as `data-theme` on `<html>` by an inline script in

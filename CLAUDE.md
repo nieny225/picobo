@@ -28,6 +28,9 @@ static site later. There is no backend and no build step.
 - No backend, no analytics, no runtime requests except the two Google Fonts
   faces linked in `index.html`, each with a full system fallback stack so the
   page reads fine offline or when fonts are blocked.
+- Offline support comes from `sw.js` (same-origin files only). Adding a file
+  under `src/`, `styles/` or `icons/` means adding it to `FILES` in `sw.js`;
+  `node --test` fails otherwise. Registration fails quietly in the artifact.
 - Persistence is `localStorage` only, every read/write wrapped in try/catch,
   and the page must render correctly when storage is empty or throws.
 - No i18n framework. All user-facing copy is zh-TW and lives in `src/data/`.
@@ -41,6 +44,10 @@ index.html              the page; hash-routed tabs: #home (default) #rules #scor
                         under the rules tab); tabs in the header on desktop, in a
                         bottom bar on phones (< 768px)
 styles/main.css         design tokens on :root, dark mode, mobile-first
+manifest.webmanifest    installable web app (name, icons, standalone)
+sw.js                   service worker: network first, cache fallback for offline;
+                        its FILES list must name every app file (tests/sw.test.js)
+icons/                  icon.svg (source) + PNGs rendered from it with Playwright
 src/app.js              router; mounts the views
 src/court.js            SVG court renderer shared by rules + scoreboard; renderCourt(el,
                         scene, { landscape }) lies the court down (near side left)
@@ -55,6 +62,7 @@ src/ui/draw.js          draw + rotation view
 src/ui/share.js         share button: system share sheet, else copy link (picobo.net URL)
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/ui/theme.js         light/dark toggle in the top bar (follows the system until used)
+src/ui/install.js       home-page install card; registers the service worker
 src/data/rules.js       rule copy + court scene definitions
 src/data/formats.js     fun formats + their court scenes (國王球場, 輪轉賽, 3 人制, 半場單打, 廚房戰, 快打短局)
 src/data/glossary.js    中英術語對照 + 常見誤解

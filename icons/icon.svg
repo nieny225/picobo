@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- App icon: the favicon court on ball yellow. The court sits inside the
+       central 80% so the same art works as a maskable (circle / squircle) icon. -->
+  <rect width="512" height="512" fill="#e4ff3a"/>
+  <rect x="160" y="96" width="192" height="320" rx="20" fill="#2d6cdf" stroke="#111" stroke-width="28"/>
+  <rect x="174" y="200" width="164" height="112" fill="#fffbe8"/>
+  <path d="M126 256h260" stroke="#111" stroke-width="22" stroke-linecap="round"/>
+</svg>
