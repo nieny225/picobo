@@ -1,8 +1,44 @@
 # Handoff — read this first when resuming
 
-Last updated: 2026-09-30, branch `ccr-7b6d14a5-myo5fh`.
-The previous session ran under a different claude.ai account; this document
-is the full context needed to continue from a new session.
+Last updated: 2026-10-01, branch `ccr-7b6d14a5-myo5fh` (also pushed to `main`,
+which is live at https://picobo.net). The latest commit is on both.
+
+## How the user works (keep doing this)
+
+- The user writes in zh-TW (sometimes English). Reply in the user's language;
+  site copy is always zh-TW (see CLAUDE.md style guide).
+- Most feedback arrives as **comments on the claude.ai artifact**. A comment
+  shows up as a queued notification: call ReadNotifications, then
+  ArtifactComments `read` with the thread id, do the work, then `reply` (in
+  zh-TW, saying what changed) and `resolve` the thread. If the comment is a
+  question or a proposal is needed, reply and leave the thread open.
+- Every change ships the same way: `node --test` green, Playwright layout check
+  (360 / 390 / 1280, light and dark, no horizontal overflow, screenshots for
+  visual changes), commit on the session branch with the required trailers,
+  `git push origin <branch>` AND `git push origin <branch>:main` (the user has
+  authorized fast-forwarding `main`; that deploys picobo.net), then republish
+  the artifact with only the changed files in `files`. When the artifact
+  refuses a publish because a file "was not read", read it with Artifact
+  `read` + `path` (check it matches the previous commit), then publish again.
+- "deploy" from the user means: make sure `main` has the latest commit and the
+  live site serves it (fetch a changed file from picobo.net to confirm).
+- For design or scope questions give a short recommendation and ask; for small
+  clear asks just do it. The user likes concise answers and dislikes clutter on
+  screen (prefer icons over extra buttons, fewer bars).
+- Things the user decided against: custom name-suggestion dropdown (reverted;
+  the browser's own autofill is enough), "交接" wording (use plain 分享), the
+  install card on the home page, deuce/advantage wording (use Game Point).
+
+## Open items
+
+- Pico Bowl: date (November), venue, hours, Google Form link still TBD; the
+  home card stays "Coming soon" until `PICOBOWL.open = true` in
+  `src/data/event.js`. Organizer tool lives at picobo.net/#picobowl/manage.
+- Slogan alternative ("pick a wine" / "pick a partner") parked by the user.
+- GitHub repo is now private (user upgraded to GitHub Enterprise); Pages still
+  serves picobo.net over https with a valid certificate.
+- The artifact preview cannot install the app or use the real Fullscreen API
+  (iframe); the in-page full-screen fallback works there.
 
 ## Where things stand
 
@@ -15,11 +51,10 @@ code follows it except where noted under "Decisions" below.
 | `src/court.js` shared SVG court | done |
 | Rules content (`src/data/rules.js`, 31 scenes) | done, zh-TW copy reviewed once |
 | Fun formats ×6, glossary ×16, misconceptions ×7 | done |
-| Scoring engine + 10 tests | done, all green |
-| Draw / round-robin / king-of-court + 6 tests | done, all green |
+| Tests (`node --test`) | 38, all green: scoring + oracle, draw + open play, tournament, handoff, sw precache list |
 | Rules view with step carousel, scoreboard view, draw view | done |
 | Layout check at 390px and 1280px, light and dark | done, no overflow |
-| Artifact | republished from the new account with style C (see below) |
+| Artifact | https://claude.ai/artifact/W4LaC8XBDpJiVMLHmdeVKD, kept in step with `main` |
 
 Run locally: `python3 -m http.server 8080`, tests: `node --test`.
 
@@ -30,10 +65,7 @@ https://claude.ai/artifact/W4LaC8XBDpJiVMLHmdeVKD. Republish to this URL;
 the old v1 artifact (PJXBm8ZHFXikZ4WEiVYEcM) belongs to the previous account
 and is no longer updated.
 
-Still not verified: that the artifact host serves the ES module files
-correctly (a sandbox session cannot open the artifact page). If it opens
-blank, the fallback is to concatenate the modules into one inline script for
-publishing only (keep the repo multi-file).
+The artifact serves the ES modules fine (the user uses it daily for review).
 
 ## Decisions made with the user (do not re-litigate)
 
@@ -110,7 +142,8 @@ screenshots used the system fallbacks; the real faces are still unseen.
 
 The rules tab was one 16,800 px page on a phone. Now:
 
-- Four top tabs: 規則 #rules, 玩法 #formats, 計分 #score, 抽籤 #draw.
+- (Superseded below: tabs are now 首頁／規則／計分／抽籤, formats live under
+  規則.)
 - #rules is an index (grouped by section, one tappable row per rule, plus
   the compare table, 常見誤解 and 術語表). Each opens its own page,
   #rules/<id>, with 目錄 back link and 上一條／下一條 at the bottom.
@@ -232,9 +265,9 @@ The user bought picobo.net at Gandi and chose: make the repo public and host
 on GitHub Pages (branch `main`, root). Repo side is ready (`CNAME`,
 `.nojekyll`, favicon). GitHub Pages deploys `main` (first successful
 deploy of `main` at 03b44ef, 07:01 UTC); Gandi apex A records point at GitHub
-Pages and the DNS check passed. Still to do by the user: tick Enforce HTTPS
-once the certificate is issued, set the default branch to `main`, optional
-apex AAAA records and the account-level domain verification TXT. Before that, `picobo.net` pointed at Gandi's
+Pages and the DNS check passed. https now works with a valid certificate and
+http redirects to https (checked 2026-10-01). Possibly still open on the
+user's side: default branch `main`, apex AAAA records, domain verification TXT. Before that, `picobo.net` pointed at Gandi's
 parking IP 217.70.184.38. There was no `main` branch yet; the remote default
 branch was the old session branch `ccr-e7df49dc-8t69j2`.
 
