@@ -456,8 +456,9 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .round h3 { display: flex; justify-content: space-between; align-items: baseline; }
 .koc-court { display: grid; gap: 8px; padding: 12px; background: var(--surface-2); border: 2px solid var(--ink); border-radius: var(--radius); }
 .koc-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.koc-team { display: grid; gap: 6px; }
+.koc-team { display: grid; gap: 6px; grid-template-rows: 1fr auto; } /* buttons line up even when one team has the 先發球 tag */
 .koc-team .btn { width: 100%; }
+.koc-team .team-names { align-content: start; }
 .streak { font-size: 0.8rem; color: var(--muted); }
 .queue { display: flex; flex-wrap: wrap; gap: 6px; }
 .queue span { background: var(--surface); border: 2px solid var(--ink); border-radius: 4px; padding: 2px 10px; font-size: 0.9rem; font-weight: 700; }
