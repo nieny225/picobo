@@ -62,6 +62,15 @@ publishing only (keep the repo multi-file).
 - MLP 2026: doubles side-out to 11; rally scoring only in the singles
   DreamBreaker to 21, no freeze.
 
+Verified 2026-10-01 against the 2026 rulebook PDF itself (rule 14, rally
+scoring, 14.A.1 to 14.A.5): 14.A.3 score is two numbers; 14.A.4 after a
+side-out, service begins with the player correctly positioned on the right
+according to the team's score. The engine and copy had the hand-over server
+serving from the left at odd scores; fixed. Section 14 has no rule limiting
+who can win the last point. USA Pickleball's rally-scoring blog page still
+says the game must be won on serve; that page reads like the 2025 wording and
+the rulebook was taken as the source.
+
 Direct fetches of usapickleball.org were blocked by the sandbox network
 policy; only search summaries were available. Rule numbers other than 4.B.6
 are cited at section level in the copy for that reason.
@@ -114,6 +123,11 @@ The rules tab was one 16,800 px page on a phone. Now:
 - 玩法 (#formats) mirrors rules: an index grouped by type and one page per
   format (#formats/<id>) with court scenes (queue / resting players drawn
   dimmed in the court's right margin), marked 各球場做法不同.
+- Rules are grouped 球場與基本 / 共通規則 / 側出計分 / 每球得分 / 更多. Two
+  toggles at the top of #rules (雙打｜單打, 側出計分｜每球得分) filter the
+  index, the drawer and prev/next; the choice is kept in localStorage
+  (`picobo.rulesFilter`). Data: section `scoring` and rule `play` fields.
+  Each rule page shows 適用：<play>｜<scoring>.
 - Page heights at 390 px: index ~2,100, a rule page ~1,350, formats ~3,400.
 
 ## Live on picobo.net (2026-09-30)

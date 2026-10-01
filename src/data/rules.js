@@ -13,6 +13,8 @@ const B2 = (extra = {}) => ({ team: 'B', side: 'far', pos: 'left', label: '乙2'
 // 雙打四人都站底線的預設站位
 const four = (serving = {}) => [A1(serving.A1), A2(serving.A2), B1(serving.B1), B2(serving.B2)];
 
+// 章節：scoring 標出只適用哪一種計分（沒寫就是都適用）；規則的 play 標出
+// 只適用雙打或單打（沒寫就是都適用）。規則頁上方的切換鈕靠這兩個欄位篩選。
 export const SECTIONS = [
   {
     id: 'court',
@@ -54,11 +56,10 @@ export const SECTIONS = [
     ],
   },
   {
-    id: 'sideout',
-    title: '正統規則',
-    en: 'Side-out Scoring',
-    subtitle: 'USA Pickleball 側出計分',
-    intro: '正式比賽和大多數球場用的規則。只有發球方能得分，雙打每次拿到發球權兩個人都可以發。',
+    id: 'play',
+    title: '共通規則',
+    en: 'Core Rules',
+    intro: '單打雙打、哪一種計分都一樣的規則。',
     items: [
       {
         id: 'serve',
@@ -114,6 +115,48 @@ export const SECTIONS = [
         ],
       },
       {
+        id: 'faults',
+        title: '常見犯規',
+        en: 'Faults',
+        rule: '第 7 節',
+        summary: '球出界、掛網、廚房截擊、雙彈跳違規，還有球打到身上，都是這一球結束。',
+        detail: [
+          '出界：球落在線外。碰到線算界內。',
+          '掛網：球沒過網，或是從網子下面過去。',
+          '球碰到身體：除了持拍的手腕以下，球碰到你身上任何地方都算失誤，衣服也算。',
+          '碰網：人、拍子或衣服在球還活著的時候碰到網子或網柱。',
+          '雙擊：同一個人連續打到球兩下，除非是一個連續的揮拍動作。',
+          '發球員錯、站位錯：正式比賽裁判會叫停糾正；自己打的話，發現了就重打那一球。',
+        ],
+        scenes: [
+          { caption: '球落在底線外，出界。', highlight: ['baseline:far'], players: four(), ball: { path: ['near:left:mid', 'far:left:behind'], bounces: [1] } },
+        ],
+      },
+      {
+        id: 'ends',
+        title: '換場',
+        en: 'Changing Ends',
+        rule: '第 5 節',
+        summary: '每局打完換場。決勝局打到一方 6 分時換場（11 分制）。',
+        detail: [
+          '三局兩勝的第三局，第一個到 6 分的時候兩隊換邊，發球權不變，繼續由原本的人發。15 分制在 8 分換，21 分制在 11 分換。',
+          '換場有 1 分鐘，局與局之間有 2 分鐘。',
+        ],
+        scenes: [
+          { caption: '決勝局 6-3 時換邊，發球員不變。', players: four({ A1: { depth: 'behind', serving: true } }) },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sideout',
+    title: '側出計分',
+    en: 'Side-out Scoring',
+    subtitle: 'USA Pickleball 正式比賽',
+    scoring: 'sideout',
+    intro: '正式比賽和大多數球場用的計分。只有發球方能得分。',
+    items: [
+      {
         id: 'scoring',
         title: '計分與喊分',
         en: 'Scoring',
@@ -133,8 +176,9 @@ export const SECTIONS = [
       },
       {
         id: 'positions',
-        title: '發球順序與站位',
-        en: 'Serving Order & Positions',
+        play: 'doubles',
+        title: '雙打發球順序與站位',
+        en: 'Doubles Serving Order',
         rule: '第 4 節',
         summary: '拿回發球權時，站在右邊的人先發。得分才換位，接球的隊伍不動。',
         detail: [
@@ -153,41 +197,10 @@ export const SECTIONS = [
         ],
       },
       {
-        id: 'ends',
-        title: '換場',
-        en: 'Changing Ends',
-        rule: '第 5 節',
-        summary: '每局打完換場。決勝局打到一方 6 分時換場（11 分制）。',
-        detail: [
-          '三局兩勝的第三局，第一個到 6 分的時候兩隊換邊，發球權不變，繼續由原本的人發。15 分制在 8 分換，21 分制在 11 分換。',
-          '換場有 1 分鐘，局與局之間有 2 分鐘。',
-        ],
-        scenes: [
-          { caption: '決勝局 6-3 時換邊，發球員不變。', players: four({ A1: { depth: 'behind', serving: true } }) },
-        ],
-      },
-      {
-        id: 'faults',
-        title: '常見犯規',
-        en: 'Faults',
-        rule: '第 7 節',
-        summary: '球出界、掛網、廚房截擊、雙彈跳違規，還有球打到身上，都是這一球結束。',
-        detail: [
-          '出界：球落在線外。碰到線算界內。',
-          '掛網：球沒過網，或是從網子下面過去。',
-          '球碰到身體：除了持拍的手腕以下，球碰到你身上任何地方都算失誤，衣服也算。',
-          '碰網：人、拍子或衣服在球還活著的時候碰到網子或網柱。',
-          '雙擊：同一個人連續打到球兩下，除非是一個連續的揮拍動作。',
-          '發球員錯、站位錯：正式比賽裁判會叫停糾正；自己打的話，發現了就重打那一球。',
-        ],
-        scenes: [
-          { caption: '球落在底線外，出界。', highlight: ['baseline:far'], players: four(), ball: { path: ['near:left:mid', 'far:left:behind'], bounces: [1] } },
-        ],
-      },
-      {
         id: 'singles',
-        title: '單打的差別',
-        en: 'Singles',
+        play: 'singles',
+        title: '單打怎麼打',
+        en: 'Side-out Singles',
         summary: '一個人顧全場。分數偶數從右邊發、奇數從左邊發，喊兩個數字。',
         detail: [
           '單打沒有第二發球員，發球方輸一球就直接 side-out。',
@@ -205,13 +218,15 @@ export const SECTIONS = [
     id: 'rally',
     title: '每球得分制',
     en: 'Rally Scoring',
-    subtitle: 'Rally Scoring',
+    subtitle: '2026 暫行規則',
+    scoring: 'rally',
     intro: '每一球都有人得分，一局比較快結束，很多球場的社交球用這個。USA Pickleball 2025 年起把它列為暫行規則（provisional），2026 年繼續沿用。',
     items: [
       {
         id: 'rally-basics',
-        title: '基本規則',
-        en: 'Rally Scoring Basics',
+        play: 'doubles',
+        title: '雙打怎麼打',
+        en: 'Rally Scoring Doubles',
         summary: '每一球結束都有一隊得 1 分，誰贏這球誰發下一球。沒有第二發球員。',
         detail: [
           '打到 11、15 或 21 分，要贏 2 分。社交球最常用 15 或 21。',
@@ -229,6 +244,25 @@ export const SECTIONS = [
         ],
       },
       {
+        id: 'rally-singles',
+        play: 'singles',
+        title: '單打怎麼打',
+        en: 'Rally Scoring Singles',
+        summary: '每一球都有人得分。發球員看自己的分數站：偶數從右邊發、奇數從左邊發。',
+        detail: [
+          '站位跟側出計分的單打一樣，看發球員自己的分數：偶數右邊、奇數左邊。接球的人站對角。',
+          '發球方贏球：得 1 分，換到另一邊繼續發。',
+          '接球方贏球：得 1 分並拿到發球權，照自己的新分數決定從哪一邊發。',
+          '要贏 2 分。打到幾分開打前講好，常見 15 或 21 分。',
+          '喊分喊兩個數字：「發球方分數、接球方分數」（14.A.3）。',
+        ],
+        scenes: [
+          { caption: '開局 0-0：甲從右邊發，乙站對角接。', players: [A1({ label: '甲', depth: 'behind', serving: true }), B1({ label: '乙' })], ball: { path: ['near:right:behind', 'far:right:mid'], bounces: [1] } },
+          { caption: '甲贏球：1-0，甲換到左邊繼續發，乙也換到對角接。', players: [A1({ label: '甲', pos: 'left', depth: 'behind', serving: true }), B1({ label: '乙', pos: 'left' })], ball: { path: ['near:left:behind', 'far:left:mid'], bounces: [1] } },
+          { caption: '乙贏球：乙得 1 分並拿到發球權。1 分是奇數，乙從左邊發，喊「1-1」。', players: [A1({ label: '甲', pos: 'left' }), B1({ label: '乙', pos: 'left', depth: 'behind', serving: true })], ball: { path: ['far:left:behind', 'near:left:mid'], bounces: [1] } },
+        ],
+      },
+      {
         id: 'rally-pro',
         title: '職業賽怎麼打',
         en: 'Pro Play (MLP)',
@@ -242,18 +276,19 @@ export const SECTIONS = [
         scenes: [],
       },
     ],
-    compare: {
-      title: '側出計分 vs 每球得分',
-      en: 'Side-out vs Rally',
-      rows: [
-        ['誰能得分', '只有發球方', '每一球都有人得分'],
-        ['喊分', '三個數字：我方、對方、第幾發球員', '兩個數字：我方、對方'],
-        ['一局幾分', '11 分，贏 2 分', '15 或 21 分，贏 2 分'],
-        ['第二發球員', '有，每次發球權兩個人輪流', '沒有，輸球就換對方發'],
-        ['換位', '發球方得分才換', '得分的那隊照新分數站位，換發後由右邊的人發'],
-        ['最後一分', '要在自己發球時拿到', '接球方也可以直接拿下'],
-        ['一局多久', '約 15 到 25 分鐘', '約 10 到 15 分鐘'],
-      ],
-    },
   },
 ];
+
+export const COMPARE = {
+  title: '側出計分 vs 每球得分',
+  en: 'Side-out vs Rally',
+  rows: [
+    ['誰能得分', '只有發球方', '每一球都有人得分'],
+    ['喊分', '三個數字：我方、對方、第幾發球員', '兩個數字：我方、對方'],
+    ['一局幾分', '11 分，贏 2 分', '15 或 21 分，贏 2 分'],
+    ['第二發球員', '有，每次發球權兩個人輪流', '沒有，輸球就換對方發'],
+    ['換位', '發球方得分才換', '得分的那隊照新分數站位，換發後由右邊的人發'],
+    ['最後一分', '要在自己發球時拿到', '接球方也可以直接拿下'],
+    ['一局多久', '約 15 到 25 分鐘', '約 10 到 15 分鐘'],
+  ],
+};

@@ -117,6 +117,17 @@ button { cursor: pointer; }
 .intro { color: var(--muted); max-width: 60ch; }
 
 /* Rules index and single-rule pages */
+.filters { display: grid; gap: 10px; padding: 12px; margin-right: 4px; background: var(--surface); border: var(--bw) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); }
+.seg-row { display: flex; align-items: center; gap: 10px; }
+.seg-label { flex: none; width: 2.5em; font-weight: 900; }
+.seg { flex: 1; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); overflow: hidden; }
+.seg button { border: 0; background: var(--surface); color: var(--fg); min-height: 44px; padding: 6px 8px; font-weight: 700; }
+.seg button + button { border-left: var(--bw) solid var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); font-weight: 900; }
+.applies { align-items: center; }
+.applies .muted { border: 0; padding: 0; }
+.drawer-note { margin: 4px 4px 8px; font-size: 0.875rem; color: var(--muted); }
+.drawer-note b { color: var(--fg); }
 .en-tag { font-family: var(--font-num); font-weight: 700; font-size: 0.8em; opacity: 0.7; overflow-wrap: anywhere; }
 .rule-group { display: grid; gap: 10px; }
 .rule-group h3 { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }

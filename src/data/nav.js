@@ -6,6 +6,15 @@ export const RULES_INDEX = {
   moreEn: 'More',
 };
 
+// 規則總覽頂端的切換鈕：打法 × 計分，共四種組合。
+export const FILTER = {
+  play: { label: '打法', options: [{ id: 'doubles', label: '雙打' }, { id: 'singles', label: '單打' }] },
+  scoring: { label: '計分', options: [{ id: 'sideout', label: '側出計分' }, { id: 'rally', label: '每球得分' }] },
+  applies: '適用',
+  both: { play: '單打・雙打', scoring: '兩種計分' },
+  showing: '目前顯示：',
+};
+
 // 球場圖步驟輪播。step 裡的 {n} 換成第幾步。
 export const SCENE_NAV = {
   prev: '上一步',
