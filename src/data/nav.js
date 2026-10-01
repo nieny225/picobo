@@ -15,6 +15,20 @@ export const FILTER = {
   showing: '目前顯示：',
 };
 
+// 計分板的模式選擇：打法沿用 FILTER.play，計分是 FILTER.scoring 再加「快打」。
+// hints 是選好之後顯示的一句說明。
+export const SCORE_SETUP = {
+  mode: '模式',
+  fun: { id: 'fun', label: '快打' },
+  hints: {
+    'sideout-doubles': '側出計分：只有發球方得分，兩個發球員，喊三個數字。',
+    'sideout-singles': '側出計分：只有發球方得分，偶數右邊、奇數左邊發。',
+    'rally-doubles': '每球得分：每一球都有人得分，換發後照分數站好、右邊的人發。',
+    'rally-singles': '每球得分：每一球都有人得分，偶數右邊、奇數左邊發。',
+    fun: '快打：只算分數，不管發球和站位。',
+  },
+};
+
 // 分享目前這一頁。url 是正式網址，在 artifact 裡分享出去的也是這個網址。
 export const SHARE = {
   url: 'https://picobo.net/',

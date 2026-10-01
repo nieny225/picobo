@@ -78,7 +78,7 @@ function filterHtml(f) {
 
 function indexHtml(f) {
   const groups = SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => `
-    <section class="rule-group" id="rules-${sec.id}">
+    <section class="rule-group" id="rules-${sec.id}" data-title="${esc(sec.title)}">
       <h3>${esc(sec.title)}${enTag(sec.en)}${sec.subtitle ? ` <span class="muted small">${esc(sec.subtitle)}</span>` : ''}</h3>
       <div class="rule-list">${PAGES.filter(p => p.sec === sec && pageShown(p, f)).map(p => link(p, f)).join('')}</div>
     </section>`).join('');
@@ -86,11 +86,11 @@ function indexHtml(f) {
     <div class="section-head"><h2>${esc(RULES_INDEX.title)}</h2><p class="intro">${esc(RULES_INDEX.intro)}</p></div>
     ${filterHtml(f)}
     ${groups}
-    <section class="rule-group" id="rules-formats"><h3>${esc(FORMATS_PAGE.title)}${enTag(FORMATS_PAGE.en)}</h3>
+    <section class="rule-group" id="rules-formats" data-title="${esc(FORMATS_PAGE.title)}"><h3>${esc(FORMATS_PAGE.title)}${enTag(FORMATS_PAGE.en)}</h3>
       <p class="muted small">${esc(FORMATS_PAGE.note)}</p>
       <div class="rule-list">${FORMAT_LINKS.map(p => link(p)).join('')}</div>
     </section>
-    <section class="rule-group"><h3>${esc(RULES_INDEX.more)}${enTag(RULES_INDEX.moreEn)}</h3>
+    <section class="rule-group" data-title="${esc(RULES_INDEX.more)}"><h3>${esc(RULES_INDEX.more)}${enTag(RULES_INDEX.moreEn)}</h3>
       <div class="rule-list">${PAGES.filter(p => !p.sec).map(p => link(p)).join('')}</div>
     </section>`;
 }
@@ -220,13 +220,34 @@ export function mountRules(root) {
   swipeToClose(drawer);
   let filter = loadFilter();
   let current = null;
+  // Where the reader is: on a rule page its section and title; on the index
+  // the filter and the section currently scrolled under the bar.
+  const filterLabel = () => `${optionById('play', filter.play).label}・${optionById('scoring', filter.scoring).label}`;
+  const setWhere = () => {
+    const p = PAGES.find(q => q.id === current);
+    let upper, lower;
+    if (p) [upper, lower] = [p.sec?.title ?? RULES_INDEX.more, p.title];
+    else {
+      const barBottom = root.querySelector('.rules-bar').getBoundingClientRect().bottom;
+      const groups = [...pageEl.querySelectorAll('.rule-group')];
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+      // At the very bottom the last group may never reach the bar; count it then.
+      const passed = atBottom ? groups : groups.filter(g => g.getBoundingClientRect().top <= barBottom + 8);
+      [upper, lower] = [filterLabel(), passed.length ? passed[passed.length - 1].dataset.title : RULES_INDEX.title];
+    }
+    const html = `<small>${esc(upper)}</small><b>${esc(lower)}</b>`;
+    if (whereEl.innerHTML !== html) whereEl.innerHTML = html;
+  };
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (current !== '' || root.hidden || ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { ticking = false; setWhere(); });
+  }, { passive: true });
   const render = () => {
     const p = PAGES.find(q => q.id === current);
     pageEl.innerHTML = p ? pageHtml(p, filter) : indexHtml(filter);
-    const [upper, lower] = p
-      ? [p.sec?.title ?? RULES_INDEX.more, p.title]
-      : [RULES_INDEX.title, `${optionById('play', filter.play).label}・${optionById('scoring', filter.scoring).label}`];
-    whereEl.innerHTML = `<small>${esc(upper)}</small><b>${esc(lower)}</b>`;
+    setWhere();
     shareSlot.innerHTML = p ? shareButtonHtml() : '';
     drawerNav.innerHTML = drawerNavHtml(filter);
     for (const a of drawerNav.querySelectorAll('a[data-id]')) {

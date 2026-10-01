@@ -1,16 +1,22 @@
 import { renderCourt } from '../court.js';
 import { createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other } from '../scoring.js';
 import { coinFlip } from '../draw.js';
+import { FILTER, SCORE_SETUP } from '../data/nav.js';
 
 const KEY = 'picobo.match';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-const MODES = [
-  { id: 'sideout-doubles', name: '正統雙打', desc: '側出計分（Side-out）、兩個發球員、喊三個數字' },
-  { id: 'rally-doubles', name: '每球得分雙打', desc: '每球得分（Rally）、誰贏誰發' },
-  { id: 'sideout-singles', name: '正統單打', desc: '側出計分（Side-out）、偶右奇左' },
-  { id: 'fun', name: '快打／趣味', desc: '只算分數，不管發球' },
-];
+// Mode = play (doubles / singles) x scoring (side-out / rally), or the
+// plain-counter fun mode. Defaults follow the rules filter when one is saved.
+const SCORING_OPTIONS = [...FILTER.scoring.options, SCORE_SETUP.fun];
+const modeOf = (play, scoring) => (scoring === 'fun' ? 'fun' : `${scoring}-${play}`);
+function defaultChoice() {
+  try {
+    const f = JSON.parse(localStorage.getItem('picobo.rulesFilter'));
+    if (f && FILTER.play.options.some(o => o.id === f.play) && FILTER.scoring.options.some(o => o.id === f.scoring)) return f;
+  } catch { /* storage unavailable or corrupt */ }
+  return { play: 'doubles', scoring: 'sideout' };
+}
 
 function load() {
   try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch { return null; }
@@ -20,8 +26,16 @@ function save(state) {
 }
 
 function setupHtml(prefill) {
-  const p = prefill ?? { mode: 'sideout-doubles', target: 11, A: ['甲1', '甲2'], B: ['乙1', '乙2'] };
-  const modes = MODES.map(m => `<label class="mode-card"><input type="radio" name="mode" value="${m.id}" id="mode-${m.id}"${m.id === p.mode ? ' checked' : ''}><b>${m.name}</b><span>${m.desc}</span></label>`).join('');
+  const p = prefill ?? { target: 11, A: ['甲1', '甲2'], B: ['乙1', '乙2'] };
+  const choice = prefill
+    ? { play: p.A.length > 1 ? 'doubles' : 'singles', scoring: p.mode === 'fun' ? 'fun' : p.mode.split('-')[0] }
+    : defaultChoice();
+  const seg = (k, label, options) => `<div class="seg-row"><span class="seg-label">${esc(label)}</span>
+    <div class="seg" role="group" aria-label="${esc(label)}">${options.map(o =>
+      `<button type="button" data-k="${k}" data-v="${o.id}" aria-pressed="${choice[k] === o.id}"${o.en ? ` aria-label="${esc(o.label)}" title="${esc(o.label)}"` : ''}>${esc(o.en ?? o.label)}</button>`).join('')}</div></div>`;
+  const modes = `<div class="filters">${seg('play', FILTER.play.label, FILTER.play.options)}${seg('scoring', FILTER.scoring.label, SCORING_OPTIONS)}
+    <p class="small mode-hint" id="mode-hint"></p></div>
+    <input type="hidden" name="mode" value="${modeOf(choice.play, choice.scoring)}">`;
   const names = (team, list) => `<div class="field team-fields-col">
     <div class="team-label"><span class="swatch swatch-${team}"></span>${team === 'A' ? '甲隊' : '乙隊'}</div>
     <input class="input" id="name-${team}-0" value="${esc(list[0] ?? '')}" placeholder="球員 1" maxlength="6">
@@ -29,7 +43,7 @@ function setupHtml(prefill) {
   </div>`;
   return `<div class="section-head"><h2>計分板</h2><p class="intro">按誰贏了這一球，站位、換發、喊分自動算好。</p></div>
   <form class="card" id="setup">
-    <div class="field"><label>模式</label><div class="mode-grid">${modes}</div></div>
+    <div class="field"><span class="field-label">${esc(SCORE_SETUP.mode)}</span>${modes}</div>
     <div class="row">
       <div class="field"><label for="target">打到幾分</label><select class="input" id="target">${[7, 11, 15, 21].map(n => `<option value="${n}"${n === p.target ? ' selected' : ''}>${n} 分</option>`).join('')}</select></div>
       <div class="field"><label for="winby">要贏幾分</label><select class="input" id="winby"><option value="2">贏 2 分</option><option value="1">贏 1 分就好</option></select></div>
@@ -103,14 +117,22 @@ export function mountScoreboard(root) {
   const renderSetup = () => {
     root.innerHTML = setupHtml(prefill);
     const form = root.querySelector('#setup');
+    const pick = k => form.querySelector(`[data-k="${k}"][aria-pressed="true"]`).dataset.v;
     const syncMode = () => {
-      const mode = form.mode.value;
-      const doubles = mode === 'sideout-doubles' || mode === 'rally-doubles';
-      for (const el of form.querySelectorAll('[data-doubles-only]')) el.hidden = !doubles;
+      const play = pick('play'), scoring = pick('scoring');
+      const mode = modeOf(play, scoring);
+      form.mode.value = mode;
+      form.querySelector('#mode-hint').textContent = SCORE_SETUP.hints[mode];
+      for (const el of form.querySelectorAll('[data-doubles-only]')) el.hidden = play !== 'doubles';
       if (mode === 'fun') { form.winby.value = '1'; }
       if (mode === 'fun' && !prefill) { form.target.value = '7'; }
     };
-    form.addEventListener('change', e => { if (e.target.name === 'mode') syncMode(); });
+    form.addEventListener('click', e => {
+      const b = e.target.closest('[data-k]');
+      if (!b) return;
+      for (const x of form.querySelectorAll(`[data-k="${b.dataset.k}"]`)) x.setAttribute('aria-pressed', String(x === b));
+      syncMode();
+    });
     syncMode();
     form.querySelector('#flip').addEventListener('click', () => {
       form.first.value = coinFlip();
@@ -119,7 +141,7 @@ export function mountScoreboard(root) {
     form.addEventListener('submit', e => {
       e.preventDefault();
       const mode = form.mode.value;
-      const doubles = mode === 'sideout-doubles' || mode === 'rally-doubles';
+      const doubles = pick('play') === 'doubles';
       const names = id => {
         const list = [form[`name-${id}-0`].value.trim() || (id === 'A' ? '甲1' : '乙1')];
         if (doubles) list.push(form[`name-${id}-1`].value.trim() || (id === 'A' ? '甲2' : '乙2'));

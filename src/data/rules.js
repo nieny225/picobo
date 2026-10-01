@@ -233,7 +233,7 @@ export const SECTIONS = [
         id: 'positions',
         play: 'doubles',
         title: '發球順序與站位',
-        en: 'Doubles Serving Order',
+        en: 'Serving Order & Positions',
         rule: '第 4 節',
         summary: '拿回發球權時，站在右邊的人先發。得分才換位，接球的隊伍不動。',
         detail: [

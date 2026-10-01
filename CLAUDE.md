@@ -78,7 +78,8 @@ tests/*.test.js         node:test for the pure modules
   the serving team swaps positions, and only when it scores. Rally doubles
   follows the USA Pickleball provisional rule (2026): every rally scores, no
   second server, each team stands by its own score (rule 14.A.4) and after
-  a side-out the player now in the right court serves.
+  a side-out the player now in the right court serves. Rally singles: every
+  rally scores, the server stands by their own score.
 - CSS: colors and spacing are custom properties on `:root`, redefined for
   dark mode. Tap targets are at least 44px. No horizontal page scroll at
   360px width. Prefer `scroll-snap` carousels for step-by-step rule scenes.

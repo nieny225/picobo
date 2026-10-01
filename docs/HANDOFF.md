@@ -138,6 +138,10 @@ The rules tab was one 16,800 px page on a phone. Now:
   bottom bar with icons on phones (< 768px). Fun formats moved under the
   rules tab (a 趣味玩法 group in the rules index and drawer); bare #formats
   redirects to #rules.
+- Scoreboard modes: play (雙打｜單打) × scoring (Side-out｜Rally｜快打), five
+  engine modes including rally-singles. The picker defaults to the rules
+  filter when one is saved.
+- On the rules index the sticky bar shows the section currently under it.
 - Page heights at 390 px: index ~2,100, a rule page ~1,350, formats ~3,400.
 
 ## Live on picobo.net (2026-09-30)

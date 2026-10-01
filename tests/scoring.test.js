@@ -108,6 +108,25 @@ test('rally doubles: the receiving team can win the game', () => {
   assert.equal(s.winner, 'A');
 });
 
+test('rally singles: every rally scores, server stands by own score, receiver can win the game', () => {
+  const singles = { A: ['甲'], B: ['乙'] };
+  let s = createMatch({ mode: 'rally-singles', teams: singles, target: 11 });
+  assert.equal(s.server, '甲');
+  assert.equal(serverPosition(s), 'right');
+  s = pointWon(s, 'A');                      // server wins: 1-0, serves from the left
+  assert.equal(announce(s), '1-0');
+  assert.equal(serverPosition(s), 'left');
+  s = pointWon(s, 'B');                      // receiver wins: gets the point and the serve, 1 is odd so left
+  assert.deepEqual(s.scores, { A: 1, B: 1 });
+  assert.equal(s.serving, 'B');
+  assert.equal(s.server, '乙');
+  assert.equal(serverPosition(s), 'left');
+  assert.equal(announce(s), '1-1');
+  s = { ...s, scores: { A: 10, B: 6 }, serving: 'B', server: '乙' };
+  s = pointWon(s, 'A');                      // 14.A.2: the receiving side can win the last point
+  assert.equal(s.winner, 'A');
+});
+
 test('fun mode is plain counters', () => {
   let s = createMatch({ mode: 'fun', teams, target: 7, winBy: 1 });
   assert.equal(s.server, null);

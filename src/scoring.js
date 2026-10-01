@@ -9,9 +9,11 @@
 //                    every rally scores, no second server, either team can
 //                    score the winning point, teams stand by their score and
 //                    the right-court player serves after a side-out
+//   rally-singles    rally scoring singles (rule 14): every rally scores, the
+//                    server stands by their own score, either side can win
 //   fun              plain counters for short games; no serving logic
 
-export const MODES = ['sideout-doubles', 'sideout-singles', 'rally-doubles', 'fun'];
+export const MODES = ['sideout-doubles', 'sideout-singles', 'rally-doubles', 'rally-singles', 'fun'];
 
 export function createMatch({ mode, target = 11, winBy = 2, teams, firstServer = 'A', decidingGame = false }) {
   if (!MODES.includes(mode)) throw new Error(`scoring: unknown mode ${mode}`);
@@ -62,6 +64,7 @@ export function pointWon(state, team) {
     case 'sideout-doubles': sideoutDoubles(s, team); break;
     case 'sideout-singles': sideoutSingles(s, team); break;
     case 'rally-doubles': rallyDoubles(s, team); break;
+    case 'rally-singles': rallySingles(s, team); break;
     case 'fun': s.scores[team] += 1; break;
   }
   settle(s);
@@ -85,6 +88,11 @@ function sideoutDoubles(s, team) {
 function sideoutSingles(s, team) {
   if (team === s.serving) s.scores[team] += 1;
   else { s.serving = team; s.server = s.teams[team].names[0]; }
+}
+
+function rallySingles(s, team) {
+  s.scores[team] += 1;
+  if (team !== s.serving) { s.serving = team; s.server = s.teams[team].names[0]; }
 }
 
 // Rule 14.A.4: a team always stands by its own score (the player who started
