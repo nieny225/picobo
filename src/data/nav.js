@@ -9,7 +9,7 @@ export const RULES_INDEX = {
 // 規則總覽頂端的切換鈕：打法 × 計分，共四種組合。
 export const FILTER = {
   play: { label: '打法', options: [{ id: 'doubles', label: '雙打' }, { id: 'singles', label: '單打' }] },
-  scoring: { label: '計分', options: [{ id: 'sideout', label: '側出計分' }, { id: 'rally', label: '每球得分' }] },
+  scoring: { label: '計分', options: [{ id: 'sideout', label: '側出計分', en: 'Side-out' }, { id: 'rally', label: '每球得分', en: 'Rally' }] },
   applies: '適用',
   both: { play: '單打・雙打', scoring: '兩種計分' },
   showing: '目前顯示：',

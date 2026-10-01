@@ -4,6 +4,8 @@ export const GLOSSARY = [
   { zh: '截擊', en: 'Volley', def: '球還沒落地就在空中直接打回去。' },
   { zh: '丁克', en: 'Dink', def: '站在廚房線後，把球輕輕放進對面廚房的軟球。' },
   { zh: '雙彈跳', en: 'Two-Bounce Rule', def: '發球落地一次、回球落地一次，之後才可以截擊。' },
+  { zh: '側出計分', en: 'Side-out Scoring', def: '只有發球方能得分；發球方輸球不扣分，換人或換對方發。正式比賽用這個。' },
+  { zh: '每球得分', en: 'Rally Scoring', def: '每一球結束都有一方得分，不管是不是發球方。2026 年仍是 USA Pickleball 的暫行規則。' },
   { zh: '側出', en: 'Side-out', alias: '換發球', def: '發球方失去發球權，換對方發球。' },
   { zh: '第一／第二發球員', en: 'Server 1 / Server 2', def: '雙打每次拿到發球權，兩個人輪流發球；第一發球員失分後換第二發球員。' },
   { zh: '發球失誤', en: 'Fault', def: '任何讓這一球結束的違規：出界、掛網、廚房截擊、雙彈跳違規都算。' },

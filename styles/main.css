@@ -126,6 +126,7 @@ button { cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); font-weight: 900; }
 .applies { align-items: center; }
 .applies .muted { border: 0; padding: 0; }
+.applies .en-tag, th .en-tag, .drawer-note .en-tag { font-size: 1em; }
 .drawer-note { margin: 4px 4px 8px; font-size: 0.875rem; color: var(--muted); }
 .drawer-note b { color: var(--fg); }
 .en-tag { font-family: var(--font-num); font-weight: 700; font-size: 0.8em; opacity: 0.7; overflow-wrap: anywhere; }

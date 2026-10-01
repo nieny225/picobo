@@ -20,7 +20,7 @@ function ruleCard(item, applies = '') {
 function compareTable(c) {
   const [side, rally] = FILTER.scoring.options;
   return `<article class="card"><h3>${esc(c.title)}${enTag(c.en)}</h3><div class="table-wrap"><table>
-    <thead><tr><th></th><th>${esc(side.label)}</th><th>${esc(rally.label)}</th></tr></thead>
+    <thead><tr><th></th><th>${optionHtml(side)}</th><th>${optionHtml(rally)}</th></tr></thead>
     <tbody>${c.rows.map(r => `<tr>${r.map(x => `<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</tbody>
   </table></div></article>`;
 }
@@ -49,7 +49,9 @@ function loadFilter() {
 function saveFilter(f) {
   try { localStorage.setItem(FILTER_KEY, JSON.stringify(f)); } catch { /* storage unavailable */ }
 }
-const optionLabel = (k, id) => FILTER[k].options.find(o => o.id === id).label;
+// Option label as HTML, with its English term when it has one: 側出計分（Side-out）.
+const optionHtml = o => `${esc(o.label)}${enTag(o.en)}`;
+const optionById = (k, id) => FILTER[k].options.find(o => o.id === id);
 
 const sectionShown = (sec, f) => !sec.scoring || sec.scoring === f.scoring;
 const pageShown = (p, f) => p.kind !== 'rule' || (sectionShown(p.sec, f) && (!p.item.play || p.item.play === f.play));
@@ -61,7 +63,7 @@ const link = p => `<a class="rule-link" href="#rules/${p.id}">
 function filterHtml(f) {
   const row = k => `<div class="seg-row"><span class="seg-label">${esc(FILTER[k].label)}</span>
     <div class="seg" role="group" aria-label="${esc(FILTER[k].label)}">${FILTER[k].options.map(o =>
-      `<button type="button" data-filter="${k}" data-value="${o.id}" aria-pressed="${f[k] === o.id}">${esc(o.label)}</button>`).join('')}</div></div>`;
+      `<button type="button" data-filter="${k}" data-value="${o.id}" aria-pressed="${f[k] === o.id}">${optionHtml(o)}</button>`).join('')}</div></div>`;
   return `<div class="filters">${row('play')}${row('scoring')}</div>`;
 }
 
@@ -82,9 +84,9 @@ function indexHtml(f) {
 
 // "適用：雙打｜側出計分" under a rule's title.
 function appliesHtml(p) {
-  const play = p.item.play ? optionLabel('play', p.item.play) : FILTER.both.play;
-  const scoring = p.sec.scoring ? optionLabel('scoring', p.sec.scoring) : FILTER.both.scoring;
-  return `<div class="format-meta applies"><span class="muted">${esc(FILTER.applies)}</span><span>${esc(play)}</span><span>${esc(scoring)}</span></div>`;
+  const play = p.item.play ? optionHtml(optionById('play', p.item.play)) : esc(FILTER.both.play);
+  const scoring = p.sec.scoring ? optionHtml(optionById('scoring', p.sec.scoring)) : esc(FILTER.both.scoring);
+  return `<div class="format-meta applies"><span class="muted">${esc(FILTER.applies)}</span><span>${play}</span><span>${scoring}</span></div>`;
 }
 
 function pageBody(p) {
@@ -163,7 +165,7 @@ function swipeToClose(drawer) {
 function drawerNavHtml(f) {
   const group = (title, en, pages) => `<h3>${esc(title)}${enTag(en)}</h3>
     <ul>${pages.map(p => `<li><a href="#rules/${p.id}" data-id="${p.id}">${esc(p.title)}${enTag(p.en)}</a></li>`).join('')}</ul>`;
-  return `<p class="drawer-note">${esc(FILTER.showing)}<b>${esc(optionLabel('play', f.play))}・${esc(optionLabel('scoring', f.scoring))}</b></p>
+  return `<p class="drawer-note">${esc(FILTER.showing)}<b>${optionHtml(optionById('play', f.play))}・${optionHtml(optionById('scoring', f.scoring))}</b></p>
     <a class="drawer-home" href="#rules" data-id="">${esc(DRAWER.home)}</a>
     ${SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => group(sec.title, sec.en, PAGES.filter(p => p.sec === sec && pageShown(p, f)))).join('')}
     ${group(RULES_INDEX.more, RULES_INDEX.moreEn, PAGES.filter(p => !p.sec))}`;

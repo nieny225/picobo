@@ -6,9 +6,9 @@ const KEY = 'picobo.match';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 const MODES = [
-  { id: 'sideout-doubles', name: '正統雙打', desc: '側出計分、兩個發球員、喊三個數字' },
-  { id: 'rally-doubles', name: '每球得分雙打', desc: '每球都得分、誰贏誰發' },
-  { id: 'sideout-singles', name: '正統單打', desc: '側出計分、偶右奇左' },
+  { id: 'sideout-doubles', name: '正統雙打', desc: '側出計分（Side-out）、兩個發球員、喊三個數字' },
+  { id: 'rally-doubles', name: '每球得分雙打', desc: '每球得分（Rally）、誰贏誰發' },
+  { id: 'sideout-singles', name: '正統單打', desc: '側出計分（Side-out）、偶右奇左' },
   { id: 'fun', name: '快打／趣味', desc: '只算分數，不管發球' },
 ];
 
