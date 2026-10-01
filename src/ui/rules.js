@@ -61,8 +61,8 @@ const pageShown = (p, f) => p.kind !== 'rule' || (sectionShown(p.sec, f) && (!p.
 // the rules tab, whatever the filter.
 const FORMAT_LINKS = FORMATS.map(f => ({ href: `#formats/${f.id}`, id: `formats/${f.id}`, title: f.name, en: f.en, summary: f.tagline }));
 
-const link = p => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}">
-  <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span>
+const link = (p, f) => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}">
+  <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(f ? textFor(p, f).summary : p.summary)}</span></span>
   ${p.rule ? `<span class="rule-no">${esc(p.rule)}</span>` : ''}</a>`;
 
 function filterHtml(f) {
@@ -76,7 +76,7 @@ function indexHtml(f) {
   const groups = SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => `
     <section class="rule-group" id="rules-${sec.id}">
       <h3>${esc(sec.title)}${enTag(sec.en)}${sec.subtitle ? ` <span class="muted small">${esc(sec.subtitle)}</span>` : ''}</h3>
-      <div class="rule-list">${PAGES.filter(p => p.sec === sec && pageShown(p, f)).map(link).join('')}</div>
+      <div class="rule-list">${PAGES.filter(p => p.sec === sec && pageShown(p, f)).map(p => link(p, f)).join('')}</div>
     </section>`).join('');
   return `
     <div class="section-head"><h2>${esc(RULES_INDEX.title)}</h2><p class="intro">${esc(RULES_INDEX.intro)}</p></div>
@@ -84,10 +84,10 @@ function indexHtml(f) {
     ${groups}
     <section class="rule-group" id="rules-formats"><h3>${esc(FORMATS_PAGE.title)}${enTag(FORMATS_PAGE.en)}</h3>
       <p class="muted small">${esc(FORMATS_PAGE.note)}</p>
-      <div class="rule-list">${FORMAT_LINKS.map(link).join('')}</div>
+      <div class="rule-list">${FORMAT_LINKS.map(p => link(p)).join('')}</div>
     </section>
     <section class="rule-group"><h3>${esc(RULES_INDEX.more)}${enTag(RULES_INDEX.moreEn)}</h3>
-      <div class="rule-list">${PAGES.filter(p => !p.sec).map(link).join('')}</div>
+      <div class="rule-list">${PAGES.filter(p => !p.sec).map(p => link(p)).join('')}</div>
     </section>`;
 }
 
@@ -101,9 +101,14 @@ function appliesHtml(p) {
 // Rules that apply to both play styles carry a two-player version of their
 // scenes; show it when the reader picked singles.
 const scenesFor = (p, f) => (f.play === 'singles' && p.item.singlesScenes) || p.item.scenes;
+// The same for the rule's text: singles wording when the reader picked singles.
+const textFor = (p, f) => {
+  if (p.kind !== 'rule' || f.play !== 'singles') return { summary: p.summary, detail: p.item?.detail };
+  return { summary: p.item.singlesSummary ?? p.summary, detail: p.item.singlesDetail ?? p.item.detail };
+};
 
 function pageBody(p, f) {
-  if (p.kind === 'rule') return ruleCard({ ...p.item, scenes: scenesFor(p, f) }, appliesHtml(p));
+  if (p.kind === 'rule') return ruleCard({ ...p.item, ...textFor(p, f), scenes: scenesFor(p, f) }, appliesHtml(p));
   if (p.kind === 'compare') return compareTable(COMPARE);
   if (p.kind === 'faq') {
     return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="sub">${esc(p.en)}</p></div>
