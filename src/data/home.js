@@ -10,6 +10,11 @@ export const HOME = {
     desc: '像 App 一樣從桌面打開，球場沒訊號也能用。',
     button: '安裝到桌面',
     ios: '點瀏覽器的「分享」按鈕，再選「加入主畫面」，就能像 App 一樣從桌面打開，沒訊號也能用。',
+    mac: '在 Safari 上方選單點「檔案」，再選「加入 Dock」，就能像 App 一樣打開。',
+    // 頂部列的安裝按鈕；iPhone、iPad、Mac Safari 沒有安裝視窗，按了改顯示上面的步驟。
+    short: '安裝',
+    aria: '把痞克柏安裝成 App',
+    close: '知道了',
   },
   entries: [
     { route: 'rules', title: '學規則', en: 'Rules', desc: '看球場圖一步一步弄懂發球、廚房、計分，還有趣味玩法。' },

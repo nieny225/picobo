@@ -169,9 +169,13 @@ The rules tab was one 16,800 px page on a phone. Now:
 - Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
   screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;
-  precache list checked by `tests/sw.test.js`). The home page shows an install
-  card: a button where the browser offers a prompt (Chrome, Edge, Android),
-  Share > Add to Home Screen steps on iPhone/iPad, nothing once installed.
+  precache list checked by `tests/sw.test.js`). A yellow 安裝 button in the
+  top bar and an install card on the home page: a button where the browser offers a prompt (Chrome, Edge, Android),
+  Share > Add to Home Screen steps on iPhone/iPad (File > Add to Dock on Mac
+  Safari) in a small dialog, nothing once installed or where install is not
+  possible (artifact preview, Firefox, in-app browsers such as LINE). Safari
+  cannot tell whether the app is already on the home screen, so there the
+  button stays.
 - Light/dark toggle (`src/ui/theme.js`), top right on phones and after the
   tabs on desktop. Light by default (the system setting is ignored); dark
   only when chosen. The choice is stored as

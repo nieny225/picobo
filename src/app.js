@@ -5,7 +5,7 @@ import { mountScoreboard } from './ui/scoreboard.js';
 import { mountDraw } from './ui/draw.js';
 import { autoHideTopbar } from './ui/topbar.js';
 import { mountThemeToggle } from './ui/theme.js';
-import { registerServiceWorker } from './ui/install.js';
+import { registerServiceWorker, mountInstallButton } from './ui/install.js';
 import { RULEBOOK } from './data/rules.js';
 
 const ROUTES = ['home', 'rules', 'formats', 'score', 'draw'];
@@ -30,6 +30,7 @@ function parseHash() {
 const topbar = autoHideTopbar(document.querySelector('.topbar'));
 mountThemeToggle(document.getElementById('theme-toggle'));
 registerServiceWorker();
+mountInstallButton(document.getElementById('install-btn'));
 mountHome(document.getElementById('view-home'));
 const rules = mountRules(document.getElementById('view-rules'));
 const formats = mountFormats(document.getElementById('view-formats'));

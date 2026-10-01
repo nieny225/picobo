@@ -102,6 +102,16 @@ button { cursor: pointer; }
   border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--surface); color: var(--fg); box-shadow: var(--shadow);
 }
 .theme-btn[hidden] { display: none; }
+.install-btn {
+  flex: none; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 12px;
+  border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--mark); color: var(--mark-fg); font-weight: 900; box-shadow: var(--shadow);
+}
+.install-btn[hidden] { display: none; }
+.install-btn svg { width: 20px; height: 20px; }
+.install-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--shadow-ink); }
+.install-sheet { max-width: min(360px, calc(100vw - 32px)); padding: 18px; border: var(--bw) solid var(--ink); border-radius: var(--radius); background: var(--surface); color: var(--fg); box-shadow: var(--shadow-lg); }
+.install-sheet::backdrop { background: rgba(0, 0, 0, 0.45); }
+.install-sheet p { margin: 8px 0 14px; line-height: 1.6; }
 .theme-btn svg { width: 22px; height: 22px; }
 .theme-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--shadow-ink); }
 .tab span { pointer-events: none; }
@@ -111,6 +121,8 @@ button { cursor: pointer; }
 .bottom-nav { display: none; }
 @media (max-width: 767px) {
   .topbar .tabs { display: none; }
+  .install-btn { margin-left: auto; }
+  .install-btn:not([hidden]) + .theme-btn { margin-left: 0; }
   .theme-btn { margin-left: auto; }
   .topbar { padding-top: 8px; padding-bottom: 8px; }
   .bottom-nav {

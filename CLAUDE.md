@@ -62,7 +62,7 @@ src/ui/draw.js          draw + rotation view
 src/ui/share.js         share button: system share sheet, else copy link (picobo.net URL)
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
-src/ui/install.js       home-page install card; registers the service worker
+src/ui/install.js       install button (top bar) + card (home); registers the service worker
 src/data/rules.js       rule copy + court scene definitions
 src/data/formats.js     fun formats + their court scenes (國王球場, 輪轉賽, 3 人制, 半場單打, 廚房戰, 快打短局)
 src/data/glossary.js    中英術語對照 + 常見誤解
