@@ -132,8 +132,8 @@ function playHtml(state) {
     <div class="toolbar">
       <button class="btn icon-btn" id="undo" aria-label="復原上一球"${state.history.length ? '' : ' disabled'}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span class="btn-text">復原上一球</span></button>
       ${state.finished ? '<button class="btn btn-primary" id="again">再來一局</button>' : ''}
-      <button class="btn btn-ghost icon-btn" id="reset" aria-label="重新設定"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg><span class="btn-text">重新設定</span></button>
       ${handoffButtonHtml()}
+      <button class="btn btn-ghost icon-btn" id="reset" aria-label="重新設定"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg><span class="btn-text">重新設定</span></button>
     </div>
   </div>`;
 }
@@ -155,6 +155,23 @@ async function keepAwake(on) {
 
 // Phones, and any screen in full screen, show the court lying down.
 const lieDown = () => LANDSCAPE.matches || isFull();
+
+// A small yes/no sheet; resolves true for yes.
+function confirmSheet(t) {
+  return new Promise(resolve => {
+    const dlg = document.createElement('dialog');
+    dlg.className = 'install-sheet';
+    dlg.innerHTML = `<b>${esc(t.title)}</b><p>${esc(t.body)}</p>
+      <div class="toolbar"><button class="btn btn-ghost" type="button" data-yes>${esc(t.yes)}</button><button class="btn btn-primary" type="button" data-no>${esc(t.no)}</button></div>`;
+    const done = ok => { dlg.close(); dlg.remove(); resolve(ok); };
+    dlg.querySelector('[data-yes]').addEventListener('click', () => done(true));
+    dlg.querySelector('[data-no]').addEventListener('click', () => done(false));
+    dlg.addEventListener('cancel', e => { e.preventDefault(); done(false); });
+    dlg.addEventListener('click', e => { if (e.target === dlg) done(false); });
+    document.body.append(dlg);
+    dlg.showModal();
+  });
+}
 
 export function mountScoreboard(root) {
   let state = load();
@@ -248,9 +265,14 @@ export function mountScoreboard(root) {
         firstServer: other(state.winner), decidingGame: false,
       }));
     });
-    root.querySelector('#reset').addEventListener('click', () => {
+    const reset = () => {
       prefill = { mode: state.mode, target: state.target, A: state.teams.A.names, B: state.teams.B.names };
       state = null; save(null); renderSetup(); syncPlaying();
+    };
+    // Reset sits at the far end of the row and asks first once a game is under way.
+    root.querySelector('#reset').addEventListener('click', () => {
+      if (state.history.length === 0 || state.finished) { reset(); return; }
+      confirmSheet(SCORE_SETUP.resetConfirm).then(ok => { if (ok) reset(); });
     });
   };
 

@@ -22,6 +22,8 @@ export const SCORE_SETUP = {
   fun: { id: 'fun', label: '快打' },
   // 計分中畫面頂端標示目前模式，避免沿用舊比賽時搞不清楚是哪一種算法。
   playing: '{play}・{scoring}・打到 {target} 分',
+  // 重新設定前的確認（已經打了至少一球、比賽還沒結束時才問）。
+  resetConfirm: { title: '重新設定這場比賽？', body: '目前的比分和發球紀錄會清掉，回到設定畫面。', yes: '重新設定', no: '繼續比賽' },
   fullscreen: '全螢幕',
   exitFullscreen: '離開全螢幕',
   // 下一球贏了就結束這局時，大比分下面的小標。

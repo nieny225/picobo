@@ -416,6 +416,8 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 }
 .fs-btn svg { width: 20px; height: 20px; }
 .icon-btn { display: inline-flex; align-items: center; gap: 6px; }
+/* Reset keeps its distance from undo and share. */
+.board .toolbar #reset { margin-left: 18px; }
 .icon-btn svg { width: 20px; height: 20px; flex: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .announce {
