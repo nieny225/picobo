@@ -203,7 +203,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
   screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;
   precache list checked by `tests/sw.test.js`). A yellow 安裝 button in the
-  top bar and an install card on the home page: a button where the browser offers a prompt (Chrome, Edge, Android),
+  top bar (no card on the home page): a button where the browser offers a prompt (Chrome, Edge, Android),
   Share > Add to Home Screen steps on iPhone/iPad (File > Add to Dock on Mac
   Safari) in a small dialog; Android without a prompt gets ⋮ > Install app
   steps; LINE / Facebook / Instagram in-app browsers are told to open the page

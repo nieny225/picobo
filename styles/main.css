@@ -491,14 +491,6 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .example-note { font-size: 0.8rem; color: var(--muted); }
 footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top: 12px; }
 
-/* Home: install the app. */
-.install-card[hidden] { display: none; }
-.install-card {
-  display: grid; gap: 6px; margin: 20px 6px 0 0; padding: 14px 16px;
-  background: var(--surface); border: var(--bw) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow);
-}
-.install-card span { color: var(--muted); }
-.install-card .btn { justify-self: start; margin-top: 4px; }
 
 /* Pico Bowl: home card and tournament page. */
 .event-card {

@@ -1,7 +1,7 @@
 import { HOME } from '../data/home.js';
 import { esc } from './scenes.js';
 
-// Install the app: a card on the home page and a button in the top bar.
+// Install the app: a button in the top bar.
 // Chrome, Edge and Android hand us an install prompt (beforeinstallprompt)
 // that a button can trigger. iPhone, iPad and Mac Safari have no prompt, so
 // they get the Share > Add to Home Screen (or File > Add to Dock) steps.
@@ -56,20 +56,6 @@ export function mountInstallButton(btn) {
     dlg.innerHTML = `<b>${esc(HOME.install.title)}</b><p>${esc(manualSteps())}</p><button class="btn btn-primary" type="button">${esc(HOME.install.close)}</button>`;
     dlg.showModal();
   });
-  listeners.add(render);
-  render();
-}
-
-export function mountInstall(el) {
-  const render = () => {
-    const t = HOME.install;
-    if (!offered()) { el.hidden = true; el.innerHTML = ''; return; }
-    el.hidden = false;
-    el.innerHTML = deferred
-      ? `<b>${esc(t.title)}</b><span>${esc(t.desc)}</span><button class="btn btn-primary" type="button">${esc(t.button)}</button>`
-      : `<b>${esc(t.title)}</b><span>${esc(manualSteps())}</span>`;
-    el.querySelector('button')?.addEventListener('click', promptInstall);
-  };
   listeners.add(render);
   render();
 }
