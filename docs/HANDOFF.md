@@ -173,7 +173,8 @@ The rules tab was one 16,800 px page on a phone. Now:
   card: a button where the browser offers a prompt (Chrome, Edge, Android),
   Share > Add to Home Screen steps on iPhone/iPad, nothing once installed.
 - Light/dark toggle (`src/ui/theme.js`), top right on phones and after the
-  tabs on desktop. Follows the system until tapped; the choice is stored as
+  tabs on desktop. Light by default (the system setting is ignored); dark
+  only when chosen. The choice is stored as
   `picobo.theme` and applied as `data-theme` on `<html>` by an inline script in
   `index.html` before first paint. Works without storage (this visit only).
 - `tests/scoring-oracle.test.js` cross-checks the engine against a separate

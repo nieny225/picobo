@@ -1,12 +1,11 @@
 import { THEME } from '../data/nav.js';
 import { esc } from './scenes.js';
 
-// Light / dark toggle in the top bar. The page follows the system until the
-// toggle is used; the choice is then kept in localStorage and set as
-// data-theme on <html> (an inline script in index.html applies it before
-// first paint). The browser bar colour follows the toggle.
+// Light / dark toggle in the top bar. The page is light unless dark was chosen
+// here; the choice is kept in localStorage and set as data-theme on <html>
+// (an inline script in index.html applies it before first paint). The browser
+// bar colour follows the toggle.
 const KEY = 'picobo.theme';
-const SYSTEM_DARK = matchMedia('(prefers-color-scheme: dark)');
 const BAR = { light: '#fffbe8', dark: '#151510' };
 const ICON = {
   // Shown in light mode: tap for dark.
@@ -15,7 +14,7 @@ const ICON = {
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
 };
 
-const current = () => document.documentElement.dataset.theme ?? (SYSTEM_DARK.matches ? 'dark' : 'light');
+const current = () => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
 
 function paint(btn) {
   const dark = current() === 'dark';
@@ -35,7 +34,6 @@ export function mountThemeToggle(btn) {
     try { localStorage.setItem(KEY, next); } catch { /* storage unavailable: still switches for this visit */ }
     paint(btn);
   });
-  SYSTEM_DARK.addEventListener('change', () => paint(btn));
   paint(btn);
   btn.hidden = false;
 }
