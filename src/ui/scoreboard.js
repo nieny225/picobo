@@ -89,9 +89,13 @@ function modeLabel(state) {
 }
 
 // Full screen sits as an icon in the board's top-right corner: four corners
-// pointing out to enter, pointing in to leave.
+// pointing out to enter, pointing in to leave. Where the browser allows it
+// (Android, desktop) it is real full screen; where it does not (iPhone Safari,
+// the claude.ai preview) the same layout fills the page instead. Either way
+// <html> carries .is-fullscreen and the CSS does the rest.
+const isFull = () => document.documentElement.classList.contains('is-fullscreen');
 function fullscreenIcon() {
-  const on = !!document.fullscreenElement;
+  const on = isFull();
   const d = on ? 'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5' : 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5';
   const label = esc(on ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen);
   return `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span class="sr-only">${label}</span>`;
@@ -117,7 +121,7 @@ function playHtml(state) {
     ? `<p class="winner">${teamName(state.winner)}贏了 🎉 ${state.scores.A}-${state.scores.B}</p>` : '';
   return `<div class="board">
     <p class="mode-tag">${esc(modeLabel(state))}</p>
-    ${document.fullscreenEnabled ? `<button class="fs-btn" type="button" id="fullscreen" title="${esc(SCORE_SETUP.fullscreen)}">${fullscreenIcon()}</button>` : ''}
+    <button class="fs-btn" type="button" id="fullscreen" title="${esc(isFull() ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen)}">${fullscreenIcon()}</button>
     <div class="announce"><div class="big num" id="big">${esc(announce(state))}</div><div class="who">${who}</div>${gpTag}</div>
     ${banner}${winner}
     ${state.mode === 'fun' ? '' : '<div class="court-wrap" id="board-court"></div>'}
@@ -150,7 +154,7 @@ async function keepAwake(on) {
 }
 
 // Phones, and any screen in full screen, show the court lying down.
-const lieDown = () => LANDSCAPE.matches || !!document.fullscreenElement;
+const lieDown = () => LANDSCAPE.matches || isFull();
 
 export function mountScoreboard(root) {
   let state = load();
@@ -161,7 +165,16 @@ export function mountScoreboard(root) {
   const syncPlaying = () => {
     const playing = !!state && onScore();
     root.classList.toggle('score-playing', playing);
+    if (!playing && isFull() && !document.fullscreenElement) setFull(false);
     keepAwake(playing && !state.finished);
+  };
+  // CSS gives the board the whole screen while <html> has .is-fullscreen.
+  const setFull = on => {
+    document.documentElement.classList.toggle('is-fullscreen', on);
+    const court = root.querySelector('#board-court');
+    if (court && state) renderCourt(court, courtScene(state), { landscape: lieDown() });
+    const b = root.querySelector('#fullscreen');
+    if (b) { b.innerHTML = fullscreenIcon(); b.title = on ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen; }
   };
   window.addEventListener('hashchange', syncPlaying);
   document.addEventListener('visibilitychange', syncPlaying);
@@ -213,11 +226,13 @@ export function mountScoreboard(root) {
     syncPlaying();
     // The last 10 rallies travel with the hand-over so the next scorekeeper can still undo.
     root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('score', { ...state, history: state.history.slice(-10) }));
-    root.querySelector('#fullscreen')?.addEventListener('click', async () => {
-      try {
-        if (document.fullscreenElement) await document.exitFullscreen();
-        else await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
-      } catch { /* refused: nothing to do */ }
+    root.querySelector('#fullscreen').addEventListener('click', async () => {
+      if (document.fullscreenElement) { await document.exitFullscreen().catch(() => {}); return; }
+      if (isFull()) { setFull(false); return; }
+      if (document.fullscreenEnabled) {
+        try { await document.documentElement.requestFullscreen({ navigationUI: 'hide' }); return; } catch { /* refused: fall back to the in-page layout */ }
+      }
+      setFull(true);
     });
     const court = root.querySelector('#board-court');
     if (court) renderCourt(court, courtScene(state), { landscape: lieDown() });
@@ -246,15 +261,10 @@ export function mountScoreboard(root) {
     if (court && state) renderCourt(court, courtScene(state), { landscape: lieDown() });
   });
 
-  // Keep the full-screen button's label right when the user leaves with Esc or a gesture.
-  document.addEventListener('fullscreenchange', () => {
-    // CSS gives the board the whole screen while this is set.
-    document.documentElement.classList.toggle('is-fullscreen', !!document.fullscreenElement);
-    const court = root.querySelector('#board-court');
-    if (court && state) renderCourt(court, courtScene(state), { landscape: lieDown() });
-    const b = root.querySelector('#fullscreen');
-    if (b) { b.innerHTML = fullscreenIcon(); b.title = document.fullscreenElement ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen; }
-  });
+  // Real full screen follows the browser (Esc, back gesture); the in-page one
+  // ends with Esc too.
+  document.addEventListener('fullscreenchange', () => setFull(!!document.fullscreenElement));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && isFull() && !document.fullscreenElement) setFull(false); });
 
   if (state) renderPlay(); else renderSetup();
 
