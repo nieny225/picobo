@@ -1,10 +1,16 @@
 import { PICOBOWL as E } from '../data/event.js';
 import { esc, enTag } from './scenes.js';
 import { shareButtonHtml, sharePage } from './share.js';
+import { renderManage } from './tournament.js';
 
-// Pico Bowl tournament page (#picobowl). Pure rendering of src/data/event.js;
-// reachable by URL even while the home card says Coming soon.
+// Pico Bowl tournament page (#picobowl) and the organizer screen
+// (#picobowl/manage, not linked from anywhere). Reachable by URL even while
+// the home card says Coming soon.
 export function mountEvent(root) {
+  return { show(sub) { if (sub === 'manage') renderManage(root); else renderInfo(root); } };
+}
+
+function renderInfo(root) {
   const list = items => `<ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`;
   const signup = E.signupUrl
     ? `<a class="btn btn-primary btn-block" href="${esc(E.signupUrl)}" target="_blank" rel="noopener">${esc(E.signupTitle)}</a>`

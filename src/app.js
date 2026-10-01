@@ -37,7 +37,7 @@ const rules = mountRules(document.getElementById('view-rules'));
 const formats = mountFormats(document.getElementById('view-formats'));
 mountScoreboard(document.getElementById('view-score'));
 mountDraw(document.getElementById('view-draw'));
-mountEvent(document.getElementById('view-picobowl'));
+const event = mountEvent(document.getElementById('view-picobowl'));
 document.getElementById('footer').textContent = `正統規則依據 ${RULEBOOK}。趣味玩法各球場做法不同，開打前先講好。`;
 
 function show() {
@@ -50,6 +50,7 @@ function show() {
   }
   if (route === 'rules') rules.show(sub);
   if (route === 'formats') formats.show(sub);
+  if (route === 'picobowl') event.show(sub);
   window.scrollTo({ top: 0 });
   topbar.show();
 }

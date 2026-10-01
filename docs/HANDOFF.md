@@ -169,10 +169,19 @@ The rules tab was one 16,800 px page on a phone. Now:
 - Pico Bowl (tournament, November 2026, date TBD): page at `#picobowl`
   (`src/ui/event.js`, copy in `src/data/event.js`), marked 草案. The home card
   shows Coming soon and is not a link while `PICOBOWL.open` is false; the URL
-  works regardless. Draft format: men's / women's / mixed doubles, pool round
-  robin then top two to semis and final; pools 11 side-out, playoffs 15.
-  Waiting on the organizers for courts, hours, date, venue and the Google Form.
-  Next: organizer tools (pools, court schedule, scores, standings, playoffs).
+  works regardless. Decided so far: 2 courts; men's / women's / mixed doubles
+  (about 7 / 5 / 10 teams); a player may enter men's or women's plus mixed;
+  morning MD + WD, afternoon XD; rally scoring, pools to 15, semis and final to
+  21, win by 2. Up to 6 teams one pool and a final; 7+ teams pools of 3-4, four
+  qualifiers to semis (pool winners, then best runners-up). Simulated day with
+  2 courts: about 5.5 hours of play. Still open: date, venue, hours, Google Form.
+- Organizer tool at `#picobowl/manage` (not linked anywhere; give the URL to
+  the organizer). Logic in `src/tournament.js` (tested in
+  `tests/tournament.test.js`): free courts take the earliest ready match,
+  preferring a division with nothing on court, never a player already on
+  court; scores fill pool tables and seed semis and final. Stored in
+  `picobo.picobowl` on that phone only; "複製戰況" copies a LINE-ready summary.
+  Not shared live between phones (no backend).
 - Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
   screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;

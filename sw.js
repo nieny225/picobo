@@ -17,6 +17,7 @@ const FILES = [
   'src/court.js',
   'src/draw.js',
   'src/scoring.js',
+  'src/tournament.js',
   'src/data/event.js',
   'src/data/formats.js',
   'src/data/glossary.js',
@@ -34,6 +35,7 @@ const FILES = [
   'src/ui/share.js',
   'src/ui/theme.js',
   'src/ui/topbar.js',
+  'src/ui/tournament.js',
 ];
 // On a weak court signal, give up on the network after this long and use the cache.
 const TIMEOUT_MS = 3000;

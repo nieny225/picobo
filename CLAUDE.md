@@ -54,6 +54,7 @@ src/court.js            SVG court renderer shared by rules + scoreboard; renderC
                         scene, { landscape }) lies the court down (near side left)
 src/scoring.js          pure scoring state machines (no DOM)
 src/draw.js             pure draw / round-robin / king-of-court logic (no DOM)
+src/tournament.js       pure Pico Bowl logic: pools, court queue, standings, playoffs (no DOM)
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes
 src/ui/formats.js       fun formats index + one page per format with court scenes
@@ -65,6 +66,7 @@ src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h 
 src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
 src/ui/install.js       install button (top bar) + card (home); registers the service worker
 src/ui/event.js         Pico Bowl tournament page + its home-page card
+src/ui/tournament.js    organizer screen at #picobowl/manage (local to one phone)
 src/data/rules.js       rule copy + court scene definitions
 src/data/formats.js     fun formats + their court scenes (國王球場, 輪轉賽, 3 人制, 半場單打, 廚房戰, 快打短局)
 src/data/glossary.js    中英術語對照 + 常見誤解
@@ -116,7 +118,7 @@ tests/*.test.js         node:test for the pure modules
 
 ```
 python3 -m http.server 8080        # run: open http://localhost:8080
-node --test                 # unit tests for scoring.js and draw.js
+node --test                 # unit tests for the pure modules and sw.js
 ```
 
 Layout check: drive the local server with Playwright and the preinstalled
