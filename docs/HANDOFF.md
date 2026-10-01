@@ -155,7 +155,10 @@ The rules tab was one 16,800 px page on a phone. Now:
 - Scoreboard during a game (`#view-score.score-playing`): on phones the top bar
   and page title fold away; the screen is kept on with the Wake Lock API; a
   全螢幕 button shows where the Fullscreen API is allowed (not iPhone Safari,
-  not inside the artifact iframe). A game-point tag (`gamePoint()` in
+  not inside the artifact iframe), as a corner icon on the board. In full
+  screen (`html.is-fullscreen`) only the board shows: bars, title and footer go,
+  the court lies down on every screen size and the score buttons take the rest
+  of the height. A game-point tag (`gamePoint()` in
   scoring.js) sits on the call box.
 - 抽籤分組 is now open play (`createOpenPlay` / `finishOpenPlayGame` /
   `joinOpenPlay` / `leaveOpenPlay` in draw.js): one queue of players, the first

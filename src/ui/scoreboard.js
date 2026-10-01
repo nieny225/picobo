@@ -149,6 +149,9 @@ async function keepAwake(on) {
   } catch { wakeLock = null; /* not allowed here (iframe, battery saver): screen just dims as usual */ }
 }
 
+// Phones, and any screen in full screen, show the court lying down.
+const lieDown = () => LANDSCAPE.matches || !!document.fullscreenElement;
+
 export function mountScoreboard(root) {
   let state = load();
   let prefill = null;
@@ -217,7 +220,7 @@ export function mountScoreboard(root) {
       } catch { /* refused: nothing to do */ }
     });
     const court = root.querySelector('#board-court');
-    if (court) renderCourt(court, courtScene(state), { landscape: LANDSCAPE.matches });
+    if (court) renderCourt(court, courtScene(state), { landscape: lieDown() });
     const update = next => { state = next; save(state); renderPlay(); };
     root.querySelector('#win-A').addEventListener('click', () => update(pointWon(state, 'A')));
     root.querySelector('#win-B').addEventListener('click', () => update(pointWon(state, 'B')));
@@ -240,11 +243,15 @@ export function mountScoreboard(root) {
   // when the width crosses the breakpoint.
   LANDSCAPE.addEventListener('change', () => {
     const court = root.querySelector('#board-court');
-    if (court && state) renderCourt(court, courtScene(state), { landscape: LANDSCAPE.matches });
+    if (court && state) renderCourt(court, courtScene(state), { landscape: lieDown() });
   });
 
   // Keep the full-screen button's label right when the user leaves with Esc or a gesture.
   document.addEventListener('fullscreenchange', () => {
+    // CSS gives the board the whole screen while this is set.
+    document.documentElement.classList.toggle('is-fullscreen', !!document.fullscreenElement);
+    const court = root.querySelector('#board-court');
+    if (court && state) renderCourt(court, courtScene(state), { landscape: lieDown() });
     const b = root.querySelector('#fullscreen');
     if (b) { b.innerHTML = fullscreenIcon(); b.title = document.fullscreenElement ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen; }
   });
