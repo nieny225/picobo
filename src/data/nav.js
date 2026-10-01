@@ -20,6 +20,8 @@ export const FILTER = {
 export const SCORE_SETUP = {
   mode: '模式',
   fun: { id: 'fun', label: '快打' },
+  // 計分中畫面頂端標示目前模式，避免沿用舊比賽時搞不清楚是哪一種算法。
+  playing: '{play}・{scoring}・打到 {target} 分',
   hints: {
     'sideout-doubles': '側出計分：只有發球方得分，兩個發球員，喊三個數字。',
     'sideout-singles': '側出計分：只有發球方得分，偶數右邊、奇數左邊發。',

@@ -79,6 +79,13 @@ function courtScene(state) {
   return { players, alt: '目前站位與發球者' };
 }
 
+// "雙打・Rally・打到 11 分": which mode this game is using.
+function modeLabel(state) {
+  const scoring = state.mode === 'fun' ? SCORE_SETUP.fun : FILTER.scoring.options.find(o => state.mode.startsWith(o.id));
+  const play = FILTER.play.options.find(o => o.id === (state.teams.A.names.length > 1 ? 'doubles' : 'singles'));
+  return SCORE_SETUP.playing.replace('{play}', play.label).replace('{scoring}', scoring.en ?? scoring.label).replace('{target}', state.target);
+}
+
 function playHtml(state) {
   const A = state.teams.A.names.join('・'), B = state.teams.B.names.join('・');
   const teamName = id => (id === 'A' ? '甲隊' : '乙隊');
@@ -95,6 +102,7 @@ function playHtml(state) {
   const winner = state.finished
     ? `<p class="winner">${teamName(state.winner)}贏了 🎉 ${state.scores.A}-${state.scores.B}</p>` : '';
   return `<div class="board">
+    <p class="mode-tag">${esc(modeLabel(state))}</p>
     <div class="announce"><div class="big num" id="big">${esc(announce(state))}</div><div class="who">${who}</div></div>
     ${banner}${winner}
     <div class="score-row">
