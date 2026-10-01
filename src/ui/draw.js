@@ -1,4 +1,5 @@
 import { DRAW_SAMPLE, OPEN_PLAY } from '../data/nav.js';
+import { NAME_INPUT, rememberNames, syncNameList } from './names.js';
 import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay } from '../draw.js';
 
 const ROSTER_KEY = 'picobo.roster';
@@ -37,7 +38,7 @@ export function mountDraw(root) {
     <div class="card">
       <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3>${roster.sample ? '<span class="example-note">範例名單，改成你們的</span>' : ''}</div>
       <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip">${esc(n)}<button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
-      <form class="row" id="add-form"><input class="input" id="add-name" placeholder="輸入名字" maxlength="8" autocomplete="off"><button class="btn" type="submit" style="flex:0 0 auto">加入</button><button class="btn btn-ghost" type="button" id="clear" style="flex:0 0 auto">清空</button></form>
+      <form class="row" id="add-form"><input class="input" id="add-name" placeholder="輸入名字" maxlength="8" ${NAME_INPUT}><button class="btn" type="submit" style="flex:0 0 auto">加入</button><button class="btn btn-ghost" type="button" id="clear" style="flex:0 0 auto">清空</button></form>
     </div>
     <div class="subtabs" role="tablist">
       ${[['draw', '抽籤分組'], ['rr', '輪轉賽'], ['koc', '國王球場']].map(([id, t]) => `<button class="subtab" role="tab" data-sub="${id}" aria-selected="${sub === id}">${t}</button>`).join('')}
@@ -133,11 +134,13 @@ export function mountDraw(root) {
   };
 
   const render = () => {
+    syncNameList();
     root.innerHTML = html();
     root.querySelector('#add-form').addEventListener('submit', e => {
       e.preventDefault();
       const v = root.querySelector('#add-name').value.trim();
       if (!v || roster.names.includes(v)) return;
+      rememberNames([v]);
       roster = { names: [...roster.names, v], sample: false };
       if (play) setPlay(joinOpenPlay(play, v));
       saveRoster(roster); render();

@@ -3,6 +3,7 @@ import { createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, m
 import { coinFlip } from '../draw.js';
 import { FILTER, SCORE_SETUP } from '../data/nav.js';
 import { LANDSCAPE } from './scenes.js';
+import { NAME_INPUT, rememberNames, syncNameList } from './names.js';
 
 const KEY = 'picobo.match';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -27,7 +28,9 @@ function save(state) {
 }
 
 function setupHtml(prefill) {
-  const p = prefill ?? { target: 11, A: ['甲1', '甲2'], B: ['乙1', '乙2'] };
+  // Empty name fields show the default name as a placeholder and fall back to
+  // it, so the suggestion list has a blank field to work with.
+  const p = prefill ?? { target: 11, A: [], B: [] };
   const choice = prefill
     ? { play: p.A.length > 1 ? 'doubles' : 'singles', scoring: p.mode === 'fun' ? 'fun' : p.mode.split('-')[0] }
     : defaultChoice();
@@ -39,8 +42,8 @@ function setupHtml(prefill) {
     <input type="hidden" name="mode" value="${modeOf(choice.play, choice.scoring)}">`;
   const names = (team, list) => `<div class="field team-fields-col">
     <div class="team-label"><span class="swatch swatch-${team}"></span>${team === 'A' ? '甲隊' : '乙隊'}</div>
-    <input class="input" id="name-${team}-0" value="${esc(list[0] ?? '')}" placeholder="球員 1" maxlength="6">
-    <input class="input" id="name-${team}-1" value="${esc(list[1] ?? '')}" placeholder="球員 2" maxlength="6" data-doubles-only>
+    <input class="input" id="name-${team}-0" value="${esc(list[0] ?? '')}" placeholder="${team === 'A' ? '甲' : '乙'}1" maxlength="8" ${NAME_INPUT}>
+    <input class="input" id="name-${team}-1" value="${esc(list[1] ?? '')}" placeholder="${team === 'A' ? '甲' : '乙'}2" maxlength="8" ${NAME_INPUT} data-doubles-only>
   </div>`;
   return `<div class="section-head"><h2>計分板</h2><p class="intro">按誰贏了這一球，站位、換發、喊分自動算好。</p></div>
   <form class="card" id="setup">
@@ -153,6 +156,7 @@ export function mountScoreboard(root) {
   document.addEventListener('visibilitychange', syncPlaying);
 
   const renderSetup = () => {
+    syncNameList();
     root.innerHTML = setupHtml(prefill);
     const form = root.querySelector('#setup');
     const pick = k => form.querySelector(`[data-k="${k}"][aria-pressed="true"]`).dataset.v;
@@ -185,6 +189,7 @@ export function mountScoreboard(root) {
         if (doubles) list.push(form[`name-${id}-1`].value.trim() || (id === 'A' ? '甲2' : '乙2'));
         return list;
       };
+      rememberNames([...names('A'), ...names('B')]);
       state = createMatch({
         mode, target: Number(form.target.value), winBy: Number(form.winby.value),
         teams: { A: names('A'), B: names('B') }, firstServer: form.first.value, decidingGame: form.deciding.checked,
