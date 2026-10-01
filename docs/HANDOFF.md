@@ -194,10 +194,11 @@ The rules tab was one 16,800 px page on a phone. Now:
   precache list checked by `tests/sw.test.js`). A yellow 安裝 button in the
   top bar and an install card on the home page: a button where the browser offers a prompt (Chrome, Edge, Android),
   Share > Add to Home Screen steps on iPhone/iPad (File > Add to Dock on Mac
-  Safari) in a small dialog, nothing once installed or where install is not
-  possible (artifact preview, Firefox, in-app browsers such as LINE). Safari
-  cannot tell whether the app is already on the home screen, so there the
-  button stays.
+  Safari) in a small dialog; Android without a prompt gets ⋮ > Install app
+  steps; LINE / Facebook / Instagram in-app browsers are told to open the page
+  in a real browser. Nothing shows once running installed, or on desktop
+  browsers without a prompt. A browser tab cannot tell whether the app is
+  already installed, so on phones the button stays in the browser.
 - Light/dark toggle (`src/ui/theme.js`), top right on phones and after the
   tabs on desktop. Light by default (the system setting is ignored); dark
   only when chosen. The choice is stored as

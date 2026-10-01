@@ -5,8 +5,10 @@ import { esc } from './scenes.js';
 // Chrome, Edge and Android hand us an install prompt (beforeinstallprompt)
 // that a button can trigger. iPhone, iPad and Mac Safari have no prompt, so
 // they get the Share > Add to Home Screen (or File > Add to Dock) steps.
-// Nothing shows once the app runs installed, or where neither applies (the
-// claude.ai artifact preview, Firefox, in-app browsers).
+// Android without a prompt (just uninstalled, or Chrome not offering yet) gets
+// the ⋮ > Install app steps; in-app browsers (LINE, Facebook, Instagram) are
+// told to open the page in a real browser first. Nothing shows once the app
+// runs installed, or on desktop browsers without a prompt.
 let deferred = null;
 const listeners = new Set();
 const changed = () => listeners.forEach(f => f());
@@ -18,8 +20,13 @@ const installed = () => matchMedia('(display-mode: standalone)').matches || navi
 const iosSafari = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const macSafari = () => /Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints <= 1
   && /Version\/[\d.]+ Safari/.test(navigator.userAgent) && !/Chrome|Chromium|Edg|Firefox/.test(navigator.userAgent);
+const inApp = () => /\bLine\/|FBAN|FBAV|Instagram/i.test(navigator.userAgent);
+const android = () => /Android/.test(navigator.userAgent);
 // The how-to text for browsers without a prompt, or null where install is not offered.
-const manualSteps = () => (iosSafari() ? HOME.install.ios : macSafari() ? HOME.install.mac : null);
+const manualSteps = () => (inApp() ? HOME.install.inApp
+  : iosSafari() ? HOME.install.ios
+  : android() ? HOME.install.android
+  : macSafari() ? HOME.install.mac : null);
 const offered = () => !installed() && (deferred || manualSteps());
 
 async function promptInstall() {
