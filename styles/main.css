@@ -139,7 +139,7 @@ button { cursor: pointer; }
   .bottom-nav .tab + .tab { border-left: var(--bw) solid transparent; }
   .bottom-nav .tab svg { width: 24px; height: 24px; }
   .bottom-nav .tab[aria-selected="true"] { background: var(--mark); color: var(--mark-fg); border-color: var(--ink); font-weight: 900; }
-  .page { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  main.page { padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); } /* clears the fixed bottom bar; main. beats the base .page rule below */
 }
 
 /* Home */
