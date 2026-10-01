@@ -88,6 +88,15 @@ function modeLabel(state) {
   return SCORE_SETUP.playing.replace('{play}', play.label).replace('{scoring}', scoring.en ?? scoring.label).replace('{target}', state.target);
 }
 
+// Full screen sits as an icon in the board's top-right corner: four corners
+// pointing out to enter, pointing in to leave.
+function fullscreenIcon() {
+  const on = !!document.fullscreenElement;
+  const d = on ? 'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5' : 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5';
+  const label = esc(on ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen);
+  return `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="${d}"/></svg><span class="sr-only">${label}</span>`;
+}
+
 function playHtml(state) {
   const A = state.teams.A.names.join('・'), B = state.teams.B.names.join('・');
   const teamName = id => (id === 'A' ? '甲隊' : '乙隊');
@@ -108,6 +117,7 @@ function playHtml(state) {
     ? `<p class="winner">${teamName(state.winner)}贏了 🎉 ${state.scores.A}-${state.scores.B}</p>` : '';
   return `<div class="board">
     <p class="mode-tag">${esc(modeLabel(state))}</p>
+    ${document.fullscreenEnabled ? `<button class="fs-btn" type="button" id="fullscreen" title="${esc(SCORE_SETUP.fullscreen)}">${fullscreenIcon()}</button>` : ''}
     <div class="announce"><div class="big num" id="big">${esc(announce(state))}</div><div class="who">${who}</div>${gpTag}</div>
     ${banner}${winner}
     ${state.mode === 'fun' ? '' : '<div class="court-wrap" id="board-court"></div>'}
@@ -120,7 +130,6 @@ function playHtml(state) {
       ${state.finished ? '<button class="btn btn-primary" id="again">再來一局</button>' : ''}
       <button class="btn btn-ghost" id="reset">重新設定</button>
       ${handoffButtonHtml()}
-      ${document.fullscreenEnabled ? `<button class="btn btn-ghost" id="fullscreen">${esc(document.fullscreenElement ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen)}</button>` : ''}
     </div>
   </div>`;
 }
@@ -237,7 +246,7 @@ export function mountScoreboard(root) {
   // Keep the full-screen button's label right when the user leaves with Esc or a gesture.
   document.addEventListener('fullscreenchange', () => {
     const b = root.querySelector('#fullscreen');
-    if (b) b.textContent = document.fullscreenElement ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen;
+    if (b) { b.innerHTML = fullscreenIcon(); b.title = document.fullscreenElement ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen; }
   });
 
   if (state) renderPlay(); else renderSetup();

@@ -409,7 +409,13 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .swatch-B { background: var(--team-b); }
 
 /* Scoreboard play */
-.board { display: grid; gap: 16px; }
+.board { display: grid; gap: 16px; position: relative; }
+.fs-btn {
+  position: absolute; top: -6px; right: -6px; width: 44px; height: 44px; display: grid; place-items: center;
+  border: 2px solid var(--ink); border-radius: var(--radius-sm); background: var(--surface); color: var(--fg);
+}
+.fs-btn svg { width: 20px; height: 20px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .announce {
   text-align: center; display: grid; gap: 4px; padding: 14px 10px; border-radius: var(--radius-sm);
   background: #111111; color: #ffffff; border: var(--bw) solid var(--ink);
