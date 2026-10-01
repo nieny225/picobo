@@ -78,20 +78,26 @@ test('side-out singles: server position follows parity, side-out hands the serve
   assert.equal(announce(s), '0-1');
 });
 
-test('rally doubles: every rally scores, server picked by parity on hand-over, swap on serving-team point', () => {
+test('rally doubles: every rally scores; after a side-out the team aligns to its score and the right-court player serves (14.A.4)', () => {
   let s = createMatch({ mode: 'rally-doubles', teams, target: 21 });
   assert.equal(s.server, 'A1');
-  s = pointWon(s, 'A');
+  s = pointWon(s, 'A');                      // server alternates serving areas after each point
   assert.deepEqual(s.scores, { A: 1, B: 0 });
   assert.equal(s.server, 'A1');
   assert.deepEqual(s.teams.A.positions, { right: 'A2', left: 'A1' });
-  s = pointWon(s, 'B');                      // B gets the point and the serve at 1 (odd): left player serves
+  assert.equal(serverPosition(s), 'left');
+  s = pointWon(s, 'B');                      // side-out: B is at 1 (odd), so B1 moves left, B2 right, B2 serves from the right
   assert.deepEqual(s.scores, { A: 1, B: 1 });
   assert.equal(s.serving, 'B');
+  assert.deepEqual(s.teams.B.positions, { right: 'B2', left: 'B1' });
   assert.equal(s.server, 'B2');
+  assert.equal(serverPosition(s), 'right');
   assert.equal(announce(s), '1-1');
-  s = pointWon(s, 'A');                      // A gets it back at 2 (even): right player, who is now A2
-  assert.equal(s.server, 'A2');
+  assert.deepEqual(s.teams.A.positions, { right: 'A2', left: 'A1' }); // the team that lost the rally does not move
+  s = pointWon(s, 'A');                      // side-out back to A at 2 (even): A1 returns right and serves
+  assert.deepEqual(s.teams.A.positions, { right: 'A1', left: 'A2' });
+  assert.equal(s.server, 'A1');
+  assert.equal(serverPosition(s), 'right');
 });
 
 test('rally doubles: the receiving team can win the game', () => {

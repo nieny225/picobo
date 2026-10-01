@@ -72,7 +72,8 @@ tests/*.test.js         node:test for the pure modules
   side-out the first server is whoever is currently in the right court; only
   the serving team swaps positions, and only when it scores. Rally doubles
   follows the USA Pickleball provisional rule (2026): every rally scores, no
-  second server, the hand-over server is the player on the parity side.
+  second server, each team stands by its own score (rule 14.A.4) and after
+  a side-out the player now in the right court serves.
 - CSS: colors and spacing are custom properties on `:root`, redefined for
   dark mode. Tap targets are at least 44px. No horizontal page scroll at
   360px width. Prefer `scroll-snap` carousels for step-by-step rule scenes.

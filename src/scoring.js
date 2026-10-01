@@ -5,9 +5,10 @@
 // Modes
 //   sideout-doubles  USA Pickleball side-out scoring, two servers, 0-0-2 start
 //   sideout-singles  side-out scoring, one server, position from score parity
-//   rally-doubles    USA Pickleball provisional rally scoring (2026): every
-//                    rally scores, no second server, either team can score
-//                    the winning point
+//   rally-doubles    USA Pickleball provisional rally scoring (2026, rule 14):
+//                    every rally scores, no second server, either team can
+//                    score the winning point, teams stand by their score and
+//                    the right-court player serves after a side-out
 //   fun              plain counters for short games; no serving logic
 
 export const MODES = ['sideout-doubles', 'sideout-singles', 'rally-doubles', 'fun'];
@@ -86,14 +87,17 @@ function sideoutSingles(s, team) {
   else { s.serving = team; s.server = s.teams[team].names[0]; }
 }
 
+// Rule 14.A.4: a team always stands by its own score (the player who started
+// on the right is on the right at an even score), and after a side-out the
+// player now on the right serves. Only the team that won the point moves.
 function rallyDoubles(s, team) {
   s.scores[team] += 1;
-  if (team === s.serving) {
-    swap(s.teams[team]);
-  } else {
+  const t = s.teams[team];
+  const even = s.scores[team] % 2 === 0;
+  t.positions = { right: even ? t.names[0] : t.names[1], left: even ? t.names[1] : t.names[0] };
+  if (team !== s.serving) {
     s.serving = team;
-    const pos = s.scores[team] % 2 === 0 ? 'right' : 'left';
-    s.server = s.teams[team].positions[pos];
+    s.server = t.positions.right;
   }
 }
 
