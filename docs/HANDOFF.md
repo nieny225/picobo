@@ -142,6 +142,10 @@ The rules tab was one 16,800 px page on a phone. Now:
   engine modes including rally-singles. The picker defaults to the rules
   filter when one is saved.
 - On the rules index the sticky bar shows the section currently under it.
+- `tests/scoring-oracle.test.js` cross-checks the engine against a separate
+  rulebook reference over 300 random games per play x scoring combination
+  (calls, server, server's court, positions, scores, game end, undo). It
+  fails against the pre-14.A.4 engine, so it does catch real mistakes.
 - Page heights at 390 px: index ~2,100, a rule page ~1,350, formats ~3,400.
 
 ## Live on picobo.net (2026-09-30)
