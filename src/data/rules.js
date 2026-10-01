@@ -2,6 +2,7 @@
 // 括號內是規則書章節。場景的位置名稱由 src/court.js 定義。
 // 甲隊（A）在球場下半（near），乙隊（B）在上半（far）。
 // en：英文術語，顯示在標題後的括號裡，用詞以 glossary.js 為準。
+// singlesScenes：單打雙打都適用的規則，切到單打時改用這組兩人的圖。
 
 export const RULEBOOK = 'USA Pickleball Official Rulebook 2026';
 
@@ -9,6 +10,11 @@ const A1 = (extra = {}) => ({ team: 'A', side: 'near', pos: 'right', label: '甲
 const A2 = (extra = {}) => ({ team: 'A', side: 'near', pos: 'left', label: '甲2', ...extra });
 const B1 = (extra = {}) => ({ team: 'B', side: 'far', pos: 'right', label: '乙1', ...extra });
 const B2 = (extra = {}) => ({ team: 'B', side: 'far', pos: 'left', label: '乙2', ...extra });
+
+// 單打：甲在下半場、乙在上半場
+const S = (extra = {}) => A1({ label: '甲', ...extra });
+const R = (extra = {}) => B1({ label: '乙', ...extra });
+const srv = { depth: 'behind', serving: true };
 
 // 雙打四人都站底線的預設站位
 const four = (serving = {}) => [A1(serving.A1), A2(serving.A2), B1(serving.B1), B2(serving.B2)];
@@ -48,6 +54,10 @@ export const SECTIONS = [
           '發球時廚房和廚房線都是「不能落」的區域，發球碰到廚房線就是失誤；其他時候廚房線跟一般的線一樣算界內。',
           '自己那一邊的界內外由自己判，看不清楚就判對方界內。',
         ],
+        singlesScenes: [
+          { caption: '正常回合中，球碰到廚房線算界內。', highlight: ['kitchenLine:near'], ball: { path: ['far:left:mid', 'near:right:kitchenLine'], bounces: [1] } },
+          { caption: '發球時碰到廚房線就是失誤，球必須落在廚房線之後。', highlight: ['kitchenLine:far', 'nvz:far'], players: [S(srv), R()], ball: { path: ['near:right:behind', 'far:right:kitchenLine'], bounces: [1] } },
+        ],
         scenes: [
           { caption: '正常回合中，球碰到廚房線算界內。', highlight: ['kitchenLine:near'], ball: { path: ['far:left:mid', 'near:right:kitchenLine'], bounces: [1] } },
           { caption: '發球時碰到廚房線就是失誤，球必須落在廚房線之後。', highlight: ['kitchenLine:far', 'nvz:far'], players: [A1({ depth: 'behind', serving: true })], ball: { path: ['near:right:behind', 'far:right:kitchenLine'], bounces: [1] } },
@@ -74,6 +84,11 @@ export const SECTIONS = [
           '發球碰網後落在正確的發球區照打，2021 年起沒有 let 重發。',
           '發球前要先喊分數，喊完 10 秒內要發出去。',
         ],
+        singlesScenes: [
+          { caption: '發球的人站在底線後面，至少一腳踩在地上。', highlight: ['baseline:near'], players: [S(srv), R()] },
+          { caption: '對角發到對面的發球區，球要飛過廚房和廚房線。', highlight: ['serviceBox:far:right'], players: [S(srv), R()], ball: { path: ['near:right:behind', 'far:right:mid'], bounces: [1] } },
+          { caption: '發太短落在廚房或廚房線上，失誤。', highlight: ['nvz:far'], players: [S(srv), R()], ball: { path: ['near:right:behind', 'far:right:kitchen'], bounces: [1] } },
+        ],
         scenes: [
           { caption: '發球的人站在底線後面，至少一腳踩在地上。', highlight: ['baseline:near'], players: [A1({ depth: 'behind', serving: true }), A2(), B1(), B2()] },
           { caption: '對角發到對面的發球區，球要飛過廚房和廚房線。', highlight: ['serviceBox:far:right'], players: [A1({ depth: 'behind', serving: true }), A2(), B1(), B2()], ball: { path: ['near:right:behind', 'far:right:mid'], bounces: [1] } },
@@ -91,6 +106,11 @@ export const SECTIONS = [
           '所以發球方發完球不要急著衝上網，先站在底線等第三拍。',
           '兩次落地之後，誰都可以截擊，但廚房規則還是要守。',
         ],
+        singlesScenes: [
+          { caption: '第一拍：發球，球在對面落地一次。', players: [S(srv), R()], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 1 } },
+          { caption: '第二拍：乙等球落地再回，球回到甲這邊也要落地一次。', players: [S({ depth: 'behind' }), R()], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 2 } },
+          { caption: '第三拍起：兩次落地都完成，之後可以在空中直接截擊。', players: [S({ depth: 'mid' }), R({ pos: 'left', depth: 'kitchenLine' })], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 3 } },
+        ],
         scenes: [
           { caption: '第一拍：發球，球在對面落地一次。', players: [A1({ depth: 'behind', serving: true }), A2(), B1(), B2()], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 1 } },
           { caption: '第二拍：接發球的人等球落地再回，球回到發球方也要落地一次。', players: [A1({ depth: 'behind' }), A2(), B1(), B2()], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchenLine'], bounces: [1, 2], step: 2 } },
@@ -107,6 +127,11 @@ export const SECTIONS = [
           '截擊的整個動作都不能碰到廚房：起跳前、揮拍中、揮完之後因為衝力踩進去，都算犯規，就算球已經死了也一樣。',
           '你身上的東西掉進廚房也算：帽子、拍子、眼鏡。搭檔拉住你不讓你跌進去也算犯規。',
           '球落地之後可以進廚房打，打完再退出去。但只要人還在廚房裡或踩著線，就不能截擊下一球；要兩腳都回到廚房線外才可以。',
+        ],
+        singlesScenes: [
+          { caption: '兩個人都站在廚房線後面打 dink。', highlight: ['nvz'], players: [S({ depth: 'kitchenLine' }), R({ pos: 'left', depth: 'kitchenLine' })] },
+          { caption: '人在廚房裡把球在空中打回去：犯規。', highlight: ['nvz:near'], players: [S({ depth: 'kitchen' }), R({ pos: 'left', depth: 'kitchenLine' })], ball: { path: ['far:left:kitchenLine', 'near:right:kitchen'] } },
+          { caption: '球先落在廚房裡，再進去打：合法。', highlight: ['nvz:near'], players: [S({ depth: 'kitchen' }), R({ pos: 'left', depth: 'kitchenLine' })], ball: { path: ['far:left:kitchenLine', 'near:right:kitchen', 'far:left:kitchen'], bounces: [1], step: 2 } },
         ],
         scenes: [
           { caption: '四個人都站在廚房線後面打 dink，這是最常見的畫面。', highlight: ['nvz'], players: [A1({ depth: 'kitchenLine' }), A2({ depth: 'kitchenLine' }), B1({ depth: 'kitchenLine' }), B2({ depth: 'kitchenLine' })] },
@@ -128,6 +153,9 @@ export const SECTIONS = [
           '雙擊：同一個人連續打到球兩下，除非是一個連續的揮拍動作。',
           '發球員錯、站位錯：正式比賽裁判會叫停糾正；自己打的話，發現了就重打那一球。',
         ],
+        singlesScenes: [
+          { caption: '球落在底線外，出界。', highlight: ['baseline:far'], players: [S(), R({ pos: 'left' })], ball: { path: ['near:right:mid', 'far:left:behind'], bounces: [1] } },
+        ],
         scenes: [
           { caption: '球落在底線外，出界。', highlight: ['baseline:far'], players: four(), ball: { path: ['near:left:mid', 'far:left:behind'], bounces: [1] } },
         ],
@@ -141,6 +169,9 @@ export const SECTIONS = [
         detail: [
           '三局兩勝的第三局，第一個到 6 分的時候兩隊換邊，發球權不變，繼續由原本的人發。15 分制在 8 分換，21 分制在 11 分換。',
           '換場有 1 分鐘，局與局之間有 2 分鐘。',
+        ],
+        singlesScenes: [
+          { caption: '決勝局 6-3 時換邊，發球的人不變。', players: [S(srv), R()] },
         ],
         scenes: [
           { caption: '決勝局 6-3 時換邊，發球員不變。', players: four({ A1: { depth: 'behind', serving: true } }) },
@@ -167,6 +198,11 @@ export const SECTIONS = [
           '發球方贏了這一球得 1 分，同一個人繼續發。發球方輸了不扣分，換人發。',
           '正式比賽通常打三局兩勝，每局 11 分；也有 15 分或 21 分的賽制。',
           '單打喊兩個數字：「我方分數、對方分數」。',
+        ],
+        singlesScenes: [
+          { caption: '開局甲發球，喊「0-0」。單打只喊兩個數字。', players: [S(srv), R()] },
+          { caption: '甲贏這球變 1 分。1 是奇數，甲換到左邊發，喊「1-0」。', players: [S({ pos: 'left', ...srv }), R({ pos: 'left' })] },
+          { caption: '甲輸了這一球。單打沒有第二發球員，直接換乙發。乙 0 分從右邊發，喊「0-1」。', players: [S(), R(srv)] },
         ],
         scenes: [
           { caption: '開局甲隊發球，喊「0-0-2」。', players: four({ A1: { depth: 'behind', serving: true } }) },

@@ -89,8 +89,12 @@ function appliesHtml(p) {
   return `<div class="format-meta applies"><span class="muted">${esc(FILTER.applies)}</span><span>${play}</span><span>${scoring}</span></div>`;
 }
 
-function pageBody(p) {
-  if (p.kind === 'rule') return ruleCard(p.item, appliesHtml(p));
+// Rules that apply to both play styles carry a two-player version of their
+// scenes; show it when the reader picked singles.
+const scenesFor = (p, f) => (f.play === 'singles' && p.item.singlesScenes) || p.item.scenes;
+
+function pageBody(p, f) {
+  if (p.kind === 'rule') return ruleCard({ ...p.item, scenes: scenesFor(p, f) }, appliesHtml(p));
   if (p.kind === 'compare') return compareTable(COMPARE);
   if (p.kind === 'faq') {
     return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="sub">${esc(p.en)}</p></div>
@@ -111,7 +115,7 @@ function pageHtml(p, f) {
     : '<span></span>';
   return `
     <nav class="rule-top"><a class="back" href="#rules">${esc(RULE_PAGE.back)}</a>${p.sec ? `<span class="muted small">${esc(p.sec.title)}</span>` : ''}</nav>
-    ${pageBody(p)}
+    ${pageBody(p, f)}
     <nav class="pager">${step(prev, RULE_PAGE.prev, 'prev')}${step(next, RULE_PAGE.next, 'next')}</nav>`;
 }
 
@@ -202,7 +206,7 @@ export function mountRules(root) {
     }
     if (p?.kind === 'rule') {
       const wrap = pageEl.querySelector('.scene-wrap');
-      if (wrap) wireScene(wrap, p.item.scenes);
+      if (wrap) wireScene(wrap, scenesFor(p, filter));
     }
   };
   pageEl.addEventListener('click', e => {
