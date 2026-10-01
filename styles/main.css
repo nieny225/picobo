@@ -415,6 +415,8 @@ td:first-child { font-weight: 700; white-space: nowrap; }
   border: 2px solid var(--ink); border-radius: var(--radius-sm); background: var(--surface); color: var(--fg);
 }
 .fs-btn svg { width: 20px; height: 20px; }
+.icon-btn { display: inline-flex; align-items: center; gap: 6px; }
+.icon-btn svg { width: 20px; height: 20px; flex: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .announce {
   text-align: center; display: grid; gap: 4px; padding: 14px 10px; border-radius: var(--radius-sm);
@@ -544,12 +546,17 @@ a.event-card:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(
    the screen with big score buttons and a bigger court. */
 html.is-fullscreen .topbar, html.is-fullscreen .bottom-nav, html.is-fullscreen #footer,
 html.is-fullscreen #view-score .section-head { display: none; }
-html.is-fullscreen main.page { max-width: none; padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px)); }
-html.is-fullscreen #view-score > .card { height: calc(100dvh - 16px - env(safe-area-inset-bottom, 0px)); box-shadow: none; margin-right: 0; padding: 12px; display: flex; flex-direction: column; }
+html.is-fullscreen main.page { max-width: none; padding: 8px; }
+/* The phone's own gesture bar can slide over the bottom edge in full screen,
+   so the card keeps a generous bottom margin inside. */
+html.is-fullscreen #view-score > .card { height: calc(100dvh - 16px); box-shadow: none; margin-right: 0; padding: 12px 12px max(28px, calc(12px + env(safe-area-inset-bottom, 0px))); display: flex; flex-direction: column; }
 html.is-fullscreen .board { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 10px; justify-content: space-evenly; }
 html.is-fullscreen .board > * { min-height: 0; }
-html.is-fullscreen .board .toolbar { flex-wrap: nowrap; gap: 8px; }
-html.is-fullscreen .board .toolbar .btn { padding: 0 10px; white-space: nowrap; }
+/* Bottom row: icons only, fixed size, never squeezed off screen. */
+html.is-fullscreen .board .toolbar { flex: none; flex-wrap: nowrap; gap: 14px; }
+html.is-fullscreen .board .toolbar .btn-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+html.is-fullscreen .board .toolbar .icon-btn, html.is-fullscreen .board .toolbar .share-btn { width: 56px; min-width: 56px; height: 48px; padding: 0; justify-content: center; }
+html.is-fullscreen .board .toolbar svg { width: 24px; height: 24px; }
 /* Score buttons: up to 30% of the screen, shrinking when the side-switch
    reminder needs the room. Tall enough to hit blind, never stretched. */
 html.is-fullscreen .score-row { flex: 0 1 clamp(120px, 30vh, 300px); min-height: 110px; margin-right: 0; }

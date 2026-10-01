@@ -126,9 +126,9 @@ function playHtml(state) {
       <button class="score-btn team-B" id="win-B"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.B}</span><span class="name">${esc(B)} 贏這球</span></button>
     </div>
     <div class="toolbar">
-      <button class="btn" id="undo"${state.history.length ? '' : ' disabled'}>復原上一球</button>
+      <button class="btn icon-btn" id="undo" aria-label="復原上一球"${state.history.length ? '' : ' disabled'}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span class="btn-text">復原上一球</span></button>
       ${state.finished ? '<button class="btn btn-primary" id="again">再來一局</button>' : ''}
-      <button class="btn btn-ghost" id="reset">重新設定</button>
+      <button class="btn btn-ghost icon-btn" id="reset" aria-label="重新設定"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg><span class="btn-text">重新設定</span></button>
       ${handoffButtonHtml()}
     </div>
   </div>`;
