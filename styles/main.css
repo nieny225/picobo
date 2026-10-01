@@ -403,6 +403,9 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 }
 .announce .big { font-family: var(--font-num); font-size: clamp(3.5rem, 18vw, 5.5rem); font-weight: 700; line-height: 1; letter-spacing: 0.02em; color: var(--mark); }
 .announce .who { color: #ffffff; font-weight: 700; }
+/* A sticker on the top edge, so the board keeps its height. */
+.announce { position: relative; }
+.announce .game-point { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); white-space: nowrap; padding: 1px 10px; font-size: 0.85rem; line-height: 1.5; border: 2px solid #111111; border-radius: 999px; background: var(--mark); color: var(--mark-fg); font-weight: 900; }
 .score-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-right: 5px; }
 .score-btn {
   border: var(--bw) solid var(--ink); border-radius: var(--radius); min-height: 110px; display: grid; gap: 2px; align-content: center; justify-items: center;

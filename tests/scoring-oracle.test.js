@@ -6,7 +6,7 @@
 // doubles 14.A.4), or "the server stands by their own score" (singles).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createMatch, pointWon, undo, announce, serverPosition } from '../src/scoring.js';
+import { createMatch, pointWon, undo, announce, serverPosition, gamePoint } from '../src/scoring.js';
 
 const TEAMS = { doubles: { A: ['A1', 'A2'], B: ['B1', 'B2'] }, singles: { A: ['A1'], B: ['B1'] } };
 const other = t => (t === 'A' ? 'B' : 'A');
@@ -88,6 +88,7 @@ for (const { play, scoring } of COMBOS) {
         if (play === 'doubles') {
           for (const t of ['A', 'B']) assert.deepEqual(s.teams[t].positions, ref.positions(t), `${where(n)}: team ${t} positions`);
         }
+        assert.deepEqual(gamePoint(s), ['A', 'B'].filter(t => pointWon(s, t).finished), `${where(n)}: game point`);
         const winner = rng() < 0.5 ? 'A' : 'B';
         const before = s;
         s = pointWon(s, winner);

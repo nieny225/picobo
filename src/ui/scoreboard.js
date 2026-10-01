@@ -1,5 +1,5 @@
 import { renderCourt } from '../court.js';
-import { createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other } from '../scoring.js';
+import { createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other, gamePoint } from '../scoring.js';
 import { coinFlip } from '../draw.js';
 import { FILTER, SCORE_SETUP } from '../data/nav.js';
 import { LANDSCAPE } from './scenes.js';
@@ -98,13 +98,16 @@ function playHtml(state) {
     const n = state.mode === 'sideout-doubles' ? `第 ${state.serverNumber} 發球員 ` : '';
     who = `${teamName(state.serving)}發球：${n}${esc(state.server)} 從${pos}發`;
   }
+  const gp = gamePoint(state);
+  const gpTag = gp.length === 0 ? ''
+    : `<div class="game-point">${esc(gp.length === 2 ? SCORE_SETUP.gamePointBoth : SCORE_SETUP.gamePoint.replace('{team}', teamName(gp[0])))}</div>`;
   const banner = sideSwitchDue(state)
     ? `<div class="banner"><span>到一半了，兩隊換場，發球員不變。</span><button class="btn" id="switched">已換場</button></div>` : '';
   const winner = state.finished
     ? `<p class="winner">${teamName(state.winner)}贏了 🎉 ${state.scores.A}-${state.scores.B}</p>` : '';
   return `<div class="board">
     <p class="mode-tag">${esc(modeLabel(state))}</p>
-    <div class="announce"><div class="big num" id="big">${esc(announce(state))}</div><div class="who">${who}</div></div>
+    <div class="announce"><div class="big num" id="big">${esc(announce(state))}</div><div class="who">${who}</div>${gpTag}</div>
     ${banner}${winner}
     ${state.mode === 'fun' ? '' : '<div class="court-wrap" id="board-court"></div>'}
     <div class="score-row${state.sidesSwitched ? ' switched' : ''}">

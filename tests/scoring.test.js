@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched } from '../src/scoring.js';
+import { createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, gamePoint } from '../src/scoring.js';
 
 const teams = { A: ['A1', 'A2'], B: ['B1', 'B2'] };
 const doubles = (extra = {}) => createMatch({ mode: 'sideout-doubles', teams, ...extra });
@@ -143,6 +143,22 @@ test('deciding game side switch is due at the midpoint once', () => {
   assert.equal(sideSwitchDue(s), true);
   s = markSidesSwitched(s);
   assert.equal(sideSwitchDue(s), false);
+});
+
+test('game point: only the serving side in side-out, either side in rally, none when tied', () => {
+  let s = doubles();
+  s = { ...s, scores: { A: 10, B: 7 }, serving: 'B', serverNumber: 1, server: 'B1' };
+  assert.deepEqual(gamePoint(s), [], 'side-out: A cannot score while receiving');
+  s = { ...s, serving: 'A', server: 'A1' };
+  assert.deepEqual(gamePoint(s), ['A']);
+  s = { ...s, scores: { A: 10, B: 10 } };
+  assert.deepEqual(gamePoint(s), [], 'win by 2: 10-10 is not game point');
+  let r = createMatch({ mode: 'rally-doubles', teams, target: 11 });
+  r = { ...r, scores: { A: 10, B: 7 }, serving: 'B' };
+  assert.deepEqual(gamePoint(r), ['A'], 'rally: the receiving side can be on game point');
+  r = { ...r, winBy: 1, scores: { A: 10, B: 10 } };
+  assert.deepEqual(gamePoint(r), ['A', 'B']);
+  assert.deepEqual(gamePoint(pointWon(r, 'A')), [], 'finished');
 });
 
 test('bad preconditions throw', () => {

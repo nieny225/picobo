@@ -22,6 +22,9 @@ export const SCORE_SETUP = {
   fun: { id: 'fun', label: '快打' },
   // 計分中畫面頂端標示目前模式，避免沿用舊比賽時搞不清楚是哪一種算法。
   playing: '{play}・{scoring}・打到 {target} 分',
+  // 下一球贏了就結束這局時，大比分下面的小標。
+  gamePoint: '{team}賽末點（Game Point）',
+  gamePointBoth: '雙方賽末點（Game Point）',
   hints: {
     'sideout-doubles': '側出計分：只有發球方得分，兩個發球員，喊三個數字。',
     'sideout-singles': '側出計分：只有發球方得分，偶數右邊、奇數左邊發。',

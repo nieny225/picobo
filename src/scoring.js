@@ -152,6 +152,18 @@ export function announce(state) {
   return `${state.scores[s]}-${state.scores[r]}`;
 }
 
+// Teams that end the game if they win the next rally ("game point"). In
+// side-out scoring only the serving side can score, so only it can be on game
+// point; in rally and fun scoring either side can. Empty when finished.
+export function gamePoint(state) {
+  if (state.finished) return [];
+  const canScore = state.mode.startsWith('sideout') ? [state.serving] : ['A', 'B'];
+  return canScore.filter(t => {
+    const mine = state.scores[t] + 1, theirs = state.scores[other(t)];
+    return mine >= state.target && mine - theirs >= state.winBy;
+  });
+}
+
 // Where the current server stands (their own right/left).
 export function serverPosition(state) {
   if (!state.server) return null;
