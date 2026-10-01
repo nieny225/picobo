@@ -170,6 +170,7 @@ button { cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); font-weight: 900; }
 .applies { align-items: center; }
 .applies .muted { border: 0; padding: 0; }
+.applies .en-tag { border: 0; padding: 0; }
 .applies .en-tag, th .en-tag, .drawer-note .en-tag { font-size: 1em; }
 .drawer-note { margin: 4px 4px 8px; font-size: 0.875rem; color: var(--muted); }
 .drawer-note b { color: var(--fg); }
@@ -288,6 +289,11 @@ details[open] summary::before { content: "－"; }
 /* Court */
 .court-wrap { width: 100%; max-width: 420px; margin: 0 auto; }
 .scene-wrap .court-wrap { max-width: 300px; touch-action: pan-y; }
+@media (max-width: 767px) { .scene-wrap .court-wrap { max-width: none; width: calc(100% + 16px); margin: 0 -8px; } }
+.court.landscape .player text { font-size: 19px; }
+.court.landscape .player.off text { font-size: 17px; }
+.court.landscape .court-zone { font-size: 16px; }
+.court.landscape .court-dim { font-size: 16px; }
 svg.court { width: 100%; height: auto; display: block; overflow: visible; }
 .court-surface { fill: var(--court); stroke: var(--ink); stroke-width: 8; }
 .court-nvz { fill: var(--court-nvz); }

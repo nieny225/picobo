@@ -79,15 +79,19 @@ function lines() {
   ].join('');
 }
 
-function dimensionLabels() {
+// In landscape the whole court is turned a quarter; every text is turned back
+// about its own anchor so it still reads upright.
+function dimensionLabels(land) {
   const t = 'class="court-dim"';
+  const up = (x, y) => (land ? ` transform="rotate(-90 ${x} ${y})"` : '');
+  const zone = land ? '廚房' : '廚房（非截擊區）';
   return [
-    `<text ${t} x="${XC}" y="${Y0 - 14}" text-anchor="middle">6.10 m（20 ft）</text>`,
-    `<text ${t} x="${X1 + 30}" y="${YN}" text-anchor="middle" transform="rotate(90 ${X1 + 30} ${YN})">13.41 m（44 ft）</text>`,
-    `<text ${t} x="${X0 - 8}" y="${(YK_FAR + YN) / 2 + 4}" text-anchor="end">2.13 m</text>`,
-    `<text ${t} x="${X0 - 8}" y="${(YK_NEAR + YN) / 2 + 4}" text-anchor="end">2.13 m</text>`,
-    `<text class="court-zone" x="${XC}" y="${(YK_FAR + YN) / 2 + 5}" text-anchor="middle">廚房（非截擊區）</text>`,
-    `<text class="court-zone" x="${XC}" y="${(YK_NEAR + YN) / 2 + 5}" text-anchor="middle">廚房（非截擊區）</text>`,
+    `<text ${t} x="${XC}" y="${Y0 - 14}" text-anchor="middle">6.10 m（20 ft）</text>`, // lying down this runs along the short edge
+    `<text ${t} x="${X1 + 30}" y="${YN}" text-anchor="middle" transform="rotate(${land ? -90 : 90} ${X1 + 30} ${YN})">13.41 m（44 ft）</text>`,
+    `<text ${t} x="${X0 - 8}" y="${(YK_FAR + YN) / 2 + 4}" text-anchor="${land ? 'middle' : 'end'}"${up(X0 - 8, (YK_FAR + YN) / 2 + 4)}>2.13 m</text>`,
+    `<text ${t} x="${X0 - 8}" y="${(YK_NEAR + YN) / 2 + 4}" text-anchor="${land ? 'middle' : 'end'}"${up(X0 - 8, (YK_NEAR + YN) / 2 + 4)}>2.13 m</text>`,
+    `<text class="court-zone" x="${XC}" y="${(YK_FAR + YN) / 2 + 5}" text-anchor="middle"${up(XC, (YK_FAR + YN) / 2 + 5)}>${zone}</text>`,
+    `<text class="court-zone" x="${XC}" y="${(YK_NEAR + YN) / 2 + 5}" text-anchor="middle"${up(XC, (YK_NEAR + YN) / 2 + 5)}>${zone}</text>`,
   ].join('');
 }
 
@@ -110,29 +114,46 @@ function ballPath(ball) {
   return out.join('');
 }
 
-function players(list) {
+// `rotated` says the markup goes inside the landscape quarter-turn group, so
+// labels are turned back to stay upright. Players placed off the court by
+// coordinates (a queue, people resting) are drawn outside that group when
+// lying down: under the court, left to right in queue order.
+function players(list, land, rotated) {
   return (list ?? []).map(p => {
-    const [x, y] = p.at ? (SPOTS[p.at] ?? p.at) : SPOTS[`${p.side}:${p.pos}:${p.depth ?? 'baseline'}`];
+    let [x, y] = p.at ? (SPOTS[p.at] ?? p.at) : SPOTS[`${p.side}:${p.pos}:${p.depth ?? 'baseline'}`];
     if (!x && x !== 0) throw new Error(`court: cannot place player ${p.label}`);
+    const off = Array.isArray(p.at);
+    if (land && off && !rotated) [x, y] = [y, VIEW.w - 10];
     const label = esc(String(p.label ?? '').slice(0, 2));
-    const cls = `player team-${p.team ?? 'A'}${p.serving ? ' serving' : ''}${p.dim ? ' dim' : ''}`;
-    const serve = p.serving ? `<circle class="serve-mark" cx="19" cy="-15" r="6"/>` : '';
-    return `<g class="${cls}" style="transform:translate(${x}px,${y}px)"><circle r="15"/><text y="5" text-anchor="middle">${label}</text>${serve}</g>`;
+    const cls = `player team-${p.team ?? 'A'}${p.serving ? ' serving' : ''}${p.dim ? ' dim' : ''}${off ? ' off' : ''}`;
+    // Lying down the court is drawn smaller, so players and labels grow.
+    const [r, ty, mark] = land && !off ? [22, 7, 'cx="27" cy="-20" r="8"'] : land ? [19, 7, 'cx="23" cy="-17" r="7"'] : [15, 5, 'cx="19" cy="-15" r="6"'];
+    const serve = p.serving ? `<circle class="serve-mark" ${mark}/>` : '';
+    const upright = `<text y="${ty}" text-anchor="middle">${label}</text>${serve}`;
+    return `<g class="${cls}" style="transform:translate(${x}px,${y}px)"><circle r="${r}"/>${rotated ? `<g transform="rotate(-90)">${upright}</g>` : upright}</g>`;
   }).join('');
 }
 
 // Renders the court into `el`. Idempotent: replaces previous content.
-export function renderCourt(el, scene = {}) {
+// opts.landscape turns the court a quarter turn for short screens: the near
+// side (bottom) goes to the left, the far side to the right, and a player's
+// own right is still their right (it ends up at the bottom for the near side).
+export function renderCourt(el, scene = {}, opts = {}) {
+  const land = !!opts.landscape;
   const hl = (scene.highlight ?? []).map(id => {
     const r = REGIONS[id];
     if (!r) throw new Error(`court: unknown region ${id}`);
     return rect(r, `court-hl hl-${id.replace(/:/g, '-')}`);
   }).join('');
   el.innerHTML =
-    `<svg class="court" viewBox="0 0 ${VIEW.w} ${VIEW.h}" role="img" aria-label="${esc(scene.alt ?? '匹克球球場示意圖')}">` +
+    `<svg class="court${land ? ' landscape' : ''}" viewBox="${land ? `-16 0 ${VIEW.h + 32} ${VIEW.w + 14}` : `0 0 ${VIEW.w} ${VIEW.h}`}" role="img" aria-label="${esc(scene.alt ?? '匹克球球場示意圖')}">` +
+    (land ? `<g transform="translate(${VIEW.h} 0) rotate(90)">` : '') +
     rect(REGIONS.court, 'court-surface') +
     rect(REGIONS['nvz:far'], 'court-nvz') + rect(REGIONS['nvz:near'], 'court-nvz') +
-    hl + lines() + (scene.labels ? dimensionLabels() : '') +
-    ballPath(scene.ball) + players(scene.players) +
+    hl + lines() + (scene.labels ? dimensionLabels(land) : '') +
+    ballPath(scene.ball) +
+    (land
+      ? players(scene.players?.filter(q => !Array.isArray(q.at)), true, true) + '</g>' + players(scene.players?.filter(q => Array.isArray(q.at)), true, false)
+      : players(scene.players, false, false)) +
     `</svg>`;
 }

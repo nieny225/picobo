@@ -142,6 +142,11 @@ The rules tab was one 16,800 px page on a phone. Now:
   engine modes including rally-singles. The picker defaults to the rules
   filter when one is saved.
 - On the rules index the sticky bar shows the section currently under it.
+- On phones (< 768px) rule and format scenes draw the court lying down
+  (`renderCourt(..., { landscape: true })`): near side on the left, labels
+  upright, bigger players, off-court queue under the court left to right. A
+  whole step (court, caption, buttons) now fits on one screen. Desktop, the
+  home hero and the scoreboard stay upright.
 - `tests/scoring-oracle.test.js` cross-checks the engine against a separate
   rulebook reference over 300 random games per play x scoring combination
   (calls, server, server's court, positions, scores, game end, undo). It

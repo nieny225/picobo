@@ -4,6 +4,10 @@
 import { renderCourt } from '../court.js';
 import { SCENE_NAV } from '../data/nav.js';
 
+// On phones the court is drawn lying down so a whole step (court, caption,
+// buttons) fits on one screen; desktop keeps it upright.
+const LANDSCAPE = matchMedia('(max-width: 767px)');
+
 export const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // English term after a title, e.g. 發球（Serve）.
@@ -45,11 +49,13 @@ export function wireScene(wrap, scenes) {
   const prev = wrap.querySelector('[data-dir="-1"]');
   const next = wrap.querySelector('[data-dir="1"]');
   let current = -1;
+  const draw = () => renderCourt(court, scenes[current], { landscape: LANDSCAPE.matches });
+  LANDSCAPE.addEventListener('change', () => { if (court.isConnected) draw(); });
   const setStep = i => {
     i = Math.max(0, Math.min(scenes.length - 1, i));
     if (i === current) return;
     current = i;
-    renderCourt(court, scenes[i]);
+    draw();
     dots.forEach((d, k) => d.classList.toggle('active', k === i));
     if (prev) prev.disabled = i === 0;
     if (next) next.disabled = i === scenes.length - 1;

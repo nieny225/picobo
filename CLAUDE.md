@@ -42,7 +42,8 @@ index.html              the page; hash-routed tabs: #home (default) #rules #scor
                         bottom bar on phones (< 768px)
 styles/main.css         design tokens on :root, dark mode, mobile-first
 src/app.js              router; mounts the views
-src/court.js            SVG court renderer shared by rules + scoreboard
+src/court.js            SVG court renderer shared by rules + scoreboard; renderCourt(el,
+                        scene, { landscape }) lies the court down (near side left)
 src/scoring.js          pure scoring state machines (no DOM)
 src/draw.js             pure draw / round-robin / king-of-court logic (no DOM)
 src/ui/home.js          home: slogan, hero court, entry cards
