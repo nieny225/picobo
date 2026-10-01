@@ -7,6 +7,10 @@ import { mountEvent } from './ui/event.js';
 import { autoHideTopbar } from './ui/topbar.js';
 import { mountThemeToggle } from './ui/theme.js';
 import { registerServiceWorker, mountInstallButton } from './ui/install.js';
+import { decodeHandoff } from './handoff.js';
+import { routeOf } from './ui/handoff.js';
+import { toast } from './ui/share.js';
+import { HANDOFF } from './data/nav.js';
 import { RULEBOOK } from './data/rules.js';
 
 const ROUTES = ['home', 'rules', 'formats', 'score', 'draw', 'picobowl'];
@@ -16,7 +20,8 @@ const TAB_OF = { formats: 'rules', picobowl: 'home' };
 // Hash shape: #<route> or #<route>/<sub>, e.g. #rules/kitchen. Links from v1
 // used #rules-<id>; those are rewritten in place.
 function parseHash() {
-  let h = location.hash.replace(/^#/, '');
+  // A hand-over link carries the state after '?': #score?s=...
+  let h = location.hash.replace(/^#/, '').split('?')[0];
   const legacy = h.match(/^rules-(.+)$/);
   if (legacy) {
     h = legacy[1] === 'formats' ? 'rules' : `rules/${legacy[1]}`;
@@ -35,8 +40,8 @@ mountInstallButton(document.getElementById('install-btn'));
 mountHome(document.getElementById('view-home'));
 const rules = mountRules(document.getElementById('view-rules'));
 const formats = mountFormats(document.getElementById('view-formats'));
-mountScoreboard(document.getElementById('view-score'));
-mountDraw(document.getElementById('view-draw'));
+const scoreboard = mountScoreboard(document.getElementById('view-score'));
+const draw = mountDraw(document.getElementById('view-draw'));
 const event = mountEvent(document.getElementById('view-picobowl'));
 document.getElementById('footer').textContent = `正統規則依據 ${RULEBOOK}。趣味玩法各球場做法不同，開打前先講好。`;
 
@@ -54,6 +59,23 @@ function show() {
   window.scrollTo({ top: 0 });
   topbar.show();
 }
+
+// Opening a hand-over link: load the state into the matching tool (asking
+// first if this phone already has one going), then drop it from the URL.
+async function receiveHandoff() {
+  const code = new URLSearchParams(location.hash.split('?')[1] ?? '').get('s');
+  if (!code) return;
+  let payload;
+  try { payload = await decodeHandoff(code); } catch { toast(HANDOFF.broken); history.replaceState(null, '', location.hash.split('?')[0]); return; }
+  const tool = { score: scoreboard, draw, tourney: event }[payload.kind];
+  const kind = HANDOFF.kinds[payload.kind];
+  history.replaceState(null, '', `#${routeOf(payload.kind)}`);
+  if (tool.hasState() && !confirm(HANDOFF.confirm.replace(/\{kind\}/g, kind))) { show(); return; }
+  try { tool.receive(payload.data); toast(HANDOFF.loaded); } catch { toast(HANDOFF.broken); }
+  show();
+}
+window.addEventListener('hashchange', receiveHandoff);
+receiveHandoff();
 
 for (const tab of document.querySelectorAll('.tab')) {
   tab.addEventListener('click', () => { location.hash = tab.dataset.route; });

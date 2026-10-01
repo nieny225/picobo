@@ -69,6 +69,17 @@ export const THEME = {
   toLight: '切換成淺色',
 };
 
+// 交接：把計分板、抽籤、Pico Bowl 主辦工具的目前狀態做成連結，傳給接手的人。
+export const HANDOFF = {
+  button: '交接',
+  aria: '把目前狀態做成連結，傳給接手的人',
+  titles: { score: 'Picobo 計分交接', draw: 'Picobo 抽籤交接', tourney: 'Pico Bowl 主辦交接' },
+  kinds: { score: '比賽', draw: '抽籤名單和戰績', tourney: 'Pico Bowl 賽程和比分' },
+  confirm: '這個連結帶著別人交接的{kind}，要取代這支手機上目前的{kind}嗎？',
+  loaded: '已接手，從這裡繼續。原本的手機就不要再記了。',
+  broken: '這個交接連結打不開，請對方重新分享一次。',
+};
+
 // 球場圖步驟輪播。step 裡的 {n} 換成第幾步。
 export const SCENE_NAV = {
   prev: '上一步',

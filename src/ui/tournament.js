@@ -1,14 +1,15 @@
 import { PICOBOWL as E, MANAGE as T } from '../data/event.js';
 import { createTournament, recordScore, standings, readyMatches } from '../tournament.js';
 import { esc } from './scenes.js';
+import { handoffButtonHtml, shareHandoff } from './handoff.js';
 
 // Organizer screen (#picobowl/manage): team entry, then courts, scores,
 // pool tables and playoffs. Everything lives in this phone's localStorage.
 const KEY = 'picobo.picobowl';
-function load() {
+export function loadManage() {
   try { return JSON.parse(localStorage.getItem(KEY)) ?? {}; } catch { return {}; }
 }
-function save(data) {
+export function saveManage(data) {
   try { localStorage.setItem(KEY, JSON.stringify(data)); } catch { /* storage unavailable: this visit only */ }
 }
 
@@ -80,7 +81,7 @@ function resultsText(s) {
 }
 
 export function renderManage(root) {
-  const data = load();
+  const data = loadManage();
   const current = data.state ?? null;
   const setup = () => `
     <div class="section-head"><h2>${esc(T.title)}</h2><p class="intro">${esc(T.intro)}</p></div>
@@ -105,6 +106,7 @@ export function renderManage(root) {
       </section>
       ${s.divisions.map(d => divisionHtml(s, d)).join('')}
       <div class="toolbar"><button class="btn" type="button" id="t-copy">${esc(T.copy)}</button>
+        ${handoffButtonHtml()}
         <button class="btn btn-ghost" type="button" id="t-reset">${esc(T.reset)}</button></div>
       <p class="t-copied muted small" hidden></p>`;
   };
@@ -124,7 +126,7 @@ export function renderManage(root) {
         const divisions = E.divisions.map(d => ({ id: d.id, name: d.name, block: d.block, teams: parseTeams(d, teams[d.id]) }))
           .filter(d => d.teams.length > 0);
         for (const d of divisions) if (d.teams.length < 2) throw new Error(fill(T.errors.tooFew, { div: divOf(d.id).short }));
-        save({ courts, teams, state: createTournament({ divisions, courts }) });
+        saveManage({ courts, teams, state: createTournament({ divisions, courts }) });
         renderManage(root);
         window.scrollTo({ top: 0 });
       } catch (err) { error(form, err.message.replace(/^tournament: /, '')); }
@@ -136,7 +138,7 @@ export function renderManage(root) {
     e.preventDefault();
     const a = form.a.value === '' ? NaN : Number(form.a.value), b = form.b.value === '' ? NaN : Number(form.b.value);
     try {
-      save({ ...data, state: recordScore(current, form.dataset.match, a, b) });
+      saveManage({ ...data, state: recordScore(current, form.dataset.match, a, b) });
       renderManage(root);
     } catch (err) { error(form, message(err)); }
   });
@@ -148,11 +150,12 @@ export function renderManage(root) {
       e.preventDefault();
       const f = e.currentTarget;
       try {
-        save({ ...data, state: recordScore(current, m.id, Number(f.a.value), Number(f.b.value)) });
+        saveManage({ ...data, state: recordScore(current, m.id, Number(f.a.value), Number(f.b.value)) });
         renderManage(root);
       } catch (err) { error(f, message(err)); }
     });
   });
+  root.querySelector('.handoff-btn').addEventListener('click', () => shareHandoff('tourney', data));
   root.querySelector('#t-copy').addEventListener('click', async () => {
     const text = resultsText(current), note = root.querySelector('.t-copied');
     try { await navigator.clipboard.writeText(text); note.textContent = T.copied; }
@@ -161,7 +164,7 @@ export function renderManage(root) {
   });
   root.querySelector('#t-reset').addEventListener('click', () => {
     if (!confirm(T.resetConfirm)) return;
-    save({ courts: data.courts, teams: data.teams });
+    saveManage({ courts: data.courts, teams: data.teams });
     renderManage(root);
   });
 }

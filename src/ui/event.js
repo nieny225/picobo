@@ -1,13 +1,21 @@
 import { PICOBOWL as E } from '../data/event.js';
 import { esc, enTag } from './scenes.js';
 import { shareButtonHtml, sharePage } from './share.js';
-import { renderManage } from './tournament.js';
+import { renderManage, loadManage, saveManage } from './tournament.js';
 
 // Pico Bowl tournament page (#picobowl) and the organizer screen
 // (#picobowl/manage, not linked from anywhere). Reachable by URL even while
 // the home card says Coming soon.
 export function mountEvent(root) {
-  return { show(sub) { if (sub === 'manage') renderManage(root); else renderInfo(root); } };
+  return {
+    show(sub) { if (sub === 'manage') renderManage(root); else renderInfo(root); },
+    hasState: () => !!loadManage().state,
+    // An organizer's teams, schedule and scores handed over from another phone.
+    receive(data) {
+      if (!Array.isArray(data?.state?.matches) || !Array.isArray(data.state.courts)) throw new Error('event: not a Pico Bowl hand-over');
+      saveManage(data);
+    },
+  };
 }
 
 function renderInfo(root) {

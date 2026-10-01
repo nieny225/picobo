@@ -1,8 +1,9 @@
 import { renderCourt } from '../court.js';
-import { createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other, gamePoint } from '../scoring.js';
+import { MODES, createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other, gamePoint } from '../scoring.js';
 import { coinFlip } from '../draw.js';
 import { FILTER, SCORE_SETUP } from '../data/nav.js';
 import { LANDSCAPE } from './scenes.js';
+import { handoffButtonHtml, shareHandoff } from './handoff.js';
 
 const KEY = 'picobo.match';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -118,6 +119,7 @@ function playHtml(state) {
       <button class="btn" id="undo"${state.history.length ? '' : ' disabled'}>復原上一球</button>
       ${state.finished ? '<button class="btn btn-primary" id="again">再來一局</button>' : ''}
       <button class="btn btn-ghost" id="reset">重新設定</button>
+      ${handoffButtonHtml()}
       ${document.fullscreenEnabled ? `<button class="btn btn-ghost" id="fullscreen">${esc(document.fullscreenElement ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen)}</button>` : ''}
     </div>
   </div>`;
@@ -197,6 +199,8 @@ export function mountScoreboard(root) {
   const renderPlay = () => {
     root.innerHTML = `<div class="section-head"><h2>計分板</h2></div><div class="card">${playHtml(state)}</div>`;
     syncPlaying();
+    // The last 10 rallies travel with the hand-over so the next scorekeeper can still undo.
+    root.querySelector('.handoff-btn').addEventListener('click', () => shareHandoff('score', { ...state, history: state.history.slice(-10) }));
     root.querySelector('#fullscreen')?.addEventListener('click', async () => {
       try {
         if (document.fullscreenElement) await document.exitFullscreen();
@@ -237,4 +241,13 @@ export function mountScoreboard(root) {
   });
 
   if (state) renderPlay(); else renderSetup();
+
+  return {
+    hasState: () => !!state,
+    // A match handed over from another phone. Throws on anything that is not one.
+    receive(data) {
+      if (!MODES.includes(data?.mode) || !data.scores || !data.teams?.A || !Array.isArray(data.history)) throw new Error('scoreboard: not a match');
+      state = data; save(state); renderPlay();
+    },
+  };
 }

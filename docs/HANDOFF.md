@@ -188,6 +188,13 @@ The rules tab was one 16,800 px page on a phone. Now:
   incognito, the phone once clicked through a certificate warning (before the
   Pages certificate existed). Chrome keeps that until it restarts: force stop
   Chrome, reopen https://picobo.net, and install works again.
+- 交接 (hand-over) links: the scoreboard (play screen), 抽籤 (page head) and
+  the Pico Bowl organizer screen each have a 交接 button that shares
+  `https://picobo.net/#<tool>?s=<state>`. `src/handoff.js` packs the state
+  (deflate-raw + base64url where CompressionStream exists, else plain JSON);
+  `app.js` loads it into the tool on open, asks before replacing a game in
+  progress, and drops the state from the URL. The scoreboard sends the last 10
+  rallies so undo still works. A link is a snapshot, not a live sync.
 - Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
   screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;

@@ -55,6 +55,7 @@ src/court.js            SVG court renderer shared by rules + scoreboard; renderC
 src/scoring.js          pure scoring state machines (no DOM)
 src/draw.js             pure draw / round-robin / king-of-court logic (no DOM)
 src/tournament.js       pure Pico Bowl logic: pools, court queue, standings, playoffs (no DOM)
+src/handoff.js          pack / unpack a tool's state into a hand-over link (#score?s=…)
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes
 src/ui/formats.js       fun formats index + one page per format with court scenes
@@ -62,6 +63,7 @@ src/ui/scenes.js        court scene carousel shared by rules and formats
 src/ui/scoreboard.js    scoreboard view
 src/ui/draw.js          draw + rotation view
 src/ui/share.js         share button: system share sheet, else copy link (picobo.net URL)
+src/ui/handoff.js       交接 button: shares picobo.net/#<tool>?s=<state>; app.js loads it
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
 src/ui/install.js       install button (top bar) + card (home); registers the service worker

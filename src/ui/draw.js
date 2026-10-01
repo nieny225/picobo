@@ -1,4 +1,5 @@
 import { DRAW_SAMPLE, OPEN_PLAY } from '../data/nav.js';
+import { handoffButtonHtml, shareHandoff } from './handoff.js';
 import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay } from '../draw.js';
 
 const ROSTER_KEY = 'picobo.roster';
@@ -33,7 +34,7 @@ export function mountDraw(root) {
   const setPlay = p => { play = p; savePlay(p); };
 
   const html = () => `
-    <div class="section-head"><h2>抽籤輪轉</h2><p class="intro">先輸入今天的球友，再選要怎麼分。</p></div>
+    <div class="section-head"><div class="head-row"><h2>抽籤輪轉</h2>${handoffButtonHtml()}</div><p class="intro">先輸入今天的球友，再選要怎麼分。</p></div>
     <div class="card">
       <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3>${roster.sample ? '<span class="example-note">範例名單，改成你們的</span>' : ''}</div>
       <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip">${esc(n)}<button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
@@ -151,7 +152,18 @@ export function mountDraw(root) {
       koc = null; saveRoster(roster); render();
     });
     for (const t of root.querySelectorAll('.subtab')) t.addEventListener('click', () => { sub = t.dataset.sub; render(); });
+    root.querySelector('.handoff-btn').addEventListener('click', () => shareHandoff('draw', { roster, play, koc, sub }));
     renderSub();
   };
   render();
+
+  return {
+    hasState: () => !roster.sample || !!play || !!koc,
+    // A roster (and open-play / king-of-court session) handed over from another phone.
+    receive(data) {
+      if (!Array.isArray(data?.roster?.names)) throw new Error('draw: not a draw hand-over');
+      roster = data.roster; play = data.play ?? null; koc = data.koc ?? null; sub = data.sub ?? 'draw';
+      saveRoster(roster); savePlay(play); render();
+    },
+  };
 }
