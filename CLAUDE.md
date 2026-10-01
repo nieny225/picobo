@@ -63,7 +63,7 @@ src/ui/scenes.js        court scene carousel shared by rules and formats
 src/ui/scoreboard.js    scoreboard view
 src/ui/draw.js          draw + rotation view
 src/ui/share.js         share button: system share sheet, else copy link (picobo.net URL)
-src/ui/handoff.js       交接 button: shares picobo.net/#<tool>?s=<state>; app.js loads it
+src/ui/handoff.js       share-state button + explainer sheet: picobo.net/#<tool>?s=<state>; app.js loads it
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
 src/ui/install.js       install button (top bar) + card (home); registers the service worker

@@ -188,8 +188,9 @@ The rules tab was one 16,800 px page on a phone. Now:
   incognito, the phone once clicked through a certificate warning (before the
   Pages certificate existed). Chrome keeps that until it restarts: force stop
   Chrome, reopen https://picobo.net, and install works again.
-- 交接 (hand-over) links: the scoreboard (play screen), 抽籤 (page head) and
-  the Pico Bowl organizer screen each have a 交接 button that shares
+- Hand-over links: the scoreboard (play screen), 抽籤 (page head) and the Pico
+  Bowl organizer screen each have a plain 分享 button; tapping it first opens a
+  short sheet saying the other person can carry on from the link, then shares
   `https://picobo.net/#<tool>?s=<state>`. `src/handoff.js` packs the state
   (deflate-raw + base64url where CompressionStream exists, else plain JSON);
   `app.js` loads it into the tool on open, asks before replacing a game in

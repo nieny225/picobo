@@ -3,7 +3,7 @@ import { MODES, createMatch, pointWon, undo, announce, serverPosition, sideSwitc
 import { coinFlip } from '../draw.js';
 import { FILTER, SCORE_SETUP } from '../data/nav.js';
 import { LANDSCAPE } from './scenes.js';
-import { handoffButtonHtml, shareHandoff } from './handoff.js';
+import { handoffButtonHtml, openHandoff } from './handoff.js';
 
 const KEY = 'picobo.match';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -200,7 +200,7 @@ export function mountScoreboard(root) {
     root.innerHTML = `<div class="section-head"><h2>計分板</h2></div><div class="card">${playHtml(state)}</div>`;
     syncPlaying();
     // The last 10 rallies travel with the hand-over so the next scorekeeper can still undo.
-    root.querySelector('.handoff-btn').addEventListener('click', () => shareHandoff('score', { ...state, history: state.history.slice(-10) }));
+    root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('score', { ...state, history: state.history.slice(-10) }));
     root.querySelector('#fullscreen')?.addEventListener('click', async () => {
       try {
         if (document.fullscreenElement) await document.exitFullscreen();

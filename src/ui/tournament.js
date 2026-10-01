@@ -1,7 +1,7 @@
 import { PICOBOWL as E, MANAGE as T } from '../data/event.js';
 import { createTournament, recordScore, standings, readyMatches } from '../tournament.js';
 import { esc } from './scenes.js';
-import { handoffButtonHtml, shareHandoff } from './handoff.js';
+import { handoffButtonHtml, openHandoff } from './handoff.js';
 
 // Organizer screen (#picobowl/manage): team entry, then courts, scores,
 // pool tables and playoffs. Everything lives in this phone's localStorage.
@@ -155,7 +155,7 @@ export function renderManage(root) {
       } catch (err) { error(f, message(err)); }
     });
   });
-  root.querySelector('.handoff-btn').addEventListener('click', () => shareHandoff('tourney', data));
+  root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('tourney', data));
   root.querySelector('#t-copy').addEventListener('click', async () => {
     const text = resultsText(current), note = root.querySelector('.t-copied');
     try { await navigator.clipboard.writeText(text); note.textContent = T.copied; }

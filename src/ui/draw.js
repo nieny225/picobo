@@ -1,5 +1,5 @@
 import { DRAW_SAMPLE, OPEN_PLAY } from '../data/nav.js';
-import { handoffButtonHtml, shareHandoff } from './handoff.js';
+import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay } from '../draw.js';
 
 const ROSTER_KEY = 'picobo.roster';
@@ -152,7 +152,7 @@ export function mountDraw(root) {
       koc = null; saveRoster(roster); render();
     });
     for (const t of root.querySelectorAll('.subtab')) t.addEventListener('click', () => { sub = t.dataset.sub; render(); });
-    root.querySelector('.handoff-btn').addEventListener('click', () => shareHandoff('draw', { roster, play, koc, sub }));
+    root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('draw', { roster, play, koc, sub }));
     renderSub();
   };
   render();

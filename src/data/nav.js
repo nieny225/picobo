@@ -69,15 +69,23 @@ export const THEME = {
   toLight: '切換成淺色',
 };
 
-// 交接：把計分板、抽籤、Pico Bowl 主辦工具的目前狀態做成連結，傳給接手的人。
+// 分享目前狀態：把計分板、抽籤、Pico Bowl 主辦工具的目前狀態做成連結，給接手的人
+// 繼續。按鈕跟一般分享一樣，按下去先跳說明再分享。
 export const HANDOFF = {
-  button: '交接',
-  aria: '把目前狀態做成連結，傳給接手的人',
-  titles: { score: 'Picobo 計分交接', draw: 'Picobo 抽籤交接', tourney: 'Pico Bowl 主辦交接' },
+  aria: '分享目前狀態，讓別人接著用',
+  titles: { score: 'Picobo 計分', draw: 'Picobo 抽籤', tourney: 'Pico Bowl 主辦' },
+  sheet: {
+    score: { title: '分享這場比賽', body: '對方打開連結，就會看到現在的比分、誰發球、站哪邊，可以直接接著記。適合換人計分，或給場邊的人看。' },
+    draw: { title: '分享抽籤', body: '對方打開連結，就會拿到同一份球友名單、排隊順序和戰績，可以直接接著排。適合換人管場。' },
+    tourney: { title: '分享主辦進度', body: '對方打開連結，就會拿到所有隊伍、賽程和比分，可以直接接手主辦。' },
+  },
+  note: '連結是按下去那一刻的狀態，不會自動同步。交給別人之後，這支手機就不要再記了。',
+  go: '分享連結',
+  cancel: '取消',
   kinds: { score: '比賽', draw: '抽籤名單和戰績', tourney: 'Pico Bowl 賽程和比分' },
-  confirm: '這個連結帶著別人交接的{kind}，要取代這支手機上目前的{kind}嗎？',
+  confirm: '這個連結帶著別人分享的{kind}，要取代這支手機上目前的{kind}嗎？',
   loaded: '已接手，從這裡繼續。原本的手機就不要再記了。',
-  broken: '這個交接連結打不開，請對方重新分享一次。',
+  broken: '這個分享連結打不開，請對方重新分享一次。',
 };
 
 // 球場圖步驟輪播。step 裡的 {n} 換成第幾步。
