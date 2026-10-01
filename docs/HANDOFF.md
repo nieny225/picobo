@@ -182,6 +182,8 @@ The rules tab was one 16,800 px page on a phone. Now:
   court; scores fill pool tables and seed semis and final. Stored in
   `picobo.picobowl` on that phone only; "複製戰況" copies a LINE-ready summary.
   Not shared live between phones (no backend).
+- Install needs https. `index.html` sends any http visit on picobo.net to
+  https://picobo.net first (GitHub Pages also redirects once Enforce HTTPS is on).
 - Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
   screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;
