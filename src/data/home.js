@@ -1,7 +1,7 @@
 // 首頁文字。slogan 每一行一個元素；概念先不講明，只留形象。
 export const HOME = {
   slogan: ['Pick one,', 'pick a place,', 'picobo.'],
-  tagline: '挑個人，挑個場，打一場。',
+  entriesLabel: '從這裡開始',
   intro: '痞克柏是你的匹克球場邊夥伴：規則看圖就懂，計分按一下就好，分組輪轉不用吵。',
   courtAlt: '一個人在發球，對面亮起一塊發球區',
   entries: [

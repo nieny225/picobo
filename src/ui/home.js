@@ -21,9 +21,8 @@ export function mountHome(root) {
     <section class="home-hero">
       <h2 class="home-slogan">${HOME.slogan.map((l, i) => `<span${i === HOME.slogan.length - 1 ? ' class="mark"' : ''}>${esc(l)}</span>`).join('')}</h2>
       <div class="home-court court-wrap"></div>
-      <p class="home-tagline">${esc(HOME.tagline)}</p>
       <p class="intro">${esc(HOME.intro)}</p>
     </section>
-    <nav class="home-entries" aria-label="${esc(HOME.tagline)}">${entry(lead, 'lead')}${rest.map(e => entry(e, '')).join('')}</nav>`;
+    <nav class="home-entries" aria-label="${esc(HOME.entriesLabel)}">${entry(lead, 'lead')}${rest.map(e => entry(e, '')).join('')}</nav>`;
   renderCourt(root.querySelector('.home-court'), HERO_SCENE);
 }

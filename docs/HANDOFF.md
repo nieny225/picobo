@@ -129,7 +129,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   (`picobo.rulesFilter`). Data: section `scoring` and rule `play` fields.
   Each rule page shows 適用：<play>｜<scoring>.
 - Home (#home, the default route): slogan "Pick one, pick a place, picobo.",
-  tagline 挑個人，挑個場，打一場。, a hero court from court.js, entry cards to
+  a hero court from court.js, entry cards to
   rules / score / draw. The slogan hints at future social play, court
   matching and events; the user wants that kept unsaid for now.
 - Main navigation is 首頁／規則／計分／抽籤: header tabs on desktop, a fixed
