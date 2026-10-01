@@ -202,6 +202,8 @@ The rules tab was one 16,800 px page on a phone. Now:
   `app.js` loads it into the tool on open, asks before replacing a game in
   progress, and drops the state from the URL. The scoreboard sends the last 10
   rallies so undo still works. A link is a snapshot, not a live sync.
+- The top-bar install button turns into a share icon (invite friends to
+  picobo.net) once the app runs installed or wherever install is not offered.
 - Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
   screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;

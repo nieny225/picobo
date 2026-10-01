@@ -16,6 +16,8 @@ export const HOME = {
     short: '安裝',
     aria: '把痞克柏安裝成 App',
     close: '知道了',
+    // 裝好之後（或這個瀏覽器不能安裝時），同一個位置換成邀請朋友的分享 icon。
+    invite: { aria: '邀請朋友一起用痞克柏', title: 'Picobo 痞克柏', text: '痞克柏：匹克球規則圖解、計分板、抽籤輪轉，打球一起用。' },
   },
   entries: [
     { route: 'rules', title: '學規則', en: 'Rules', desc: '看球場圖一步一步弄懂發球、廚房、計分，還有趣味玩法。' },

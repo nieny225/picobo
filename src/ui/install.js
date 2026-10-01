@@ -1,5 +1,7 @@
 import { HOME } from '../data/home.js';
 import { esc } from './scenes.js';
+import { SHARE } from '../data/nav.js';
+import { sharePage } from './share.js';
 
 // Install the app: a button in the top bar.
 // Chrome, Edge and Android hand us an install prompt (beforeinstallprompt)
@@ -7,8 +9,9 @@ import { esc } from './scenes.js';
 // they get the Share > Add to Home Screen (or File > Add to Dock) steps.
 // Android without a prompt (just uninstalled, or Chrome not offering yet) gets
 // the ⋮ > Install app steps; in-app browsers (LINE, Facebook, Instagram) are
-// told to open the page in a real browser first. Nothing shows once the app
-// runs installed, or on desktop browsers without a prompt.
+// told to open the page in a real browser first. Once the app runs installed
+// (no address bar to copy) or where install is not offered, the same spot is
+// a small share icon for inviting friends to picobo.net.
 let deferred = null;
 const listeners = new Set();
 const changed = () => listeners.forEach(f => f());
@@ -37,23 +40,35 @@ async function promptInstall() {
   changed();
 }
 
-// Top-bar button: the browser's install prompt, or a small sheet with the steps.
+const ICON = {
+  install: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  invite: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',
+};
+const svg = d => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+
+// Top-bar button: install (the browser's prompt, or a sheet with the steps)
+// while that is on offer, otherwise invite (share picobo.net).
 export function mountInstallButton(btn) {
+  const t = HOME.install;
   const render = () => {
-    btn.hidden = !offered();
-    btn.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>${esc(HOME.install.short)}</span>`;
-    btn.setAttribute('aria-label', HOME.install.aria);
+    const invite = !offered();
+    btn.classList.toggle('is-invite', invite);
+    btn.innerHTML = invite ? svg(ICON.invite) : `${svg(ICON.install)}<span>${esc(t.short)}</span>`;
+    btn.setAttribute('aria-label', invite ? t.invite.aria : t.aria);
+    btn.title = invite ? t.invite.aria : t.aria;
+    btn.hidden = false;
   };
   btn.addEventListener('click', () => {
+    if (!offered()) { sharePage(t.invite.title, SHARE.url, t.invite.text); return; }
     if (deferred) { promptInstall(); return; }
-    let dlg = document.querySelector('.install-sheet');
+    let dlg = document.querySelector('.install-steps');
     if (!dlg) {
       dlg = document.createElement('dialog');
-      dlg.className = 'install-sheet';
+      dlg.className = 'install-sheet install-steps';
       document.body.append(dlg);
       dlg.addEventListener('click', e => { if (e.target === dlg || e.target.closest('button')) dlg.close(); });
     }
-    dlg.innerHTML = `<b>${esc(HOME.install.title)}</b><p>${esc(manualSteps())}</p><button class="btn btn-primary" type="button">${esc(HOME.install.close)}</button>`;
+    dlg.innerHTML = `<b>${esc(t.title)}</b><p>${esc(manualSteps())}</p><button class="btn btn-primary" type="button">${esc(t.close)}</button>`;
     dlg.showModal();
   });
   listeners.add(render);

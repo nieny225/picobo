@@ -22,10 +22,11 @@ export function toast(html) {
   toastTimer = setTimeout(() => { el.hidden = true; }, 4000);
 }
 
-// `url` defaults to this page on the public site.
-export async function sharePage(title, url = SHARE.url + location.hash) {
+// `url` defaults to this page on the public site; `text` is an optional line
+// that goes with it in the share sheet.
+export async function sharePage(title, url = SHARE.url + location.hash, text) {
   if (navigator.share) {
-    try { await navigator.share({ title, url }); return; } catch (e) { if (e.name === 'AbortError') return; }
+    try { await navigator.share(text ? { title, text, url } : { title, url }); return; } catch (e) { if (e.name === 'AbortError') return; }
   }
   try {
     await navigator.clipboard.writeText(url);

@@ -107,6 +107,8 @@ button { cursor: pointer; }
   border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--mark); color: var(--mark-fg); font-weight: 900; box-shadow: var(--shadow);
 }
 .install-btn[hidden] { display: none; }
+/* Invite mode: a plain icon button, quieter than the yellow install button. */
+.install-btn.is-invite { width: 44px; padding: 0; justify-content: center; background: var(--surface); color: var(--fg); }
 .install-btn svg { width: 20px; height: 20px; }
 .install-btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--shadow-ink); }
 .install-sheet { max-width: min(360px, calc(100vw - 32px)); padding: 18px; border: var(--bw) solid var(--ink); border-radius: var(--radius); background: var(--surface); color: var(--fg); box-shadow: var(--shadow-lg); }
