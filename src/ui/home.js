@@ -2,6 +2,7 @@ import { renderCourt } from '../court.js';
 import { HOME } from '../data/home.js';
 import { esc, enTag } from './scenes.js';
 import { mountInstall } from './install.js';
+import { eventCardHtml } from './event.js';
 
 // "Pick one" is the serving player, "pick a place" the lit service box.
 const HERO_SCENE = {
@@ -24,6 +25,7 @@ export function mountHome(root) {
       <div class="home-court court-wrap"></div>
       <p class="intro">${esc(HOME.intro)}</p>
     </section>
+    ${eventCardHtml()}
     <nav class="home-entries" aria-label="${esc(HOME.entriesLabel)}">${entry(lead, 'lead')}${rest.map(e => entry(e, '')).join('')}</nav>
     <div class="install-card" hidden></div>`;
   renderCourt(root.querySelector('.home-court'), HERO_SCENE);

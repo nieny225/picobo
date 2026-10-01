@@ -3,14 +3,15 @@ import { mountRules } from './ui/rules.js';
 import { mountFormats } from './ui/formats.js';
 import { mountScoreboard } from './ui/scoreboard.js';
 import { mountDraw } from './ui/draw.js';
+import { mountEvent } from './ui/event.js';
 import { autoHideTopbar } from './ui/topbar.js';
 import { mountThemeToggle } from './ui/theme.js';
 import { registerServiceWorker, mountInstallButton } from './ui/install.js';
 import { RULEBOOK } from './data/rules.js';
 
-const ROUTES = ['home', 'rules', 'formats', 'score', 'draw'];
-// Fun formats live under the rules tab.
-const TAB_OF = { formats: 'rules' };
+const ROUTES = ['home', 'rules', 'formats', 'score', 'draw', 'picobowl'];
+// Fun formats live under the rules tab; the Pico Bowl page under home.
+const TAB_OF = { formats: 'rules', picobowl: 'home' };
 
 // Hash shape: #<route> or #<route>/<sub>, e.g. #rules/kitchen. Links from v1
 // used #rules-<id>; those are rewritten in place.
@@ -36,6 +37,7 @@ const rules = mountRules(document.getElementById('view-rules'));
 const formats = mountFormats(document.getElementById('view-formats'));
 mountScoreboard(document.getElementById('view-score'));
 mountDraw(document.getElementById('view-draw'));
+mountEvent(document.getElementById('view-picobowl'));
 document.getElementById('footer').textContent = `正統規則依據 ${RULEBOOK}。趣味玩法各球場做法不同，開打前先講好。`;
 
 function show() {

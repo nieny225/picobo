@@ -41,8 +41,9 @@ static site later. There is no backend and no build step.
 ```
 index.html              the page; hash-routed tabs: #home (default) #rules #score #draw,
                         sub-pages #rules/<id> and #formats/<id> (fun formats sit
-                        under the rules tab); tabs in the header on desktop, in a
-                        bottom bar on phones (< 768px)
+                        under the rules tab), #picobowl (tournament page, under
+                        home); tabs in the header on desktop, in a bottom bar on
+                        phones (< 768px)
 styles/main.css         design tokens on :root, dark mode, mobile-first
 manifest.webmanifest    installable web app (name, icons, standalone)
 sw.js                   service worker: network first, cache fallback for offline;
@@ -63,11 +64,13 @@ src/ui/share.js         share button: system share sheet, else copy link (picobo
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
 src/ui/install.js       install button (top bar) + card (home); registers the service worker
+src/ui/event.js         Pico Bowl tournament page + its home-page card
 src/data/rules.js       rule copy + court scene definitions
 src/data/formats.js     fun formats + their court scenes (國王球場, 輪轉賽, 3 人制, 半場單打, 廚房戰, 快打短局)
 src/data/glossary.js    中英術語對照 + 常見誤解
 src/data/home.js        首頁 slogan 與入口文字
 src/data/nav.js         目錄、上一條／下一條、玩法頁的介面文字
+src/data/event.js       Pico Bowl 比賽資訊（open: false 時首頁卡片顯示 Coming soon）
 tests/*.test.js         node:test for the pure modules
 ```
 

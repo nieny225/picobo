@@ -492,3 +492,27 @@ footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top
 }
 .install-card span { color: var(--muted); }
 .install-card .btn { justify-self: start; margin-top: 4px; }
+
+/* Pico Bowl: home card and tournament page. */
+.event-card {
+  display: grid; gap: 4px; margin: 0 6px 18px 0; padding: 16px; text-decoration: none;
+  background: var(--accent); color: var(--accent-fg); border: var(--bw) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+}
+.event-card b { font-family: var(--font-num); font-size: 1.8rem; line-height: 1.1; letter-spacing: -0.01em; }
+.event-card span { font-weight: 700; }
+.event-card-tag { justify-self: start; padding: 1px 10px; border: 2px solid #111111; border-radius: 999px; background: var(--mark); color: var(--mark-fg); font-size: 0.85rem; font-weight: 900; }
+.event-card.is-soon { cursor: default; }
+a.event-card:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--shadow-ink); }
+.event-kicker { font-weight: 900; color: var(--muted); }
+.event-hero { display: grid; gap: 10px; }
+.event-name { font-family: var(--font-num); font-size: clamp(2.6rem, 13vw, 4rem); line-height: 1; letter-spacing: -0.02em; justify-self: start; background: var(--mark); color: var(--mark-fg); padding: 2px 10px; box-shadow: 0 0 0 var(--bw) var(--ink); margin-left: 3px; }
+.event-facts, .event-day { display: grid; gap: 6px; margin: 0; }
+.event-facts div, .event-day div { display: grid; grid-template-columns: 3.5em 1fr; gap: 8px; }
+.event-facts dt, .event-day dt { font-weight: 900; }
+.event-facts dd, .event-day dd { margin: 0; }
+.event-draft { display: flex; gap: 8px; align-items: baseline; color: var(--muted); font-size: 0.9rem; }
+.event-divisions { display: grid; gap: 8px; }
+.event-divisions div { display: grid; gap: 2px; padding: 10px 12px; background: var(--surface-2); border: 2px solid var(--ink); border-radius: var(--radius-sm); }
+.event-divisions span { color: var(--muted); font-size: 0.9rem; }
+.event-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.event-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border: 2px solid var(--ink); border-radius: var(--radius-sm); color: var(--fg); font-weight: 700; text-decoration: none; background: var(--surface); }

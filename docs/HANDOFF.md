@@ -166,6 +166,13 @@ The rules tab was one 16,800 px page on a phone. Now:
 - Phones under the 規則 tab (rules index, rule pages, fun formats) and the 抽籤
   tab drop the top bar entirely (`html[data-tab="rules"]`, set by the router); the 目錄 bar
   sits at the top and the bottom bar handles navigation.
+- Pico Bowl (tournament, November 2026, date TBD): page at `#picobowl`
+  (`src/ui/event.js`, copy in `src/data/event.js`), marked 草案. The home card
+  shows Coming soon and is not a link while `PICOBOWL.open` is false; the URL
+  works regardless. Draft format: men's / women's / mixed doubles, pool round
+  robin then top two to semis and final; pools 11 side-out, playoffs 15.
+  Waiting on the organizers for courts, hours, date, venue and the Google Form.
+  Next: organizer tools (pools, court schedule, scores, standings, playoffs).
 - Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
   screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;
