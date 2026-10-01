@@ -168,7 +168,6 @@ button { cursor: pointer; }
 .seg button { border: 0; background: var(--surface); color: var(--fg); min-height: 44px; padding: 6px 8px; font-weight: 700; }
 .seg button + button { border-left: var(--bw) solid var(--ink); }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); font-weight: 900; }
-.seg .en-tag { display: block; white-space: nowrap; overflow-wrap: normal; }
 .applies { align-items: center; }
 .applies .muted { border: 0; padding: 0; }
 .applies .en-tag, th .en-tag, .drawer-note .en-tag { font-size: 1em; }
@@ -216,7 +215,23 @@ button { cursor: pointer; }
 }
 .chrome-hidden .rules-bar { top: 0; }
 @media (prefers-reduced-motion: reduce) { .rules-bar { transition: none; } }
-.rules-where { min-width: 0; display: grid; line-height: 1.3; }
+.rules-where { flex: 1; min-width: 0; display: grid; line-height: 1.3; }
+.bar-share { flex: none; }
+.share-btn {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; min-width: 44px; padding: 0 12px;
+  border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--surface); color: var(--fg); font-weight: 900;
+}
+.share-btn svg { width: 20px; height: 20px; }
+.rule-top .share-btn { margin-left: auto; }
+@media (max-width: 420px) { .rules-bar .share-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .rules-bar .share-btn { padding: 0; justify-content: center; } }
+.toast {
+  position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  max-width: calc(100% - 32px); padding: 10px 14px; border: var(--bw) solid var(--ink); border-radius: var(--radius-sm);
+  background: var(--ink); color: var(--bg); font-weight: 700; box-shadow: var(--shadow);
+}
+.toast[hidden] { display: none; }
+.toast-url { user-select: all; overflow-wrap: anywhere; font-family: var(--font-num); }
+@media (min-width: 768px) { .toast { bottom: 24px; } }
 .rules-where small, .rules-where b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rules-where small { color: var(--muted); font-size: 0.8rem; font-weight: 700; }
 .rules-where b { font-weight: 900; }

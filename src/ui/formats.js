@@ -1,6 +1,7 @@
 import { FORMATS } from '../data/formats.js';
 import { FORMATS_PAGE, RULE_PAGE } from '../data/nav.js';
 import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
+import { shareButtonHtml, sharePage } from './share.js';
 
 const link = f => `<a class="rule-link" href="#formats/${f.id}">
   <span class="rule-link-text"><b>${esc(f.name)}${enTag(f.en)}</b><span class="rule-link-sum">${esc(f.tagline)}</span></span>
@@ -20,7 +21,7 @@ function pageHtml(i) {
     ? `<a class="pager-link ${cls}" href="#formats/${q.id}"><span class="muted small">${esc(label)}</span><b>${esc(q.name)}</b></a>`
     : '<span></span>';
   return `
-    <nav class="rule-top"><a class="back" href="#rules">${esc(RULE_PAGE.back)}</a><span class="muted small">${esc(f.group)}</span></nav>
+    <nav class="rule-top"><a class="back" href="#rules">${esc(RULE_PAGE.back)}</a><span class="muted small">${esc(f.group)}</span>${shareButtonHtml()}</nav>
     <article class="card format" id="formats-${f.id}">
       <div class="card-head"><h3>${esc(f.name)}${enTag(f.en)}</h3><span class="rule-no">${esc(FORMATS_PAGE.unofficial)}</span></div>
       <div class="format-meta"><span>${esc(f.players)}</span></div>
@@ -46,6 +47,7 @@ export function mountFormats(root) {
       if (key === current) return;
       current = key;
       pageEl.innerHTML = i < 0 ? indexHtml() : pageHtml(i);
+      pageEl.querySelector('.share-btn')?.addEventListener('click', () => sharePage(FORMATS[i].name));
       const wrap = pageEl.querySelector('.scene-wrap');
       if (wrap) wireScene(wrap, FORMATS[i].scenes);
     },

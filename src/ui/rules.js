@@ -3,6 +3,7 @@ import { FORMATS } from '../data/formats.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
 import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER, FILTER, FORMATS_PAGE } from '../data/nav.js';
 import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
+import { shareButtonHtml, sharePage } from './share.js';
 
 
 function ruleCard(item, applies = '') {
@@ -34,6 +35,9 @@ const PAGES = [
   { id: 'faq', kind: 'faq', title: EXTRA_PAGES.faq.title, en: EXTRA_PAGES.faq.en, summary: EXTRA_PAGES.faq.summary },
   { id: 'glossary', kind: 'glossary', title: EXTRA_PAGES.glossary.title, en: EXTRA_PAGES.glossary.en, summary: EXTRA_PAGES.glossary.summary },
 ];
+
+// Pages that were removed or merged: old links land on their replacement.
+const MOVED = { singles: 'scoring' };
 
 // Which combination of play (doubles / singles) and scoring (side-out /
 // rally) the reader cares about. Remembered per device.
@@ -68,7 +72,7 @@ const link = (p, f) => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}
 function filterHtml(f) {
   const row = k => `<div class="seg-row"><span class="seg-label">${esc(FILTER[k].label)}</span>
     <div class="seg" role="group" aria-label="${esc(FILTER[k].label)}">${FILTER[k].options.map(o =>
-      `<button type="button" data-filter="${k}" data-value="${o.id}" aria-pressed="${f[k] === o.id}">${optionHtml(o)}</button>`).join('')}</div></div>`;
+      `<button type="button" data-filter="${k}" data-value="${o.id}" aria-pressed="${f[k] === o.id}"${o.en ? ` aria-label="${esc(o.label)}" title="${esc(o.label)}"` : ''}>${esc(o.en ?? o.label)}</button>`).join('')}</div></div>`;
   return `<div class="filters">${row('play')}${row('scoring')}</div>`;
 }
 
@@ -201,9 +205,11 @@ function drawerHtml() {
 export function mountRules(root) {
   // A sticky bar on top of every rules page: the drawer button and where the
   // reader is. It replaces a floating button that collided with content.
-  root.innerHTML = `<div class="rules-bar"><button class="drawer-open" type="button" aria-haspopup="dialog">${esc(DRAWER.open)}</button><span class="rules-where"></span></div>
+  root.innerHTML = `<div class="rules-bar"><button class="drawer-open" type="button" aria-haspopup="dialog">${esc(DRAWER.open)}</button><span class="rules-where"></span><span class="bar-share"></span></div>
     <div class="rules-page"></div>${drawerHtml()}`;
   const whereEl = root.querySelector('.rules-where');
+  const shareSlot = root.querySelector('.bar-share');
+  shareSlot.addEventListener('click', e => { if (e.target.closest('.share-btn')) sharePage(PAGES.find(q => q.id === current)?.title ?? RULES_INDEX.title); });
   const pageEl = root.querySelector('.rules-page');
   const drawer = root.querySelector('.drawer');
   const drawerNav = drawer.querySelector('.drawer-body');
@@ -221,6 +227,7 @@ export function mountRules(root) {
       ? [p.sec?.title ?? RULES_INDEX.more, p.title]
       : [RULES_INDEX.title, `${optionById('play', filter.play).label}・${optionById('scoring', filter.scoring).label}`];
     whereEl.innerHTML = `<small>${esc(upper)}</small><b>${esc(lower)}</b>`;
+    shareSlot.innerHTML = p ? shareButtonHtml() : '';
     drawerNav.innerHTML = drawerNavHtml(filter);
     for (const a of drawerNav.querySelectorAll('a[data-id]')) {
       if (a.dataset.id === current) a.setAttribute('aria-current', 'page');
@@ -240,6 +247,7 @@ export function mountRules(root) {
   });
   return {
     show(sub) {
+      if (MOVED[sub]) { history.replaceState(null, '', `#rules/${MOVED[sub]}`); sub = MOVED[sub]; }
       const key = PAGES.some(p => p.id === sub) ? sub : '';
       if (drawer.open) drawer.close();
       if (key === current) return;

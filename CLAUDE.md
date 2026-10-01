@@ -51,6 +51,7 @@ src/ui/formats.js       fun formats index + one page per format with court scene
 src/ui/scenes.js        court scene carousel shared by rules and formats
 src/ui/scoreboard.js    scoreboard view
 src/ui/draw.js          draw + rotation view
+src/ui/share.js         share button: system share sheet, else copy link (picobo.net URL)
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/data/rules.js       rule copy + court scene definitions
 src/data/formats.js     fun formats + their court scenes (國王球場, 輪轉賽, 3 人制, 半場單打, 廚房戰, 快打短局)

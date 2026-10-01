@@ -215,7 +215,7 @@ export const SECTIONS = [
         singlesSummary: '只有發球方能得分。打到 11 分、要贏 2 分。單打喊兩個數字：「發球方分數、接球方分數」。',
         singlesDetail: [
           '發球方贏了這一球得 1 分，繼續發。發球方輸了不扣分，直接換對方發（side-out），單打沒有第二發球員。',
-          '發球位置看發球員自己的分數：偶數從右邊發、奇數從左邊發。',
+          '發球位置看發球員自己的分數：偶數從右邊發、奇數從左邊發。接球的人站對角。',
           '正式比賽通常打三局兩勝，每局 11 分；也有 15 分或 21 分的賽制。',
         ],
         singlesScenes: [
@@ -232,7 +232,7 @@ export const SECTIONS = [
       {
         id: 'positions',
         play: 'doubles',
-        title: '雙打發球順序與站位',
+        title: '發球順序與站位',
         en: 'Doubles Serving Order',
         rule: '第 4 節',
         summary: '拿回發球權時，站在右邊的人先發。得分才換位，接球的隊伍不動。',
@@ -251,22 +251,6 @@ export const SECTIONS = [
           { caption: '甲2 得分變 2 分（偶數）：兩人換邊，甲1 回到右邊。開局站右的甲1，偶數分永遠在右邊。', players: [A1({ pos: 'right' }), A2({ pos: 'left', depth: 'behind', serving: true }), B1(), B2()] },
         ],
       },
-      {
-        id: 'singles',
-        play: 'singles',
-        title: '單打怎麼打',
-        en: 'Side-out Singles',
-        summary: '一個人顧全場。分數偶數從右邊發、奇數從左邊發，喊兩個數字。',
-        detail: [
-          '單打沒有第二發球員，發球方輸一球就直接 side-out。',
-          '發球員的位置看自己的分數：偶數站右邊、奇數站左邊。接球的人站對角。',
-          '其他規則跟雙打完全一樣。',
-        ],
-        scenes: [
-          { caption: '甲 0 分（偶數）：從右邊發，乙站對角接。喊「0-0」。', players: [A1({ label: '甲', depth: 'behind', serving: true }), B1({ label: '乙' })], ball: { path: ['near:right:behind', 'far:right:mid'], bounces: [1] } },
-          { caption: '甲 1 分（奇數）：從左邊發，乙換到另一邊接。喊「1-0」。', players: [A1({ label: '甲', pos: 'left', depth: 'behind', serving: true }), B1({ label: '乙', pos: 'left' })], ball: { path: ['near:left:behind', 'far:left:mid'], bounces: [1] } },
-        ],
-      },
     ],
   },
   {
@@ -280,8 +264,8 @@ export const SECTIONS = [
       {
         id: 'rally-basics',
         play: 'doubles',
-        title: '雙打怎麼打',
-        en: 'Rally Scoring Doubles',
+        title: '每球得分怎麼打',
+        en: 'Rally Scoring',
         summary: '每一球結束都有一隊得 1 分，誰贏這球誰發下一球。沒有第二發球員。',
         detail: [
           '打到 11、15 或 21 分，要贏 2 分。社交球最常用 15 或 21。',
@@ -301,8 +285,8 @@ export const SECTIONS = [
       {
         id: 'rally-singles',
         play: 'singles',
-        title: '單打怎麼打',
-        en: 'Rally Scoring Singles',
+        title: '每球得分怎麼打',
+        en: 'Rally Scoring',
         summary: '每一球都有人得分。發球員看自己的分數站：偶數從右邊發、奇數從左邊發。',
         detail: [
           '站位跟側出計分的單打一樣，看發球員自己的分數：偶數右邊、奇數左邊。接球的人站對角。',

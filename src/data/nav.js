@@ -15,6 +15,15 @@ export const FILTER = {
   showing: '目前顯示：',
 };
 
+// 分享目前這一頁。url 是正式網址，在 artifact 裡分享出去的也是這個網址。
+export const SHARE = {
+  url: 'https://picobo.net/',
+  label: '分享',
+  aria: '分享這一頁',
+  copied: '已複製連結',
+  manual: '複製這個網址分享：',
+};
+
 // 球場圖步驟輪播。step 裡的 {n} 換成第幾步。
 export const SCENE_NAV = {
   prev: '上一步',
