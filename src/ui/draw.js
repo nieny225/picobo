@@ -1,12 +1,13 @@
+import { DRAW_SAMPLE } from '../data/nav.js';
 import { makeTeams, assignCourts, coinFlip, roundRobin, createKingOfCourt, advanceKingOfCourt } from '../draw.js';
 
 const ROSTER_KEY = 'picobo.roster';
-const SAMPLE = ['小明', '阿華', '婷婷', '大衛', '佩佩', '阿倫', '小美', '志豪'];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 function loadRoster() {
-  try { const raw = localStorage.getItem(ROSTER_KEY); if (raw) return JSON.parse(raw); } catch { /* ignore */ }
-  return { names: SAMPLE.slice(), sample: true };
+  // A saved sample (an untouched example list) is replaced by the current one.
+  try { const raw = localStorage.getItem(ROSTER_KEY); const r = raw && JSON.parse(raw); if (r && !r.sample) return r; } catch { /* ignore */ }
+  return { names: DRAW_SAMPLE.slice(), sample: true };
 }
 function saveRoster(r) {
   try { localStorage.setItem(ROSTER_KEY, JSON.stringify(r)); } catch { /* ignore */ }

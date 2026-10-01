@@ -40,6 +40,9 @@ export const SHARE = {
   manual: '複製這個網址分享：',
 };
 
+// 抽籤頁還沒輸入球友時的範例名單。
+export const DRAW_SAMPLE = ['Bruce', 'Annie', 'Steven', 'Max', 'Rose', 'Henry', 'Lara', 'Casey', 'Frank', 'Erica', 'Matthew', 'Tom', 'GT', 'Mandy', 'John', 'Nick', 'Vivian'];
+
 // 右上角的淺色／深色切換。按鈕上寫的是按下去會變成什麼。
 export const THEME = {
   toDark: '切換成深色',
