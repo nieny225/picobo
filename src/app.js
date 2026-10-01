@@ -40,6 +40,8 @@ document.getElementById('footer').textContent = `正統規則依據 ${RULEBOOK}�
 function show() {
   const { route, sub } = parseHash();
   for (const r of ROUTES) document.getElementById(`view-${r}`).hidden = r !== route;
+  // CSS keys off the current tab, e.g. phones drop the top bar under 規則.
+  document.documentElement.dataset.tab = TAB_OF[route] ?? route;
   for (const tab of document.querySelectorAll('.tab')) {
     tab.setAttribute('aria-selected', String(tab.dataset.route === (TAB_OF[route] ?? route)));
   }

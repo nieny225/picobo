@@ -223,6 +223,12 @@ button { cursor: pointer; }
   transition: top 0.2s ease;
 }
 .chrome-hidden .rules-bar { top: 0; }
+/* Phones, reading rules or formats: no top bar at all; the 目錄 bar sits at
+   the top and the bottom bar handles navigation. */
+@media (max-width: 767px) {
+  html[data-tab="rules"] .topbar { display: none; }
+  html[data-tab="rules"] .rules-bar { top: env(safe-area-inset-top, 0px); }
+}
 @media (prefers-reduced-motion: reduce) { .rules-bar { transition: none; } }
 .rules-where { flex: 1; min-width: 0; display: grid; line-height: 1.3; }
 .bar-share { flex: none; }
