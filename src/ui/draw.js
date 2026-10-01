@@ -1,5 +1,5 @@
-import { DRAW_SAMPLE } from '../data/nav.js';
-import { makeTeams, assignCourts, coinFlip, roundRobin, createKingOfCourt, advanceKingOfCourt } from '../draw.js';
+import { DRAW_SAMPLE, OPEN_PLAY } from '../data/nav.js';
+import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay } from '../draw.js';
 
 const ROSTER_KEY = 'picobo.roster';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -13,6 +13,15 @@ function saveRoster(r) {
   try { localStorage.setItem(ROSTER_KEY, JSON.stringify(r)); } catch { /* ignore */ }
 }
 
+// The open-play session survives a reload, so a long evening is not lost.
+const PLAY_KEY = 'picobo.openplay';
+function loadPlay() {
+  try { const raw = localStorage.getItem(PLAY_KEY); return raw ? JSON.parse(raw) : null; } catch { return null; }
+}
+function savePlay(p) {
+  try { p ? localStorage.setItem(PLAY_KEY, JSON.stringify(p)) : localStorage.removeItem(PLAY_KEY); } catch { /* ignore */ }
+}
+
 const teamHtml = (t, first) => `<div class="team-names${first ? ' serve-first' : ''}">${t.map(n => `<span>${esc(n)}</span>`).join('')}</div>`;
 const matchHtml = (m, firstIdx) => `<div class="match"><span class="court-no">${m.court} 號場</span>${teamHtml(m.teams[0], firstIdx === 0)}<span class="vs">對</span>${teamHtml(m.teams[1], firstIdx === 1)}</div>`;
 
@@ -20,6 +29,8 @@ export function mountDraw(root) {
   let roster = loadRoster();
   let sub = 'draw';
   let koc = null;
+  let play = loadPlay();
+  const setPlay = p => { play = p; savePlay(p); };
 
   const html = () => `
     <div class="section-head"><h2>抽籤輪轉</h2><p class="intro">先輸入今天的球友，再選要怎麼分。</p></div>
@@ -34,13 +45,32 @@ export function mountDraw(root) {
     <div id="sub-body"></div>`;
 
   const drawBody = () => `<div class="card">
-    <div class="row"><div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="2"></div><div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">抽籤</button></div></div>
-    <p class="muted small">隨機兩人一隊、分配場地、丟硬幣決定誰先發球。</p>
+    <div class="row"><div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="${play ? play.courts.length : 1}"></div><div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${esc(play ? OPEN_PLAY.redraw : OPEN_PLAY.start)}</button></div></div>
+    <p class="muted small">${esc(OPEN_PLAY.hint)}</p>
     <div id="out"></div></div>`;
+
+  const renderPlay = out => {
+    if (!play) { out.innerHTML = ''; return; }
+    const ranked = Object.entries(play.stats).sort((a, b) => b[1].won - a[1].won || a[1].played - b[1].played);
+    out.innerHTML = `<div class="matches">${play.courts.map((c, ci) => c.teams.length === 2 ? `
+      <div class="koc-court"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span>
+      <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.first === ti)}<button class="btn" data-court="${ci}" data-win="${ti}">${esc(OPEN_PLAY.won)}</button></div>`).join('')}</div></div>`
+      : `<div class="koc-court"><span class="muted">${esc(OPEN_PLAY.idle.replace('{court}', c.court))}</span></div>`).join('')}</div>
+      <p class="small" style="margin-top:10px"><b>${esc(OPEN_PLAY.queue)}</b>${esc(OPEN_PLAY.queueHint)}</p>
+      <div class="queue queue-4">${play.queue.map(n => `<span>${esc(n)}</span>`).join('') || `<span class="muted">${esc(OPEN_PLAY.queueEmpty)}</span>`}</div>
+      ${play.leaving.length ? `<p class="waiting">${esc(OPEN_PLAY.leaving)}${play.leaving.map(esc).join('、')}</p>` : ''}
+      <h3 class="stats-title">${esc(OPEN_PLAY.stats)}</h3>
+      <table class="stats"><thead><tr>${OPEN_PLAY.cols.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
+      <tbody>${ranked.map(([n, r]) => `<tr><td>${esc(n)}</td><td class="num">${r.played}</td><td class="num">${r.won}</td></tr>`).join('')}</tbody></table>`;
+    for (const b of out.querySelectorAll('[data-win]')) b.addEventListener('click', () => {
+      setPlay(finishOpenPlayGame(play, Number(b.dataset.court), Number(b.dataset.win)));
+      renderPlay(out);
+    });
+  };
 
   const rrBody = () => `<div class="card">
     <div class="row">
-      <div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="2"></div>
+      <div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="1"></div>
       <div class="field"><label for="rounds">幾輪</label><input class="input num" id="rounds" type="number" min="1" max="12" value="5"></div>
       <div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">排輪次</button></div>
     </div>
@@ -81,12 +111,13 @@ export function mountDraw(root) {
     };
     body.querySelector('#go').addEventListener('click', () => {
       if (sub === 'draw') {
-        if (!guard(2)) return;
-        const { teams, leftover } = makeTeams(roster.names);
-        const { matches, waiting } = assignCourts(teams, courts());
-        out.innerHTML = `<div class="matches">${matches.map(m => matchHtml(m, coinFlip() === 'A' ? 0 : 1)).join('')}</div>
-          ${waiting.length ? `<p class="waiting">等下一場：${waiting.map(t => t.join('＋')).join('、')}</p>` : ''}
-          ${leftover.length ? `<p class="waiting">落單：${leftover.join('、')}（下一場先上）</p>` : ''}`;
+        if (!guard(4)) return;
+        // A redraw reshuffles everyone and keeps the counts.
+        const fresh = createOpenPlay(roster.names, courts());
+        if (play) for (const n of roster.names) if (play.stats[n]) fresh.stats[n] = play.stats[n];
+        setPlay(fresh);
+        body.querySelector('#go').textContent = OPEN_PLAY.redraw;
+        renderPlay(out);
       } else if (sub === 'rr') {
         if (!guard(4)) return;
         const rounds = roundRobin(roster.names, courts(), Number(body.querySelector('#rounds').value) || 1);
@@ -98,6 +129,7 @@ export function mountDraw(root) {
       }
     });
     if (sub === 'koc') renderKoc(out);
+    if (sub === 'draw') renderPlay(out);
   };
 
   const render = () => {
@@ -107,12 +139,15 @@ export function mountDraw(root) {
       const v = root.querySelector('#add-name').value.trim();
       if (!v || roster.names.includes(v)) return;
       roster = { names: [...roster.names, v], sample: false };
+      if (play) setPlay(joinOpenPlay(play, v));
       saveRoster(roster); render();
       root.querySelector('#add-name').focus();
     });
-    root.querySelector('#clear').addEventListener('click', () => { roster = { names: [], sample: false }; koc = null; saveRoster(roster); render(); });
+    root.querySelector('#clear').addEventListener('click', () => { roster = { names: [], sample: false }; koc = null; setPlay(null); saveRoster(roster); render(); });
     for (const b of root.querySelectorAll('[data-remove]')) b.addEventListener('click', () => {
+      const gone = roster.names[Number(b.dataset.remove)];
       roster = { names: roster.names.filter((_, i) => i !== Number(b.dataset.remove)), sample: false };
+      if (play) setPlay(leaveOpenPlay(play, gone));
       koc = null; saveRoster(roster); render();
     });
     for (const t of root.querySelectorAll('.subtab')) t.addEventListener('click', () => { sub = t.dataset.sub; render(); });

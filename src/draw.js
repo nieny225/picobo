@@ -105,6 +105,65 @@ export function advanceKingOfCourt(state, courtIndex, winnerIndex, maxStreak = 3
   return { courts, queue };
 }
 
+// Open play (paddle stack): everyone waits in one queue. When a court
+// finishes, its four players go to the back of the queue and the first four in
+// the queue take the court, front two against next two. The finished four
+// re-queue as winner, loser, winner, loser so partners split up next time.
+// Played/won counts are kept per player. `first` is the team that serves
+// first on each court (coin flip).
+export function createOpenPlay(names, courtCount, rng = Math.random) {
+  assertNames(names, 4);
+  if (!Number.isInteger(courtCount) || courtCount < 1) throw new Error('draw: courtCount must be >= 1');
+  const queue = shuffle(names, rng);
+  const stats = {};
+  for (const n of names) stats[n] = { played: 0, won: 0 };
+  const courts = [];
+  for (let c = 1; c <= courtCount; c++) courts.push(fillCourt(c, queue, rng));
+  return { courts, queue, stats, leaving: [] };
+}
+
+function fillCourt(court, queue, rng) {
+  if (queue.length < 4) return { court, teams: [], first: 0 };
+  const g = queue.splice(0, 4);
+  return { court, teams: [[g[0], g[1]], [g[2], g[3]]], first: coinFlip(rng) === 'A' ? 0 : 1 };
+}
+
+export function finishOpenPlayGame(state, courtIndex, winnerIndex, rng = Math.random) {
+  const court = state.courts[courtIndex];
+  if (!court || court.teams.length !== 2) throw new Error('draw: no game on that court');
+  if (winnerIndex !== 0 && winnerIndex !== 1) throw new Error('draw: winnerIndex must be 0 or 1');
+  const [w, l] = [court.teams[winnerIndex], court.teams[1 - winnerIndex]];
+  const stats = { ...state.stats };
+  for (const n of [...w, ...l]) stats[n] = { played: stats[n].played + 1, won: stats[n].won + (w.includes(n) ? 1 : 0) };
+  const queue = state.queue.slice();
+  const back = [w[0], l[0], w[1], l[1]].filter(n => !state.leaving.includes(n));
+  queue.push(...back);
+  const leaving = state.leaving.filter(n => !court.teams.flat().includes(n));
+  const courts = state.courts.slice();
+  courts[courtIndex] = fillCourt(court.court, queue, rng);
+  // A court that was idle for lack of players can start now too.
+  for (let i = 0; i < courts.length; i++) if (courts[i].teams.length === 0) courts[i] = fillCourt(courts[i].court, queue, rng);
+  return { courts, queue, stats, leaving };
+}
+
+// A new player (or one who left earlier) joins the back of the queue; an idle
+// court starts if it can. Someone on court who was leaving just stays.
+export function joinOpenPlay(state, name, rng = Math.random) {
+  const present = state.queue.includes(name) || state.courts.some(c => c.teams.flat().includes(name));
+  if (present && !state.leaving.includes(name)) throw new Error('draw: duplicate player names');
+  const queue = present ? state.queue.slice() : [...state.queue, name];
+  const courts = state.courts.map(c => (c.teams.length === 0 ? fillCourt(c.court, queue, rng) : c));
+  const stats = { ...state.stats, [name]: state.stats[name] ?? { played: 0, won: 0 } };
+  return { courts, queue, stats, leaving: state.leaving.filter(n => n !== name) };
+}
+
+// A player leaves: out of the queue now, or off the court after this game.
+// Their counts stay in the table.
+export function leaveOpenPlay(state, name) {
+  const onCourt = state.courts.some(c => c.teams.flat().includes(name));
+  return { ...state, queue: state.queue.filter(n => n !== name), leaving: onCourt ? [...state.leaving, name] : state.leaving };
+}
+
 function assertNames(names, min) {
   if (!Array.isArray(names) || names.length < min) throw new Error(`draw: need at least ${min} players`);
   if (new Set(names).size !== names.length) throw new Error('draw: duplicate player names');

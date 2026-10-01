@@ -426,6 +426,12 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 @media (max-width: 767px) { .board .court-wrap { max-width: none; width: calc(100% + 16px); margin: 0 -8px; } }
 /* Desktop keeps the upright court under the buttons so they stay on screen. */
 @media (min-width: 768px) { .board #board-court { order: 1; } }
+/* Phones, during a game: the top bar and the page title fold away so the
+   board gets the screen. The bottom bar stays for navigation. */
+@media (max-width: 767px) {
+  html:has(#view-score.score-playing:not([hidden])) .topbar { display: none; }
+  #view-score.score-playing .section-head { display: none; }
+}
 /* Short phones: keep the score buttons above the bottom bar. */
 @media (max-width: 767px) and (max-height: 760px) { .board { gap: 10px; } .announce .big { font-size: 3.2rem; } .score-btn { min-height: 92px; } }
 .toolbar { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
@@ -456,5 +462,11 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .queue { display: flex; flex-wrap: wrap; gap: 6px; }
 .queue span { background: var(--surface); border: 2px solid var(--ink); border-radius: 4px; padding: 2px 10px; font-size: 0.9rem; font-weight: 700; }
 .queue span:first-child, .queue span:nth-child(2) { background: var(--mark); color: var(--mark-fg); }
+.queue-4 span:nth-child(3), .queue-4 span:nth-child(4) { background: var(--mark); color: var(--mark-fg); }
+.stats-title { margin: 14px 0 6px; font-size: 1rem; }
+.stats { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.stats th, .stats td { text-align: left; padding: 6px 8px; border-bottom: 2px solid var(--line-soft); }
+.stats th { color: var(--muted); font-weight: 700; }
+.stats td.num, .stats th:not(:first-child) { text-align: right; width: 3.5em; }
 .example-note { font-size: 0.8rem; color: var(--muted); }
 footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top: 12px; }

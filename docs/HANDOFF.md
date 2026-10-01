@@ -152,6 +152,17 @@ The rules tab was one 16,800 px page on a phone. Now:
   button sits over its half. After the side switch the buttons swap with the
   court (`.score-row.switched`). Desktop keeps the upright court under the
   buttons.
+- Scoreboard during a game (`#view-score.score-playing`): on phones the top bar
+  and page title fold away; the screen is kept on with the Wake Lock API; a
+  全螢幕 button shows where the Fullscreen API is allowed (not iPhone Safari,
+  not inside the artifact iframe). A game-point tag (`gamePoint()` in
+  scoring.js) sits on the call box.
+- 抽籤分組 is now open play (`createOpenPlay` / `finishOpenPlayGame` /
+  `joinOpenPlay` / `leaveOpenPlay` in draw.js): one queue of players, the first
+  four take a free court, finished players re-queue winner/loser/winner/loser
+  so partners split, played/won counts per player. Saved as `picobo.openplay`.
+  Adding or removing a roster name joins or leaves the session (a player on
+  court leaves after that game). Court count defaults to 1.
 - Light/dark toggle (`src/ui/theme.js`), top right on phones and after the
   tabs on desktop. Follows the system until tapped; the choice is stored as
   `picobo.theme` and applied as `data-theme` on `<html>` by an inline script in

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt } from '../src/draw.js';
+import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay } from '../src/draw.js';
 
 function seeded(seed) {
   let s = seed >>> 0;
@@ -67,4 +67,49 @@ test('king of the court: winners stay, losers queue, streak cap rotates winners 
   assert.equal(s.courts[0].streak, 0);
   assert.notDeepEqual(s.courts[0].teams[0], w);
   assert.ok(s.queue.includes(w[0]) && s.queue.includes(w[1]));
+});
+
+const everyone = s => [...s.courts.flatMap(c => c.teams.flat()), ...s.queue].sort();
+
+test('open play: first four take the court, finished four go to the back, partners split', () => {
+  let s = createOpenPlay(names(10), 2, seeded(3));
+  assert.equal(s.courts.every(c => c.teams.length === 2), true);
+  assert.equal(s.queue.length, 2);
+  const [[a, b], [c, d]] = s.courts[0].teams;
+  const nextUp = s.queue.slice(0, 2);
+  s = finishOpenPlayGame(s, 0, 1, seeded(4));
+  // Re-queued as winner, loser, winner, loser; the court refills from the
+  // front, so the two waiting players come on with the first two finishers.
+  assert.deepEqual(s.courts[0].teams, [nextUp, [c, a]]);
+  assert.deepEqual(s.queue, [d, b]);
+  assert.deepEqual(s.stats[c], { played: 1, won: 1 });
+  assert.deepEqual(s.stats[a], { played: 1, won: 0 });
+  assert.deepEqual(everyone(s), names(10).sort(), 'nobody lost or duplicated');
+});
+
+test('open play: an odd player out still gets on court', () => {
+  let s = createOpenPlay(names(5), 1, seeded(9));
+  const waiting = s.queue[0];
+  s = finishOpenPlayGame(s, 0, 0, seeded(1));
+  assert.ok(s.courts[0].teams.flat().includes(waiting));
+});
+
+test('open play: join fills an idle court; leave takes effect after the game', () => {
+  let s = createOpenPlay(names(5), 2, seeded(2));
+  assert.equal(s.courts[1].teams.length, 0, 'second court idle with 5 players');
+  for (const n of ['Q1', 'Q2', 'Q3']) s = joinOpenPlay(s, n, seeded(7));
+  assert.equal(s.courts[1].teams.length, 2, 'eight players fill both courts');
+  assert.throws(() => joinOpenPlay(s, 'Q1'), /duplicate/);
+  const gone = s.courts[0].teams[0][0];
+  s = leaveOpenPlay(s, gone);
+  assert.ok(s.courts[0].teams.flat().includes(gone), 'finishes the game first');
+  s = finishOpenPlayGame(s, 0, 0, seeded(8));
+  assert.ok(!everyone(s).includes(gone));
+  assert.deepEqual(s.stats[gone], { played: 1, won: 1 }, 'counts stay');
+  const q = s.queue[s.queue.length - 1];
+  s = leaveOpenPlay(s, q);
+  assert.ok(!s.queue.includes(q));
+  s = joinOpenPlay(s, gone, seeded(5));
+  assert.equal(s.queue[s.queue.length - 1], gone, 'can come back, counts kept');
+  assert.deepEqual(s.stats[gone], { played: 1, won: 1 });
 });

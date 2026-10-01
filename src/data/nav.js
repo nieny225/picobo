@@ -22,6 +22,8 @@ export const SCORE_SETUP = {
   fun: { id: 'fun', label: '快打' },
   // 計分中畫面頂端標示目前模式，避免沿用舊比賽時搞不清楚是哪一種算法。
   playing: '{play}・{scoring}・打到 {target} 分',
+  fullscreen: '全螢幕',
+  exitFullscreen: '離開全螢幕',
   // 下一球贏了就結束這局時，大比分下面的小標。
   gamePoint: '{team}賽末點（Game Point）',
   gamePointBoth: '雙方賽末點（Game Point）',
@@ -45,6 +47,21 @@ export const SHARE = {
 
 // 抽籤頁還沒輸入球友時的範例名單。
 export const DRAW_SAMPLE = ['Bruce', 'Annie', 'Steven', 'Max', 'Rose', 'Henry', 'Lara', 'Casey', 'Frank', 'Erica', 'Matthew', 'Tom', 'GT', 'Mandy', 'John', 'Nick', 'Vivian'];
+
+// 抽籤分組（排隊輪流上場）。{court} 換成場地編號。
+export const OPEN_PLAY = {
+  start: '開始抽籤',
+  redraw: '重新抽籤',
+  hint: '大家排成一列，前四位上場。打完按贏的那隊，四個人回到隊尾、搭檔拆開，排最前面的四位接著上。重新抽籤會打散重排，戰績保留。',
+  won: '這隊贏',
+  idle: '{court} 號場：人不夠，先休息',
+  queue: '排隊中',
+  queueHint: '（前四位下一場上）',
+  queueEmpty: '沒有人在排隊',
+  leaving: '打完這場離開：',
+  stats: '今天戰績',
+  cols: ['球友', '打', '贏'],
+};
 
 // 右上角的淺色／深色切換。按鈕上寫的是按下去會變成什麼。
 export const THEME = {

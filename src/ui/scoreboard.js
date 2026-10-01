@@ -118,13 +118,39 @@ function playHtml(state) {
       <button class="btn" id="undo"${state.history.length ? '' : ' disabled'}>復原上一球</button>
       ${state.finished ? '<button class="btn btn-primary" id="again">再來一局</button>' : ''}
       <button class="btn btn-ghost" id="reset">重新設定</button>
+      ${document.fullscreenEnabled ? `<button class="btn btn-ghost" id="fullscreen">${esc(document.fullscreenElement ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen)}</button>` : ''}
     </div>
   </div>`;
+}
+
+// Keeps the phone screen on while a game is being scored. The browser drops
+// the lock when the page is hidden, so it is taken again on return.
+let wakeLock = null;
+async function keepAwake(on) {
+  try {
+    if (on && !wakeLock && navigator.wakeLock && document.visibilityState === 'visible') {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    } else if (!on && wakeLock) {
+      await wakeLock.release();
+      wakeLock = null;
+    }
+  } catch { wakeLock = null; /* not allowed here (iframe, battery saver): screen just dims as usual */ }
 }
 
 export function mountScoreboard(root) {
   let state = load();
   let prefill = null;
+  // While a game is on screen the view is marked .score-playing: on phones the
+  // top bar and the page title fold away (styles/main.css) and the screen stays on.
+  const onScore = () => location.hash.replace(/^#/, '').split('/')[0] === 'score';
+  const syncPlaying = () => {
+    const playing = !!state && onScore();
+    root.classList.toggle('score-playing', playing);
+    keepAwake(playing && !state.finished);
+  };
+  window.addEventListener('hashchange', syncPlaying);
+  document.addEventListener('visibilitychange', syncPlaying);
 
   const renderSetup = () => {
     root.innerHTML = setupHtml(prefill);
@@ -164,11 +190,19 @@ export function mountScoreboard(root) {
         teams: { A: names('A'), B: names('B') }, firstServer: form.first.value, decidingGame: form.deciding.checked,
       });
       save(state); renderPlay();
+      window.scrollTo({ top: 0 });
     });
   };
 
   const renderPlay = () => {
     root.innerHTML = `<div class="section-head"><h2>計分板</h2></div><div class="card">${playHtml(state)}</div>`;
+    syncPlaying();
+    root.querySelector('#fullscreen')?.addEventListener('click', async () => {
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        else await document.documentElement.requestFullscreen({ navigationUI: 'hide' });
+      } catch { /* refused: nothing to do */ }
+    });
     const court = root.querySelector('#board-court');
     if (court) renderCourt(court, courtScene(state), { landscape: LANDSCAPE.matches });
     const update = next => { state = next; save(state); renderPlay(); };
@@ -185,7 +219,7 @@ export function mountScoreboard(root) {
     });
     root.querySelector('#reset').addEventListener('click', () => {
       prefill = { mode: state.mode, target: state.target, A: state.teams.A.names, B: state.teams.B.names };
-      state = null; save(null); renderSetup();
+      state = null; save(null); renderSetup(); syncPlaying();
     });
   };
 
@@ -194,6 +228,12 @@ export function mountScoreboard(root) {
   LANDSCAPE.addEventListener('change', () => {
     const court = root.querySelector('#board-court');
     if (court && state) renderCourt(court, courtScene(state), { landscape: LANDSCAPE.matches });
+  });
+
+  // Keep the full-screen button's label right when the user leaves with Esc or a gesture.
+  document.addEventListener('fullscreenchange', () => {
+    const b = root.querySelector('#fullscreen');
+    if (b) b.textContent = document.fullscreenElement ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen;
   });
 
   if (state) renderPlay(); else renderSetup();
