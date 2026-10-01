@@ -1,8 +1,12 @@
-// Hides the sticky top bar (and, via the chrome-hidden class on <html>, the
-// floating buttons) while the page scrolls down, and brings them back on any
+// Hides the sticky top bar while the page scrolls down (the chrome-hidden
+// class on <html> lets bars under it move up to the top), and brings them back on any
 // scroll up, so the content gets the whole screen on a phone.
 export function autoHideTopbar(bar) {
   const root = document.documentElement;
+  // Sticky bars under the header (the rules bar) sit at this offset.
+  const measure = () => root.style.setProperty('--topbar-h', `${bar.offsetHeight}px`);
+  measure();
+  window.addEventListener('resize', measure);
   let lastY = window.scrollY;
   let ticking = false;
   const set = hidden => {

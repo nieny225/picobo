@@ -116,10 +116,12 @@ The rules tab was one 16,800 px page on a phone. Now:
   #rules/<id>, with 目錄 back link and 上一條／下一條 at the bottom.
 - v1 links #rules-<id> are rewritten to #rules/<id> (#rules-formats to
   #formats). Unknown ids fall back to the index.
-- A floating 目錄 button (bottom-left, rules tab only) opens a left drawer
-  (`<dialog>`) listing every rules page; the current one is highlighted.
-- The top bar and the floating button hide while scrolling down and come
-  back on any scroll up (`src/ui/topbar.js`).
+- A sticky bar on top of every rules page holds the 目錄 button (opens a
+  left drawer, `<dialog>`, listing every rules page with the current one
+  highlighted) and shows where the reader is (section / page). It replaced a
+  floating button that overlapped content once the bottom nav existed.
+- The top bar hides while scrolling down and comes back on any scroll up
+  (`src/ui/topbar.js`); the rules bar then moves up to the top.
 - 玩法 (#formats) mirrors rules: an index grouped by type and one page per
   format (#formats/<id>) with court scenes (queue / resting players drawn
   dimmed in the court's right margin), marked 各球場做法不同.

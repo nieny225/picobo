@@ -128,7 +128,6 @@ function pageHtml(p, f) {
     ? `<a class="pager-link ${cls}" href="#rules/${q.id}"><span class="muted small">${esc(label)}</span><b>${esc(q.title)}</b></a>`
     : '<span></span>';
   return `
-    <nav class="rule-top"><a class="back" href="#rules">${esc(RULE_PAGE.back)}</a>${p.sec ? `<span class="muted small">${esc(p.sec.title)}</span>` : ''}</nav>
     ${pageBody(p, f)}
     <nav class="pager">${step(prev, RULE_PAGE.prev, 'prev')}${step(next, RULE_PAGE.next, 'next')}</nav>`;
 }
@@ -194,14 +193,17 @@ function drawerHtml() {
   return `<dialog class="drawer" aria-label="${esc(DRAWER.title)}">
     <div class="drawer-head"><b>${esc(DRAWER.title)}</b><button class="drawer-close" type="button" aria-label="${esc(DRAWER.close)}">×</button></div>
     <nav class="drawer-body"></nav>
-  </dialog>
-  <button class="drawer-open" type="button" aria-haspopup="dialog">${esc(DRAWER.open)}</button>`;
+  </dialog>`;
 }
 
 // Renders the index (sub = '') or one page (sub = page id). An unknown id is
 // a bad link, not a bad state, so it falls back to the index.
 export function mountRules(root) {
-  root.innerHTML = `<div class="rules-page"></div>${drawerHtml()}`;
+  // A sticky bar on top of every rules page: the drawer button and where the
+  // reader is. It replaces a floating button that collided with content.
+  root.innerHTML = `<div class="rules-bar"><button class="drawer-open" type="button" aria-haspopup="dialog">${esc(DRAWER.open)}</button><span class="rules-where"></span></div>
+    <div class="rules-page"></div>${drawerHtml()}`;
+  const whereEl = root.querySelector('.rules-where');
   const pageEl = root.querySelector('.rules-page');
   const drawer = root.querySelector('.drawer');
   const drawerNav = drawer.querySelector('.drawer-body');
@@ -215,6 +217,10 @@ export function mountRules(root) {
   const render = () => {
     const p = PAGES.find(q => q.id === current);
     pageEl.innerHTML = p ? pageHtml(p, filter) : indexHtml(filter);
+    const [upper, lower] = p
+      ? [p.sec?.title ?? RULES_INDEX.more, p.title]
+      : [RULES_INDEX.title, `${optionById('play', filter.play).label}・${optionById('scoring', filter.scoring).label}`];
+    whereEl.innerHTML = `<small>${esc(upper)}</small><b>${esc(lower)}</b>`;
     drawerNav.innerHTML = drawerNavHtml(filter);
     for (const a of drawerNav.querySelectorAll('a[data-id]')) {
       if (a.dataset.id === current) a.setAttribute('aria-current', 'page');
