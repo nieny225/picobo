@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { timeText, dateText, nextDay, signupText, shortMapLink } from '../src/signup.js';
+import { timeText, dateText, nextDay, signupText, shortMapLink, parseSignup } from '../src/signup.js';
 import { SIGNUP } from '../src/data/signup.js';
 
 test('times read the way people write them', () => {
@@ -61,4 +61,37 @@ test('a cap prints that many numbers on every session', () => {
   assert.throws(() => signupText({ sessions: [{ date: '2026-09-05', start: '17:00', place: 'x' }], cap: 0 }, SIGNUP.labels), /signup: cap/);
   assert.throws(() => signupText({ sessions: [{ date: '2026-09-05', start: '17:00', place: ' ' }] }, SIGNUP.labels), /signup: place/);
   assert.throws(() => signupText({ sessions: [] }, SIGNUP.labels), /signup: sessions/);
+});
+
+test('a pasted sign-up list reads back into sessions of names', () => {
+  const pasted = [
+    '下一場',
+    '9/5 (Sat) 5-7pm',
+    '1.  VVN & Nick w/ 2 kids',
+    '2.  Roger & Amy',
+    '3.  Annie & Bruce',
+    '4.  Henry',
+    '',
+    '9/6 (Sun) 8-10pm',
+    '📍 Pickle & Bones @ TRIFECTA',
+    'https://maps.google.com/?q=Singapore+239958',
+    '1. Steven',
+    '2. Roger & Amy',
+    '3. Racheal & Sean',
+    '4.',
+    '8. Rose &Max',
+    'via picobo.net',
+  ].join('\n');
+  const s = parseSignup(pasted);
+  assert.equal(s.length, 2);
+  assert.equal(s[0].title, '9/5 (Sat) 5-7pm');
+  assert.deepEqual(s[0].names, ['VVN', 'Nick', 'Roger', 'Amy', 'Annie', 'Bruce', 'Henry']);
+  assert.deepEqual(s[1].names, ['Steven', 'Roger', 'Amy', 'Racheal', 'Sean', 'Rose', 'Max']);
+});
+
+test('lists without a date, other separators and our own message round-trip', () => {
+  assert.deepEqual(parseSignup('1、小明、小華\n2) Tom / Jerry\n3. Ann (late)\n4: 阿德和阿美'), [{ title: '', names: ['小明', '小華', 'Tom', 'Jerry', 'Ann', '阿德', '阿美'] }]);
+  const text = signupText({ sessions: [{ date: '2026-09-05', start: '17:00', end: '19:00', place: 'Kallang' }], names: ['Rose & Max', 'Henry'] }, SIGNUP.labels);
+  assert.deepEqual(parseSignup(text), [{ title: '9/5 (Sat) 5-7pm', names: ['Rose', 'Max', 'Henry'] }]);
+  assert.deepEqual(parseSignup('nothing here'), []);
 });

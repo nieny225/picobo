@@ -546,6 +546,10 @@ footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top
 .venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
 .venue-list { display: grid; gap: 14px; }
 .venue .event-facts div { grid-template-columns: 5em 1fr; }
+.paste-list { display: grid; gap: 8px; }
+.paste-list[open] { padding-bottom: 4px; }
+.paste-list > *:not(summary) { margin-top: 8px; }
+.paste-sessions { display: grid; gap: 8px; }
 .signup-sessions { display: grid; gap: 12px; }
 .signup-session { margin: 0; padding: 10px 12px 12px; border: 2px solid var(--ink); border-radius: var(--radius-sm); display: grid; gap: 8px; min-width: 0; }
 .signup-session legend { display: flex; align-items: center; gap: 10px; padding: 0 6px; font-weight: 900; }

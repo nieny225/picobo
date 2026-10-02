@@ -285,6 +285,12 @@ The rules tab was one 16,800 px page on a phone. Now:
   cap), "via picobo.net". Several sessions in one message. Copy button plus
   share icon (text only). Form kept as `picobo.signup`; old dates roll
   forward to today. Entry: 發報名訊息 on every court card, plus a small text link under the list for courts not in it (condo courts, a friend's club).
+- 抽籤 has 貼上報名名單 (a collapsible under the roster): paste the group's
+  接龍 list, `parseSignup` (src/signup.js) reads numbered lines into names,
+  splitting pairs on & ＆ + , 、 / and 和 跟, dropping "w/ …" and bracketed
+  notes; a line with a date like 9/5 starts a session. One session goes
+  straight in; several ask which. Names join the roster (or replace the
+  example list) and join a running open-play queue.
 - Share is an icon only (no 分享 text), top right on every tool: the rules
   bar, the 計分 and 抽籤 headings, Pico Bowl and its organizer screen. During
   a game it sits in the board's top-right corner (hand-over link); full

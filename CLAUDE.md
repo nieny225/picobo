@@ -57,7 +57,8 @@ src/scoring.js          pure scoring state machines (no DOM)
 src/draw.js             pure draw / round-robin / king-of-court logic (no DOM)
 src/tournament.js       pure Pico Bowl logic: pools, court queue, standings, playoffs (no DOM)
 src/handoff.js          pack / unpack a tool's state into a hand-over link (#score?s=…)
-src/signup.js           pure 報名訊息 text: 9/5 (Sat) 5-7pm, 📍 place, short map link, numbered list
+src/signup.js           pure 報名訊息 text: 9/5 (Sat) 5-7pm, 📍 place, short map link, numbered list;
+                        parseSignup reads a pasted list back into sessions of names (抽籤 uses it)
 src/meetup.js           pure 揪團卡 logic: check the form, chat summary line, .ics, map / LINE / WhatsApp links
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes

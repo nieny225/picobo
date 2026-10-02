@@ -1,4 +1,6 @@
-import { DRAW_SAMPLE, OPEN_PLAY } from '../data/nav.js';
+import { DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P } from '../data/nav.js';
+import { parseSignup } from '../signup.js';
+import { toast } from './share.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay } from '../draw.js';
 
@@ -39,6 +41,12 @@ export function mountDraw(root) {
       <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3>${roster.sample ? '<span class="example-note">範例名單，改成你們的</span>' : ''}</div>
       <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip">${esc(n)}<button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
       <form class="row" id="add-form"><input class="input" id="add-name" placeholder="輸入名字" maxlength="8" autocomplete="off"><button class="btn" type="submit" style="flex:0 0 auto">加入</button><button class="btn btn-ghost" type="button" id="clear" style="flex:0 0 auto">清空</button></form>
+      <details class="paste-list"><summary>${esc(P.open)}</summary>
+        <p class="muted small">${esc(P.hint)}</p>
+        <textarea class="input" id="paste-text" rows="5" placeholder="${esc(P.placeholder)}"></textarea>
+        <button class="btn btn-primary" type="button" id="paste-read">${esc(P.read)}</button>
+        <div id="paste-pick"></div>
+      </details>
     </div>
     <div class="subtabs" role="tablist">
       ${[['draw', '抽籤分組'], ['rr', '輪轉賽'], ['koc', '國王球場']].map(([id, t]) => `<button class="subtab" role="tab" data-sub="${id}" aria-selected="${sub === id}">${t}</button>`).join('')}
@@ -143,6 +151,24 @@ export function mountDraw(root) {
       if (play) setPlay(joinOpenPlay(play, v));
       saveRoster(roster); render();
       root.querySelector('#add-name').focus();
+    });
+    // A pasted sign-up list: one session goes straight in; several ask which.
+    // The names join today's roster (or replace the example list).
+    const addNames = names => {
+      const fresh = names.filter(n => !(roster.sample ? [] : roster.names).includes(n));
+      roster = { names: [...(roster.sample ? [] : roster.names), ...fresh], sample: false };
+      if (play) for (const n of fresh) setPlay(joinOpenPlay(play, n));
+      saveRoster(roster); render();
+      toast(esc(P.added.replace('{n}', fresh.length)));
+    };
+    root.querySelector('#paste-read').addEventListener('click', () => {
+      const sessions = parseSignup(root.querySelector('#paste-text').value);
+      const pick = root.querySelector('#paste-pick');
+      if (sessions.length === 0) { pick.innerHTML = `<p class="form-error">${esc(P.none)}</p>`; return; }
+      if (sessions.length === 1) { addNames(sessions[0].names); return; }
+      pick.innerHTML = `<p class="small"><b>${esc(P.pick)}</b></p><div class="paste-sessions">${sessions.map((s, i) =>
+        `<button class="btn" type="button" data-session="${i}">${esc(P.session.replace('{title}', s.title || P.untitled).replace('{n}', s.names.length))}</button>`).join('')}</div>`;
+      for (const b of pick.querySelectorAll('[data-session]')) b.addEventListener('click', () => addNames(sessions[Number(b.dataset.session)].names));
     });
     root.querySelector('#clear').addEventListener('click', () => { roster = { names: [], sample: false }; koc = null; setPlay(null); saveRoster(roster); render(); });
     for (const b of root.querySelectorAll('[data-remove]')) b.addEventListener('click', () => {

@@ -73,3 +73,38 @@ export function signupText({ sessions, names = [], cap = null, blanks = 3 }, lab
   });
   return [labels.heading, '', blocks.join('\n\n'), '', labels.footer].join('\n');
 }
+
+// The other way round: read a sign-up list pasted back from the group chat
+// (ours or one typed by hand) into sessions of player names, for the draw.
+// A line with a date like 9/5 starts a session; "3. Roger & Amy" adds two
+// players; empty numbers, links and other lines are skipped. "w/ 2 kids" and
+// anything in brackets are notes, not names.
+const NUMBERED = /^\s*\d{1,2}\s*[.)、．:：]\s*(.*)$/;
+const DATED = /\b\d{1,2}\/\d{1,2}\b/;
+const SPLIT = /\s*(?:&|＆|\+|,|，|、|\/|\band\b|和|跟)\s*/i;
+
+export function namesIn(entry) {
+  return entry
+    .replace(/\s+w\/.*$/i, '')
+    .replace(/[(（[【].*?[)）\]】]/g, '')
+    .split(SPLIT)
+    .map(n => n.trim())
+    .filter(Boolean);
+}
+
+export function parseSignup(text) {
+  const sessions = [];
+  let current = null;
+  for (const line of String(text ?? '').split(/\r?\n/)) {
+    const numbered = line.match(NUMBERED);
+    if (!numbered && DATED.test(line)) {
+      current = { title: line.trim(), names: [] };
+      sessions.push(current);
+      continue;
+    }
+    if (!numbered) continue;
+    if (!current) { current = { title: '', names: [] }; sessions.push(current); }
+    for (const n of namesIn(numbered[1])) if (!current.names.includes(n)) current.names.push(n);
+  }
+  return sessions.filter(s => s.names.length > 0);
+}
