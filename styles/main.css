@@ -584,6 +584,8 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .stats th { color: var(--muted); font-weight: 700; }
 .stats td.num, .stats th:not(:first-child) { text-align: right; width: 3.5em; }
 footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top: 12px; }
+/* The rulebook line belongs with the rules, not on the home page. */
+html[data-route="home"] #footer { display: none; }
 
 
 /* 揪團卡 and the courts list. */
