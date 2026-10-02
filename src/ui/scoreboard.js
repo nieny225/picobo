@@ -2,7 +2,7 @@ import { renderCourt } from '../court.js';
 import { MODES, createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other, gamePoint } from '../scoring.js';
 import { coinFlip } from '../draw.js';
 import { FILTER, SCORE_SETUP, DRAW_SCORE as D, SCORE_SHARE } from '../data/nav.js';
-import { openShareSheet, IMAGE_ICON } from './sharecard.js';
+import { openShareSheet, CAMERA_ICON } from './sharecard.js';
 import { LANDSCAPE } from './scenes.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { shareButtonHtml, sharePage } from './share.js';
@@ -141,10 +141,10 @@ function playHtml(state) {
       <button class="score-btn team-A" id="win-A"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.A}</span><span class="name">${esc(A)} 贏這球</span></button>
       <button class="score-btn team-B" id="win-B"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.B}</span><span class="name">${esc(B)} 贏這球</span></button>
     </div>
-    <div class="toolbar">
+    ${state.finished && state.from ? `<button class="btn btn-primary btn-block" id="to-draw">${esc(D.back.replace('{names}', state.teams[state.winner].names.join('・')))}</button>` : ''}
+    <div class="toolbar${state.finished ? ' is-finished' : ''}">
       <button class="btn icon-btn" id="undo" aria-label="復原上一球"${state.history.length ? '' : ' disabled'}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span class="btn-text">復原上一球</span></button>
-      ${state.finished && state.from ? `<button class="btn btn-primary" id="to-draw">${esc(D.back.replace('{names}', state.teams[state.winner].names.join('・')))}</button>` : ''}
-      ${state.finished ? `<button class="btn${state.from ? '' : ' btn-primary'}" id="again">再來一局</button><button class="btn icon-btn" id="share-score">${IMAGE_ICON}<span class="btn-text">${esc(SCORE_SHARE.open)}</span></button>` : ''}
+      ${state.finished ? `<button class="btn${state.from ? '' : ' btn-primary'}" id="again">再來一局</button><button class="btn icon-btn" id="share-score" aria-label="${esc(SCORE_SHARE.open)}">${CAMERA_ICON}<span class="lbl-long" aria-hidden="true">${esc(SCORE_SHARE.open)}</span><span class="lbl-short" aria-hidden="true">${esc(SCORE_SHARE.ig)}</span></button>` : ''}
       <button class="btn btn-ghost icon-btn" id="reset" aria-label="重新設定"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg><span class="btn-text">重新設定</span></button>
     </div>
   </div>`;

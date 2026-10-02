@@ -367,8 +367,9 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   list, or a session drawn from it, is dropped on load. Copy examples use
   generic names (Amy & Ben, Chris).
 - Share as picture (src/ui/sharecard.js, content from src/sharecard.js): a
-  finished game (scoreboard 「分享到 IG」) or the 抽籤 今天戰績 (icon by the
-  title). One sheet: 限動 9:16 / 貼文 4:5, optional own photo (cover-fit,
+  finished game (scoreboard 「分享到 IG」, camera icon; 「📷 IG」 under 380px)
+  or the 抽籤 今天戰績 (「📷 IG」 pill by the title). After a game the
+  board's buttons are one row: undo and reset as icons only. One sheet: 限動 9:16 / 貼文 4:5, optional own photo (cover-fit,
   never uploaded), 分享 via navigator.share({ files }) else 存圖 (download).
   Score image is the chosen B1 mockup (big picobo. tag top left, cream score
   band; long names drop under the score); no photo = drawn court background.

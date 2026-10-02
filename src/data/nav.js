@@ -48,6 +48,8 @@ export const SCORE_SETUP = {
 export const SCORE_SHARE = {
   open: '分享到 IG',
   openStats: '今天戰績分享到 IG',
+  // 今天戰績旁的小按鈕上的字（相機 icon 後面）。
+  ig: 'IG',
   title: '分享到 IG',
   tabs: { image: '圖片', sticker: '貼紙' },
   formats: { story: '限動 9:16', post: '貼文 4:5' },

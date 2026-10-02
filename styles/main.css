@@ -457,6 +457,16 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .icon-btn { display: inline-flex; align-items: center; gap: 6px; }
 /* Reset keeps its distance from undo. */
 .board .toolbar #reset { margin-left: 18px; }
+/* After a game: one row. Undo and reset shrink to icons (their names stay
+   for screen readers); 再來一局 and 分享到 IG keep their words. */
+.board .toolbar.is-finished { flex-wrap: nowrap; gap: 6px; }
+.board .toolbar.is-finished .btn { padding: 8px 10px; white-space: nowrap; font-size: 0.95rem; }
+.board .toolbar.is-finished .icon-btn { gap: 4px; }
+.board .toolbar.is-finished #undo, .board .toolbar.is-finished #reset { width: 44px; min-width: 44px; padding: 0; justify-content: center; margin-left: 0; }
+.board .toolbar.is-finished .btn-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.board #to-draw { margin: 0 auto 10px; display: block; }
+.board #share-score .lbl-short { display: none; }
+@media (max-width: 379px) { .board #share-score .lbl-long { display: none; } .board #share-score .lbl-short { display: inline; } }
 .icon-btn svg { width: 20px; height: 20px; flex: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .announce {
@@ -550,8 +560,8 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .queue-4 span:nth-child(3), .queue-4 span:nth-child(4) { background: var(--mark); color: var(--mark-fg); }
 /* 今天戰績 title with its share icon. */
 .stats-title { display: flex; align-items: center; justify-content: space-between; }
-.stats-share { width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: none; color: var(--fg); padding: 0; border-radius: var(--radius-sm); }
-.stats-share svg { width: 22px; height: 22px; }
+.stats-share { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--ink); background: var(--surface); color: var(--fg); padding: 4px 12px; border-radius: 999px; font: inherit; font-weight: 900; font-size: 0.95rem; }
+.stats-share svg { width: 20px; height: 20px; }
 /* Share-as-picture sheet (src/ui/sharecard.js): the preview fits the phone. */
 .share-sheet { width: min(420px, calc(100vw - 24px)); max-width: none; max-height: calc(100dvh - 24px); overflow-y: auto; display: grid; gap: 10px; padding: 14px; }
 .share-sheet[open] { display: grid; }
@@ -692,6 +702,7 @@ html.is-fullscreen .board .toolbar { flex: none; flex-wrap: nowrap; gap: 14px; }
 html.is-fullscreen .board .toolbar .btn-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 html.is-fullscreen .board .toolbar .icon-btn, html.is-fullscreen .board .toolbar .share-btn { width: 56px; min-width: 56px; height: 48px; padding: 0; justify-content: center; }
 html.is-fullscreen .board .toolbar svg { width: 24px; height: 24px; }
+html.is-fullscreen .board #share-score span { display: none; }
 /* Score buttons: up to 27% of the screen, shrinking when the side-switch
    reminder needs the room. Tall enough to hit blind, never stretched. */
 html.is-fullscreen .score-row { flex: 0 1 clamp(110px, 27vh, 280px); min-height: 110px; margin-right: 0; }
