@@ -111,7 +111,7 @@ tests/*.test.js         node:test for the pure modules
 - 術語以 `src/data/glossary.js` 為準。第一次出現寫「中文（English）」，之後只用中文，
   例外是球友日常直接講英文的詞（dink、side-out、drop serve）可以中英並用。
 - 正統規則以 USA Pickleball Official Rulebook 現行版為準，頁尾標示版本年份；
-  引用時附規則編號（例如 4.B.6）。
+  畫面上不寫規則編號（4.B.6、第 4 節這類），球友看不懂；需要時寫在程式註解。
 - 球場上各地不同的做法（每球得分簡易版、3 人制、廚房戰）必須標「各球場做法不同」，
   不可寫成官方規則。
 - 語氣：像球場上會教你的前輩，直接、短句、先講結論再講理由。一條規則一句話能講完
