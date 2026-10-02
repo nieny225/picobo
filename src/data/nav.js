@@ -101,6 +101,16 @@ export const DRAW_MIX = {
   notMixed: '這場不是混雙',
 };
 
+// 抽籤 ↔ 計分板：場號旁的計分 icon 帶名字進計分板；打完回抽籤記錄勝負。
+export const DRAW_SCORE = {
+  open: '{court} 號場到計分板計分',
+  from: '從抽籤帶入：{court} 號場',
+  back: '回抽籤，記錄 {names} 贏',
+  recorded: '{court} 號場記錄好了，下一組上場',
+  gone: '抽籤那邊這場已經換人或打完了，請在抽籤手動記錄。',
+  busy: { title: '計分板上有比賽還沒打完', body: '要換成 {court} 號場這場嗎？目前的比分會清掉。', yes: '換成這場', no: '取消' },
+};
+
 // 抽籤分組（排隊輪流上場）。{court} 換成場地編號。
 export const OPEN_PLAY = {
   start: '開始抽籤',

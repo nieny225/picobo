@@ -12,7 +12,7 @@ import { registerServiceWorker, mountInstallButton } from './ui/install.js';
 import { decodeHandoff } from './handoff.js';
 import { routeOf } from './ui/handoff.js';
 import { toast } from './ui/share.js';
-import { HANDOFF, SCORE_SETUP } from './data/nav.js';
+import { HANDOFF, SCORE_SETUP, DRAW_SCORE } from './data/nav.js';
 import { RULEBOOK } from './data/rules.js';
 
 const ROUTES = ['home', 'rules', 'formats', 'score', 'draw', 'picobowl', 'meetup', 'venues', 'signup'];
@@ -42,8 +42,16 @@ registerServiceWorker();
 mountInstallButton(document.getElementById('install-btn'));
 mountHome(document.getElementById('view-home'));
 const rules = mountRules(document.getElementById('view-rules'));
-const scoreboard = mountScoreboard(document.getElementById('view-score'));
-const draw = mountDraw(document.getElementById('view-draw'));
+// 抽籤 → 計分板 with a court's four names, and the winner back again.
+const scoreboard = mountScoreboard(document.getElementById('view-score'), {
+  toDraw(link, winnerIndex) {
+    toast(draw.reportWin(link, winnerIndex) ? DRAW_SCORE.recorded.replace('{court}', link.court) : DRAW_SCORE.gone);
+    location.hash = '#draw';
+  },
+});
+const draw = mountDraw(document.getElementById('view-draw'), {
+  async toScore(link) { if (await scoreboard.fromDraw(link)) location.hash = '#score'; },
+});
 const event = mountEvent(document.getElementById('view-picobowl'));
 const meetup = mountMeetup(document.getElementById('view-meetup'));
 mountVenues(document.getElementById('view-venues'));

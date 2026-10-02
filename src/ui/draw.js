@@ -1,9 +1,9 @@
-import { SCORE_SETUP, DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X } from '../data/nav.js';
+import { SCORE_SETUP, DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X, DRAW_SCORE as S } from '../data/nav.js';
 import { parseSignup } from '../signup.js';
 import { toast } from './share.js';
 import { isFull, toggleFull, onFullChange, fullIcon } from './fullscreen.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
-import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer } from '../draw.js';
+import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, courtOfGame } from '../draw.js';
 
 const ROSTER_KEY = 'picobo.roster';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -131,12 +131,22 @@ function wireSwaps(out, state, apply) {
     toast(esc(W.done.replace('{a}', a).replace('{b}', other)));
   });
 }
+// Score this court's game on the scoreboard, names filled in.
+const scoreBtnHtml = (ci, court) => `<button type="button" class="court-score" data-score="${ci}" aria-label="${esc(S.open.replace('{court}', court))}" title="${esc(S.open.replace('{court}', court))}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 5v14M7 10v4M15.5 10h2v4h-2"/></svg></button>`;
+function wireScore(out, state, kind, firstOf, toScore) {
+  for (const b of out.querySelectorAll('[data-score]')) b.addEventListener('click', () => {
+    const c = state.courts[Number(b.dataset.score)];
+    toScore({ kind, court: c.court, teams: c.teams.map(t => t.slice()), first: firstOf(c) === 1 ? 'B' : 'A' });
+  });
+}
+
 const matchHtml = (m, firstIdx) => `<div class="match"><span class="court-no">${m.court} 號場</span>${teamHtml(m.teams[0], firstIdx === 0)}<span class="vs">對</span>${teamHtml(m.teams[1], firstIdx === 1)}</div>`;
 
-export function mountDraw(root) {
+export function mountDraw(root, { toScore } = {}) {
   let roster = loadRoster();
   let sub = 'draw';
   let koc = null;
+  let streakMax = 3;
   let play = loadPlay();
   const setPlay = p => { play = p; savePlay(p); };
   let mix = loadMix();
@@ -178,7 +188,7 @@ export function mountDraw(root) {
     if (!play) { out.innerHTML = ''; return; }
     const ranked = Object.entries(play.stats).sort((a, b) => b[1].won - a[1].won || a[1].played - b[1].played);
     out.innerHTML = `${fullBtnHtml()}<div class="matches">${play.courts.map((c, ci) => c.teams.length === 2 ? `
-      <div class="koc-court"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span>${mix && c.mixed === false ? ` <span class="waiting">${esc(X.notMixed)}</span>` : ''}
+      <div class="koc-court"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span>${mix && c.mixed === false ? `<span class="waiting">${esc(X.notMixed)}</span>` : ''}${scoreBtnHtml(ci, c.court)}</div>
       <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.first === ti, true)}<button class="btn" data-court="${ci}" data-win="${ti}">${esc(OPEN_PLAY.won)}</button></div>`).join('')}</div></div>`
       : `<div class="koc-court"><span class="muted">${esc(OPEN_PLAY.idle.replace('{court}', c.court))}</span></div>`).join('')}</div>
       <p class="small" style="margin-top:10px"><b>${esc(OPEN_PLAY.queue)}</b>${esc(OPEN_PLAY.queueHint)}</p>
@@ -193,6 +203,7 @@ export function mountDraw(root) {
       renderPlay(out);
     });
     wireSwaps(out, play, next => { setPlay(next); renderPlay(out); });
+    wireScore(out, play, 'open', c => c.first, toScore);
     wireFull(out);
   };
 
@@ -208,7 +219,7 @@ export function mountDraw(root) {
   const kocBody = () => `<div class="card draw-card"><div class="draw-controls">
     <div class="row">
       <div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="1"></div>
-      <div class="field"><label for="streak">最多連贏幾場</label><input class="input num" id="streak" type="number" min="1" max="10" value="3"></div>
+      <div class="field"><label for="streak">最多連贏幾場</label><input class="input num" id="streak" type="number" min="1" max="10" value="${streakMax}"></div>
       <div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${koc ? '重新開始' : '開始'}</button></div>
     </div>
     <p class="muted small">贏的留場、輸的排隊尾；連贏到上限也下場。</p></div>
@@ -216,9 +227,8 @@ export function mountDraw(root) {
 
   const renderKoc = out => {
     if (!koc) { out.innerHTML = ''; return; }
-    const streakMax = Number(root.querySelector('#streak').value);
     out.innerHTML = `${fullBtnHtml()}<div class="matches">${koc.courts.map((c, ci) => c.teams.length === 2 ? `
-      <div class="koc-court"><div class="row" style="justify-content:space-between"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span><span class="streak">留場隊已連贏 ${c.streak} 場</span></div>
+      <div class="koc-court"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span><span class="streak">留場隊已連贏 ${c.streak} 場</span>${scoreBtnHtml(ci, c.court)}</div>
       <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.streak === 0 ? ti === 0 : ti === 1, true)}<button class="btn" data-court="${ci}" data-win="${ti}">這隊贏</button></div>`).join('')}</div></div>`
       : `<div class="koc-court"><span class="muted">${c.court} 號場：人不夠，先休息</span></div>`).join('')}</div>
       <p class="small" style="margin-top:10px"><b>排隊中</b>（前兩位下一場上）</p><div class="queue">${koc.queue.map(n => nameHtml(n, true)).join('') || '<span class="muted">沒有人在排隊</span>'}</div>
@@ -228,6 +238,7 @@ export function mountDraw(root) {
       renderKoc(out);
     });
     wireSwaps(out, koc, next => { koc = next; renderKoc(out); });
+    wireScore(out, koc, 'koc', c => (c.streak === 0 ? 0 : 1), toScore);
     wireFull(out);
   };
 
@@ -259,6 +270,7 @@ export function mountDraw(root) {
     });
     // Mixed doubles on or off: the tags show on the roster; courts already
     // playing stay as they are, the next games pair by the tags.
+    body.querySelector('#streak')?.addEventListener('input', e => { streakMax = Number(e.target.value) || 3; });
     body.querySelector('#mix')?.addEventListener('change', e => { mix = e.target.checked; saveMix(mix); render(); });
     if (sub === 'koc') renderKoc(out);
     if (sub === 'draw') renderPlay(out);
@@ -327,6 +339,16 @@ export function mountDraw(root) {
 
   return {
     hasState: () => !roster.sample || !!play || !!koc,
+    // The scoreboard finished a game started from here: mark the winner on
+    // that court (0 or 1) if the same game is still on it. False otherwise.
+    reportWin(link, winnerIndex) {
+      const ci = courtOfGame(link.kind === 'koc' ? koc : play, link);
+      if (ci < 0) return false;
+      if (link.kind === 'koc') { koc = advanceKingOfCourt(koc, ci, winnerIndex, streakMax); sub = 'koc'; }
+      else { setPlay(finishOpenPlayGame(play, ci, winnerIndex, Math.random, mixGenders())); sub = 'draw'; }
+      render();
+      return true;
+    },
     // A roster (and open-play / king-of-court session) handed over from another phone.
     receive(data) {
       if (!Array.isArray(data?.roster?.names)) throw new Error('draw: not a draw hand-over');

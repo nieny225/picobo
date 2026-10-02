@@ -530,6 +530,12 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .koc-team .btn { width: 100%; }
 .koc-team .team-names { align-content: start; }
 .streak { font-size: 0.8rem; color: var(--muted); }
+.court-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 44px; margin: -6px -6px -4px 0; }
+.court-head .waiting, .court-head .streak { flex: 1; }
+.court-score { margin-left: auto; width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: transparent; color: var(--accent); border-radius: var(--radius-sm); padding: 0; }
+.court-score svg { width: 24px; height: 24px; }
+.court-score:hover { background: var(--mark); color: var(--mark-fg); }
+.from-draw { margin: 0; color: var(--accent); font-weight: 700; }
 .queue { display: flex; flex-wrap: wrap; gap: 6px; }
 .queue span { background: var(--surface); border: 2px solid var(--ink); border-radius: 4px; padding: 2px 10px; font-size: 0.9rem; font-weight: 700; }
 .queue span:first-child, .queue span:nth-child(2) { background: var(--mark); color: var(--mark-fg); }

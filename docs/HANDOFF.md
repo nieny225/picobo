@@ -352,6 +352,14 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   per team when the tags allow (untagged players fit anywhere); the queue
   order never changes for it, and a court that cannot be mixed plays anyway
   and shows 「這場不是混雙」. King of the court has no mixed option yet.
+- 抽籤 → 計分板: each court in 抽籤分組 and 國王球場 has a scoreboard icon
+  (`.court-score`). It opens the scoreboard setup with the four names, teams
+  and first-serving team filled in (`scoreboard.fromDraw`; a game still being
+  scored asks first). The match keeps `from` ({ kind, court, teams }); when
+  it ends, 「回抽籤，記錄 … 贏」 calls `draw.reportWin`, which finds the same
+  game with `courtOfGame` (same court, same two teams) and marks the winner.
+  If the court changed meanwhile it only says so. app.js wires the two views;
+  same phone only (a hand-over drops `from`).
 
 ## Known gaps and ideas not yet scheduled
 

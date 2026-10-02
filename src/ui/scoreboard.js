@@ -1,7 +1,7 @@
 import { renderCourt } from '../court.js';
 import { MODES, createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other, gamePoint } from '../scoring.js';
 import { coinFlip } from '../draw.js';
-import { FILTER, SCORE_SETUP } from '../data/nav.js';
+import { FILTER, SCORE_SETUP, DRAW_SCORE as D } from '../data/nav.js';
 import { LANDSCAPE } from './scenes.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { shareButtonHtml, sharePage } from './share.js';
@@ -31,9 +31,11 @@ function save(state) {
 
 function setupHtml(prefill) {
   const p = prefill ?? { target: 11, A: ['甲1', '甲2'], B: ['乙1', '乙2'] };
-  const choice = prefill
+  // A game from 抽籤 brings names (and who serves first) but no mode.
+  const choice = prefill?.mode
     ? { play: p.A.length > 1 ? 'doubles' : 'singles', scoring: p.mode === 'fun' ? 'fun' : p.mode.split('-')[0] }
-    : defaultChoice();
+    : { ...defaultChoice(), ...(prefill ? { play: p.A.length > 1 ? 'doubles' : 'singles' } : {}) };
+  const target = p.target ?? 11;
   const seg = (k, label, options) => `<div class="seg-row"><span class="seg-label">${esc(label)}</span>
     <div class="seg" role="group" aria-label="${esc(label)}">${options.map(o =>
       `<button type="button" data-k="${k}" data-v="${o.id}" aria-pressed="${choice[k] === o.id}">${esc(o.label)}${o.en ? `<span class="seg-en" aria-hidden="true">${esc(o.en)}</span>` : ''}</button>`).join('')}</div></div>`;
@@ -47,14 +49,15 @@ function setupHtml(prefill) {
   </div>`;
   return `<div class="section-head"><div class="head-row"><h2>計分板</h2>${shareButtonHtml()}</div><p class="intro">按誰贏了這一球，站位、換發、喊分自動算好。</p></div>
   <form class="card" id="setup">
+    ${p.from ? `<p class="small from-draw">${esc(D.from.replace('{court}', p.from.court))}</p>` : ''}
     <div class="field"><span class="field-label">${esc(SCORE_SETUP.mode)}</span>${modes}</div>
     <div class="row">
-      <div class="field"><label for="target">打到幾分</label><select class="input" id="target">${[7, 11, 15, 21].map(n => `<option value="${n}"${n === p.target ? ' selected' : ''}>${n} 分</option>`).join('')}</select></div>
+      <div class="field"><label for="target">打到幾分</label><select class="input" id="target">${[7, 11, 15, 21].map(n => `<option value="${n}"${n === target ? ' selected' : ''}>${n} 分</option>`).join('')}</select></div>
       <div class="field"><label for="winby">要贏幾分</label><select class="input" id="winby"><option value="2">贏 2 分</option><option value="1">贏 1 分就好</option></select></div>
     </div>
     <div class="team-fields">${names('A', p.A)}${names('B', p.B)}</div>
     <div class="row">
-      <div class="field"><label for="first">誰先發球</label><select class="input" id="first"><option value="A">甲隊</option><option value="B">乙隊</option></select></div>
+      <div class="field"><label for="first">誰先發球</label><select class="input" id="first"><option value="A">甲隊</option><option value="B"${p.first === 'B' ? ' selected' : ''}>乙隊</option></select></div>
       <div class="field"><label>&nbsp;</label><button type="button" class="btn" id="flip">丟硬幣決定</button></div>
     </div>
     <label class="row" style="align-items:center;gap:8px"><input type="checkbox" id="deciding" style="flex:none;width:20px;height:20px"> <span style="flex:1">這是決勝局（到一半提醒換場）</span></label>
@@ -125,7 +128,8 @@ function playHtml(state) {
     </div>
     <div class="toolbar">
       <button class="btn icon-btn" id="undo" aria-label="復原上一球"${state.history.length ? '' : ' disabled'}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span class="btn-text">復原上一球</span></button>
-      ${state.finished ? '<button class="btn btn-primary" id="again">再來一局</button>' : ''}
+      ${state.finished && state.from ? `<button class="btn btn-primary" id="to-draw">${esc(D.back.replace('{names}', state.teams[state.winner].names.join('・')))}</button>` : ''}
+      ${state.finished ? `<button class="btn${state.from ? '' : ' btn-primary'}" id="again">再來一局</button>` : ''}
       <button class="btn btn-ghost icon-btn" id="reset" aria-label="重新設定"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg><span class="btn-text">重新設定</span></button>
     </div>
   </div>`;
@@ -166,7 +170,7 @@ function confirmSheet(t) {
   });
 }
 
-export function mountScoreboard(root) {
+export function mountScoreboard(root, { toDraw } = {}) {
   let state = load();
   let prefill = null;
   // While a game is on screen the view is marked .score-playing: on phones the
@@ -227,6 +231,8 @@ export function mountScoreboard(root) {
         mode, target: Number(form.target.value), winBy: Number(form.winby.value),
         teams: { A: names('A'), B: names('B') }, firstServer: form.first.value, decidingGame: form.deciding.checked,
       });
+      // Which 抽籤 game this is, so the result can go back there.
+      if (prefill?.from) state.from = prefill.from;
       save(state); renderPlay();
       window.scrollTo({ top: 0 });
     });
@@ -236,7 +242,7 @@ export function mountScoreboard(root) {
     root.innerHTML = `<div class="section-head"><h2>計分板</h2></div><div class="card">${playHtml(state)}</div>`;
     syncPlaying();
     // The last 10 rallies travel with the hand-over so the next scorekeeper can still undo.
-    root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('score', { ...state, history: state.history.slice(-10) }));
+    root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('score', { ...state, from: undefined, history: state.history.slice(-10) }));
     root.querySelector('#fullscreen').addEventListener('click', () => toggleFull('score'));
     const court = root.querySelector('#board-court');
     if (court) renderCourt(court, courtScene(state), { landscape: lieDown() });
@@ -252,8 +258,14 @@ export function mountScoreboard(root) {
         firstServer: other(state.winner), decidingGame: false,
       }));
     });
+    // Back to 抽籤 with the winner; the board goes back to a blank setup.
+    root.querySelector('#to-draw')?.addEventListener('click', () => {
+      const { from, winner } = state;
+      state = null; prefill = null; save(null); renderSetup(); syncPlaying();
+      toDraw?.(from, winner === 'A' ? 0 : 1);
+    });
     const reset = () => {
-      prefill = { mode: state.mode, target: state.target, A: state.teams.A.names, B: state.teams.B.names };
+      prefill = { mode: state.mode, target: state.target, A: state.teams.A.names, B: state.teams.B.names, from: state.from };
       state = null; save(null); renderSetup(); syncPlaying();
     };
     // Reset sits at the far end of the row and asks first once a game is under way.
@@ -280,6 +292,19 @@ export function mountScoreboard(root) {
     preset(play, scoring) {
       if (state) return false;
       for (const [k, v] of [['play', play], ['scoring', scoring]]) root.querySelector(`#setup [data-k="${k}"][data-v="${v}"]`)?.click();
+      return true;
+    },
+    // A game from 抽籤 ({ kind, court, teams, first }): the setup screen with
+    // those names. A game still being scored here is only replaced if the
+    // scorer says so; resolves false when they keep it.
+    async fromDraw(link) {
+      if (state && !state.finished && state.history.length > 0) {
+        const t = { ...D.busy, body: D.busy.body.replace('{court}', link.court) };
+        if (!(await confirmSheet(t))) return false;
+      }
+      state = null; save(null);
+      prefill = { A: link.teams[0], B: link.teams[1], first: link.first, from: link };
+      renderSetup(); syncPlaying();
       return true;
     },
     // A match handed over from another phone. Throws on anything that is not one.

@@ -227,6 +227,15 @@ export function renamePlayer(state, from, to) {
   return next;
 }
 
+// The court still playing the game `link` points at ({ court, teams }, from
+// the scoreboard): same court number and the same two teams in the same
+// order. -1 when that game is over or the players changed since.
+export function courtOfGame(state, link) {
+  const key = t => [...t].sort().join('\u0000');
+  return state?.courts?.findIndex(c => c.court === link?.court && c.teams.length === 2
+    && link.teams?.length === 2 && c.teams.every((t, i) => key(t) === key(link.teams[i]))) ?? -1;
+}
+
 function assertNames(names, min) {
   if (!Array.isArray(names) || names.length < min) throw new Error(`draw: need at least ${min} players`);
   if (new Set(names).size !== names.length) throw new Error('draw: duplicate player names');

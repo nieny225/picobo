@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, mixTeams } from '../src/draw.js';
+import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, mixTeams, courtOfGame } from '../src/draw.js';
 
 function seeded(seed) {
   let s = seed >>> 0;
@@ -193,4 +193,13 @@ test('mixed open play pairs each court and never reorders the queue', () => {
   s = finishOpenPlayGame(s, 0, 0, seeded(6), g);
   assert.equal(typeof s.courts[0].mixed, 'boolean');
   assert.equal('mixed' in finishOpenPlayGame(plain, 0, 0, seeded(6)).courts[0], false);
+});
+
+test('a scored game finds its court again, unless it changed', () => {
+  const s = { courts: [{ court: 1, teams: [['A', 'B'], ['C', 'D']] }, { court: 2, teams: [['E', 'F'], ['G', 'H']] }, { court: 3, teams: [] }], queue: [] };
+  assert.equal(courtOfGame(s, { court: 2, teams: [['F', 'E'], ['G', 'H']] }), 1);
+  assert.equal(courtOfGame(s, { court: 2, teams: [['G', 'H'], ['E', 'F']] }), -1);
+  assert.equal(courtOfGame(s, { court: 1, teams: [['A', 'C'], ['B', 'D']] }), -1);
+  assert.equal(courtOfGame(s, { court: 3, teams: [] }), -1);
+  assert.equal(courtOfGame(null, { court: 1, teams: [['A', 'B'], ['C', 'D']] }), -1);
 });
