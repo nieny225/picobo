@@ -267,7 +267,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   (繞場's two lines); other queues run left to right under the court.
 - Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
-  screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;
+  screenshot), `sw.js` (network first with a 3 s timeout, cache fallback; fetches use cache: no-cache so the HTTP cache never serves a stale file;
   precache list checked by `tests/sw.test.js`). A yellow 安裝 button in the
   top bar (no card on the home page): a button where the browser offers a prompt (Chrome, Edge, Android),
   Share > Add to Home Screen steps on iPhone/iPad (File > Add to Dock on Mac
