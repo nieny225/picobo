@@ -74,7 +74,6 @@ export const SCORE_SHARE = {
   url: 'picobo.net',
   played: '打',
   won: '贏',
-  rest: '…其餘 {n} 人',
   people: '{n} 人',
   play: { doubles: '雙打', singles: '單打' },
   scoring: { sideout: '側出計分', rally: '每球得分', fun: '快打' },

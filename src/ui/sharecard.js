@@ -126,27 +126,41 @@ function scoreBand(ctx, h, card) {
   fitText(ctx, card.meta, x + 48, y + bh - 96, w - 96 - bw - 30, 44, 700, CJK);
 }
 
-// 戰績 rows inside a box: rank badge, name, played, won.
-function statsRows(ctx, card, x, y, w, rowH) {
+// 戰績 rows: rank badge, name, played, won, everything scaled to the row
+// height. The first place is highlighted and labels its numbers.
+function statsRows(ctx, rows, x, y, w, rowH) {
   ctx.textBaseline = 'middle';
-  const colWon = x + w - 24, colPlayed = colWon - 150;
-  card.rows.forEach((r, i) => {
+  const f = Math.round(Math.min(54, rowH * 0.42)), r0 = Math.min(36, rowH * 0.3);
+  const colWon = x + w - f * 0.45, colPlayed = colWon - f * 2.4;
+  rows.forEach((r, i) => {
     const cy = y + i * rowH + rowH / 2;
-    if (i === 0) { ctx.fillStyle = C.mark; ctx.fillRect(x, cy - rowH / 2, w, rowH); }
-    ctx.strokeStyle = C.line; ctx.lineWidth = 6;
+    if (r.rank === 1) { ctx.fillStyle = C.mark; ctx.fillRect(x, cy - rowH / 2, w, rowH); }
+    ctx.strokeStyle = C.line; ctx.lineWidth = Math.max(3, rowH / 20);
     ctx.beginPath(); ctx.moveTo(x, cy + rowH / 2); ctx.lineTo(x + w, cy + rowH / 2); ctx.stroke();
-    ctx.fillStyle = C.white; ctx.beginPath(); ctx.arc(x + 54, cy, 36, 0, Math.PI * 2); ctx.fill();
-    ctx.lineWidth = 6; ctx.strokeStyle = C.ink; ctx.stroke();
-    ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.font = `700 36px ${NUM}`; ctx.fillText(String(r.rank), x + 54, cy + 2);
-    ctx.textAlign = 'left'; fitText(ctx, r.name, x + 120, cy, colPlayed - x - 240, 54, 700, CJK);
-    ctx.textAlign = 'right'; ctx.font = `700 54px ${NUM}`;
-    ctx.fillText(i === 0 ? `${r.played} ${T.played}` : String(r.played), colPlayed, cy);
-    ctx.fillText(i === 0 ? `${r.won} ${T.won}` : String(r.won), colWon, cy);
+    const bx = x + r0 + 14;
+    ctx.fillStyle = C.white; ctx.beginPath(); ctx.arc(bx, cy, r0, 0, Math.PI * 2); ctx.fill();
+    ctx.lineWidth = Math.max(3, r0 / 6); ctx.strokeStyle = C.ink; ctx.stroke();
+    ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.font = `700 ${Math.round(r0)}px ${NUM}`; ctx.fillText(String(r.rank), bx, cy + 2);
+    const nx = bx + r0 + 18;
+    // Room for the played column (wider on the first row, which says 打).
+    ctx.textAlign = 'left'; fitText(ctx, r.name, nx, cy, colPlayed - nx - f * (r.rank === 1 ? 2.6 : 1.4), f, 700, CJK);
+    ctx.textAlign = 'right'; ctx.font = `700 ${f}px ${NUM}`;
+    ctx.fillText(r.rank === 1 ? `${r.played} ${T.played}` : String(r.played), colPlayed, cy);
+    ctx.fillText(r.rank === 1 ? `${r.won} ${T.won}` : String(r.won), colWon, cy);
   });
-  if (card.rest) {
-    ctx.textAlign = 'left'; ctx.fillStyle = C.muted; ctx.font = `500 44px ${CJK}`;
-    ctx.fillText(card.rest, x + 24, y + card.rows.length * rowH + rowH / 2);
-  }
+}
+
+// Everyone on the 戰績, in the space given: rows shrink to fit, and a long
+// list splits into two columns.
+function gridSize(n, maxH, maxRow) {
+  let cols = 1, rowH = Math.min(maxRow, maxH / n);
+  if (rowH < 72 && n > 1) { cols = 2; rowH = Math.min(maxRow, maxH / Math.ceil(n / 2)); }
+  const per = Math.ceil(n / cols);
+  return { cols, rowH, per, height: per * rowH };
+}
+function statsGrid(ctx, rows, x, y, w, size) {
+  const gap = 36, colW = (w - gap * (size.cols - 1)) / size.cols;
+  for (let c = 0; c < size.cols; c++) statsRows(ctx, rows.slice(c * size.per, (c + 1) * size.per), x + c * (colW + gap), y, colW, size.rowH);
 }
 
 // 戰績 without a photo: the whole card in cream (E). No title: the table
@@ -156,24 +170,23 @@ function statsPlain(ctx, h, card) {
   brandTag(ctx);
   ctx.fillStyle = C.ink; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   ctx.font = `900 52px ${CJK}`; ctx.fillText(card.meta, 78, 360);
-  const rowH = h > 1500 ? 140 : 104;
-  statsRows(ctx, card, 78, 420, W - 156, rowH);
+  statsGrid(ctx, card.rows, 78, 420, W - 156, gridSize(card.rows.length, h - 420 - 220, h > 1500 ? 140 : 104));
   brandSmall(ctx, W - 78, h - 120, 64);
 }
 
 // 戰績 over a photo: brand tag on top, the ranking on a cream panel below
-// with the date and the site address in its top row.
+// with the date and the site address in its top row. A long list grows the
+// panel up to about two thirds of the picture.
 function statsOnPhoto(ctx, h, card) {
   brandTag(ctx);
-  const rowH = h > 1500 ? 102 : 78;
-  const rows = card.rows.length + (card.rest ? 1 : 0);
-  const ph = 140 + rows * rowH + 30;
-  const x = 42, w = W - 84, y = h - ph - 54;
+  const x = 42, w = W - 84;
+  const size = gridSize(card.rows.length, h * 0.66 - 180, h > 1500 ? 102 : 78);
+  const ph = 140 + size.height + 36, y = h - ph - 54;
   box(ctx, x, y, w, ph, { fill: C.bg });
   const bw = brandSmall(ctx, x + w - 48, y + 78, 44);
   ctx.fillStyle = C.ink; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   fitText(ctx, card.meta, x + 48, y + 80, w - 96 - bw - 30, 48, 900, CJK);
-  statsRows(ctx, card, x + 30, y + 140, w - 60, rowH);
+  statsGrid(ctx, card.rows, x + 30, y + 140, w - 60, size);
 }
 
 // The whole picture for `kind` at `format`, onto `canvas`.

@@ -22,17 +22,16 @@ export function scoreCard(match, date, labels) {
   };
 }
 
-// 抽籤 counts ({ name: { played, won } }) ranked like the 今天戰績 table
-// (most wins, then fewest games), the top `limit` rows and how many are left.
-export function statsCard(stats, date, labels, limit = 5) {
+// 抽籤 counts ({ name: { played, won } }) ranked like the 今天戰績 table:
+// most wins, then fewest games. Everyone who has played is on it (leaving
+// people out of a shared picture feels wrong).
+export function statsCard(stats, date, labels) {
   const ranked = Object.entries(stats ?? {})
     .filter(([, r]) => r.played > 0)
     .sort((a, b) => b[1].won - a[1].won || a[1].played - b[1].played);
   if (ranked.length === 0) throw new Error('sharecard: no games yet');
-  const total = Object.keys(stats).length;
   return {
-    meta: [dateText(date), fill(labels.people, { n: total })].join('・'),
-    rows: ranked.slice(0, limit).map(([name, r], i) => ({ rank: i + 1, name, played: r.played, won: r.won })),
-    rest: total - Math.min(limit, ranked.length) > 0 ? fill(labels.rest, { n: total - Math.min(limit, ranked.length) }) : '',
+    meta: [dateText(date), fill(labels.people, { n: ranked.length })].join('・'),
+    rows: ranked.map(([name, r], i) => ({ rank: i + 1, name, played: r.played, won: r.won })),
   };
 }

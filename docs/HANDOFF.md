@@ -373,7 +373,8 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   never uploaded), 分享 via navigator.share({ files }) else 存圖 (download).
   Score image is the chosen B1 mockup (big picobo. tag top left, cream score
   band; long names drop under the score); no photo = drawn court background.
-  戰績: no title (the table says it); cream card with the logo on top without
+  戰績: everyone who played (rows shrink, two columns for long lists), no
+  title (the table says it); cream card with the logo on top without
   a photo, ranking panel over the photo with one. Every image carries
   picobo.net (score band, 戰績, sticker).
   Games also have a 貼紙 tab: transparent PNG, 複製貼紙 (ClipboardItem) or
