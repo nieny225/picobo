@@ -284,7 +284,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   "Max N players", numbered names then blank numbers (or numbers up to the
   cap), "via picobo.net". Several sessions in one message. Copy button plus
   share icon (text only). Form kept as `picobo.signup`; old dates roll
-  forward to today. Entry: 發報名訊息 on every court card and atop #venues.
+  forward to today. Entry: 發報名訊息 on every court card, plus a small text link under the list for courts not in it (condo courts, a friend's club).
 - Share is an icon only (no 分享 text), top right on every tool: the rules
   bar, the 計分 and 抽籤 headings, Pico Bowl and its organizer screen. During
   a game it sits in the board's top-right corner (hand-over link); full

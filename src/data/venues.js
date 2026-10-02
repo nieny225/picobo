@@ -103,5 +103,7 @@ export const VENUES_PAGE = {
   kinds: [{ id: '', label: '全部' }, { id: 'dry', label: '不怕下雨' }, { id: 'free', label: '免費' }],
   count: '{n} 個場地',
   none: '沒有符合的場地，換個條件試試。',
+  // 名錄最下面：不在名單上的場地（公寓球場、朋友的俱樂部）也能發報名訊息。
+  unlisted: '在名錄以外的地方打（公寓球場、朋友的俱樂部）？自己打場地名稱也能',
   free: '免費',
 };

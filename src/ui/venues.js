@@ -68,15 +68,18 @@ function barHtml(f) {
 
 function listHtml(f) {
   const shown = VENUES.filter(v => matches(v, f));
-  if (shown.length === 0) return `<article class="card"><p>${esc(V.none)}</p></article>`;
+  // Courts not in the list (a condo court, a friend's club) still get a sign-up message.
+  const unlisted = `<p class="muted small venue-unlisted">${esc(V.unlisted)} <a href="#signup">${esc(SIGNUP.fromVenue)}</a></p>`;
+  if (shown.length === 0) return `<article class="card"><p>${esc(V.none)}</p></article>${unlisted}`;
   const cities = [...new Set(shown.map(v => v.city))];
   return `<p class="muted small">${esc(fill(V.count, { n: shown.length }))}</p>
-    ${cities.map(c => `<section class="rule-group"><h3>${esc(c)}</h3>${shown.filter(v => v.city === c).map(venueCard).join('')}</section>`).join('')}`;
+    ${cities.map(c => `<section class="rule-group"><h3>${esc(c)}</h3>${shown.filter(v => v.city === c).map(venueCard).join('')}</section>`).join('')}
+    ${unlisted}`;
 }
 
 // Courts directory (#venues), grouped by region in data order.
 export function mountVenues(root) {
-  const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(V.intro)}</p><p class="muted small">${esc(V.disclaimer)}</p><a class="btn btn-primary" href="#signup">${esc(SIGNUP.fromVenue)}</a></div>`;
+  const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(V.intro)}</p><p class="muted small">${esc(V.disclaimer)}</p></div>`;
   if (VENUES.length === 0) { root.innerHTML = `${head}<article class="card"><p>${esc(V.empty)}</p></article>`; return; }
   const f = loadFilter();
   root.innerHTML = `${head}${barHtml(f)}<div class="venue-list"></div>`;
