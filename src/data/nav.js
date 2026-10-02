@@ -69,6 +69,16 @@ export const DRAW_PASTE = {
   added: '已加入 {n} 人',
 };
 
+// 球友名單：點名字改名（貼上名單讀錯、或想換成大家認得的名字）。
+export const DRAW_RENAME = {
+  hint: '點名字可以改名，按 × 移除。',
+  title: '改名字',
+  save: '儲存',
+  cancel: '取消',
+  duplicate: '名單裡已經有這個名字了。',
+  empty: '名字不能空白。',
+};
+
 // 抽籤分組和國王球場：點人名跟別人交換位置（場上或排隊）。
 export const DRAW_SWAP = {
   hint: '點名字可以跟別人交換位置。',

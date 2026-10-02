@@ -297,6 +297,10 @@ The rules tab was one 16,800 px page on a phone. Now:
   swaps any two positions, keeps counts, refuses partners, and drops a
   leaving player who is swapped into the queue. Tested: court↔queue,
   queue↔queue, court↔court, cancel, a game finished after swaps.
+- Roster chips: tap the name to rename it (sheet with a text box; empty or
+  duplicate names refused). `renamePlayer` (src/draw.js) carries the new
+  name through a running open play or king of the court: courts, queue,
+  leaving and counts.
 - Share is an icon only (no 分享 text), top right on every tool: the rules
   bar, the 計分 and 抽籤 headings, Pico Bowl and its organizer screen. During
   a game it sits in the board's top-right corner (hand-over link); full

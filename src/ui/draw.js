@@ -1,8 +1,8 @@
-import { DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W } from '../data/nav.js';
+import { DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R } from '../data/nav.js';
 import { parseSignup } from '../signup.js';
 import { toast } from './share.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
-import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers } from '../draw.js';
+import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer } from '../draw.js';
 
 const ROSTER_KEY = 'picobo.roster';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -63,6 +63,34 @@ function pickSwap(name, groups) {
   });
 }
 
+// A small sheet with the name in a text box; resolves to the new name, or
+// null. `taken` says whether a name is already on the roster.
+function askRename(name, taken) {
+  return new Promise(resolve => {
+    const dlg = document.createElement('dialog');
+    dlg.className = 'install-sheet';
+    dlg.innerHTML = `<form method="dialog" class="rename-form"><b>${esc(R.title)}</b>
+      <input class="input" name="name" value="${esc(name)}" maxlength="20" autocomplete="off">
+      <p class="form-error" hidden></p>
+      <div class="toolbar"><button class="btn btn-ghost" type="button" data-cancel>${esc(R.cancel)}</button><button class="btn btn-primary" type="submit">${esc(R.save)}</button></div></form>`;
+    const form = dlg.querySelector('form'), err = dlg.querySelector('.form-error');
+    const done = v => { dlg.close(); dlg.remove(); resolve(v); };
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const v = form.name.value.trim();
+      const problem = !v ? R.empty : v !== name && taken(v) ? R.duplicate : '';
+      if (problem) { err.textContent = problem; err.hidden = false; return; }
+      done(v === name ? null : v);
+    });
+    dlg.querySelector('[data-cancel]').addEventListener('click', () => done(null));
+    dlg.addEventListener('cancel', e => { e.preventDefault(); done(null); });
+    dlg.addEventListener('click', e => { if (e.target === dlg) done(null); });
+    document.body.append(dlg);
+    dlg.showModal();
+    form.name.select();
+  });
+}
+
 // Wires every name button in `out` to swap within `state`, then hands the new state on.
 function wireSwaps(out, state, apply) {
   for (const b of out.querySelectorAll('[data-swap]')) b.addEventListener('click', async () => {
@@ -86,7 +114,8 @@ export function mountDraw(root) {
     <div class="section-head"><div class="head-row"><h2>抽籤輪轉</h2>${handoffButtonHtml()}</div><p class="intro">先輸入今天的球友，再選要怎麼分。</p></div>
     <div class="card">
       <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3>${roster.sample ? '<span class="example-note">範例名單，改成你們的</span>' : ''}</div>
-      <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip">${esc(n)}<button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
+      <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip"><button type="button" class="chip-name" data-rename="${i}">${esc(n)}</button><button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
+      ${roster.names.length ? `<p class="muted small">${esc(R.hint)}</p>` : ''}
       <form class="row" id="add-form"><input class="input" id="add-name" placeholder="輸入名字" maxlength="8" autocomplete="off"><button class="btn" type="submit" style="flex:0 0 auto">加入</button><button class="btn btn-ghost" type="button" id="clear" style="flex:0 0 auto">清空</button></form>
       <details class="paste-list"><summary>${esc(P.open)}</summary>
         <p class="muted small">${esc(P.hint)}</p>
@@ -222,6 +251,17 @@ export function mountDraw(root) {
       for (const b of pick.querySelectorAll('[data-session]')) b.addEventListener('click', () => addNames(sessions[Number(b.dataset.session)].names));
     });
     root.querySelector('#clear').addEventListener('click', () => { roster = { names: [], sample: false }; koc = null; setPlay(null); saveRoster(roster); render(); });
+    // Tap a name to fix it; a running session follows the new name.
+    for (const b of root.querySelectorAll('[data-rename]')) b.addEventListener('click', async () => {
+      const i = Number(b.dataset.rename), old = roster.names[i];
+      const name = await askRename(old, v => roster.names.includes(v));
+      if (!name) return;
+      roster = { names: roster.names.map((n, j) => (j === i ? name : n)), sample: false };
+      const has = s => s && (s.queue.includes(old) || s.courts.some(c => c.teams.flat().includes(old)) || old in (s.stats ?? {}));
+      if (has(play)) setPlay(renamePlayer(play, old, name));
+      if (has(koc)) koc = renamePlayer(koc, old, name);
+      saveRoster(roster); render();
+    });
     for (const b of root.querySelectorAll('[data-remove]')) b.addEventListener('click', () => {
       const gone = roster.names[Number(b.dataset.remove)];
       roster = { names: roster.names.filter((_, i) => i !== Number(b.dataset.remove)), sample: false };

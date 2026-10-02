@@ -496,9 +496,12 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 
 /* Draw */
 .roster { display: flex; flex-wrap: wrap; gap: 8px; }
-.name-chip { display: inline-flex; align-items: center; gap: 2px; background: var(--surface); border: 2px solid var(--ink); border-radius: var(--radius-sm); padding: 0 0 0 12px; min-height: 48px; font-weight: 700; }
+.name-chip { display: inline-flex; align-items: center; gap: 2px; background: var(--surface); border: 2px solid var(--ink); border-radius: var(--radius-sm); padding: 0; min-height: 48px; font-weight: 700; }
 .name-chip button { border: 0; background: transparent; width: 44px; height: 44px; border-radius: 4px; color: var(--fg); font-size: 1rem; line-height: 1; }
 .name-chip button:hover { background: var(--mark); color: var(--mark-fg); }
+/* The name itself is tappable to rename it. */
+.name-chip .chip-name { width: auto; height: 44px; padding: 0 4px 0 12px; font: inherit; font-weight: 700; overflow-wrap: anywhere; text-align: left; }
+.rename-form { display: grid; gap: 12px; }
 .subtabs { display: flex; gap: 6px; border-bottom: var(--bw) solid var(--ink); }
 .subtab { border: 0; background: transparent; padding: 10px 12px; min-height: 44px; color: var(--muted); font-weight: 700; border-radius: 6px 6px 0 0; }
 .subtab[aria-selected="true"] { color: var(--mark-fg); background: var(--mark); font-weight: 900; box-shadow: inset 0 0 0 var(--bw) var(--ink); }

@@ -189,6 +189,21 @@ export function swapPlayers(state, a, b) {
   return { ...state, courts, queue, leaving: state.leaving.filter(n => !gone.includes(n)) };
 }
 
+// Rename a player everywhere they appear: courts, queue, leaving and counts.
+// Works for open play and king of the court (whichever fields exist).
+export function renamePlayer(state, from, to) {
+  const name = String(to ?? '').trim();
+  if (!name) throw new Error('draw: empty name');
+  if (name === from) return state;
+  const everyone = [...state.courts.flatMap(c => c.teams.flat()), ...state.queue, ...Object.keys(state.stats ?? {})];
+  if (everyone.includes(name)) throw new Error('draw: duplicate player names');
+  const swap = n => (n === from ? name : n);
+  const next = { ...state, courts: state.courts.map(c => ({ ...c, teams: c.teams.map(t => t.map(swap)) })), queue: state.queue.map(swap) };
+  if (state.leaving) next.leaving = state.leaving.map(swap);
+  if (state.stats) next.stats = Object.fromEntries(Object.entries(state.stats).map(([k, v]) => [swap(k), v]));
+  return next;
+}
+
 function assertNames(names, min) {
   if (!Array.isArray(names) || names.length < min) throw new Error(`draw: need at least ${min} players`);
   if (new Set(names).size !== names.length) throw new Error('draw: duplicate player names');

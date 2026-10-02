@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers } from '../src/draw.js';
+import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer } from '../src/draw.js';
 
 function seeded(seed) {
   let s = seed >>> 0;
@@ -142,4 +142,20 @@ test('a leaving player swapped off court leaves now; king of the court swaps too
   k = swapPlayers(k, x, y);
   assert.ok(k.courts[0].teams[0].includes(y) && k.queue.includes(x));
   assert.equal('leaving' in k, false);
+});
+
+test('renaming a player follows them everywhere', () => {
+  const base = { courts: [{ court: 1, teams: [['A', 'B'], ['C', 'D']], first: 0 }], queue: ['E'], stats: { A: { played: 2, won: 1 }, B: {}, C: {}, D: {}, E: {} }, leaving: ['A'] };
+  const s = renamePlayer(base, 'A', ' Amy ');
+  assert.deepEqual(s.courts[0].teams[0], ['Amy', 'B']);
+  assert.deepEqual(s.stats.Amy, { played: 2, won: 1 });
+  assert.equal('A' in s.stats, false);
+  assert.deepEqual(s.leaving, ['Amy']);
+  assert.deepEqual(renamePlayer(base, 'E', 'Eve').queue, ['Eve']);
+  assert.equal(renamePlayer(base, 'A', 'A'), base);
+  assert.throws(() => renamePlayer(base, 'A', 'B'), /duplicate/);
+  assert.throws(() => renamePlayer(base, 'A', ' '), /empty/);
+  const k = renamePlayer({ courts: [{ court: 1, teams: [['A', 'B'], ['C', 'D']], streak: 1 }], queue: ['E'] }, 'D', 'Dan');
+  assert.deepEqual(k.courts[0].teams[1], ['C', 'Dan']);
+  assert.equal('stats' in k, false);
 });
