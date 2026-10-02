@@ -536,6 +536,14 @@ footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top
 .meetup-need { background: var(--ink); color: var(--bg); }
 .meetup-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .meetup-actions .btn { display: inline-flex; align-items: center; text-decoration: none; }
+.venue-bar {
+  position: sticky; z-index: 9; top: var(--topbar-h, 0px); display: grid; gap: 8px;
+  margin: 0 calc(-1 * var(--gutter)); padding: 8px var(--gutter); background: var(--bg); border-bottom: 2px solid var(--ink);
+  transition: top 0.2s ease;
+}
+.chrome-hidden .venue-bar { top: 0; }
+.venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
+.venue-list { display: grid; gap: 14px; }
 .venue .event-facts div { grid-template-columns: 5em 1fr; }
 a.btn-block { display: flex; align-items: center; justify-content: center; text-decoration: none; }
 textarea.input { font-family: inherit; line-height: 1.5; resize: vertical; }

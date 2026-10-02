@@ -274,7 +274,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   ActiveSG, onePA, TheSmartLocal (2026-06), SassyMama (2026-09); left out:
   Performance Pickleball's second site, New Bahru, the Astrium, ActiveSG
   school halls (no addresses), Buona Vista / Thomson / Marymount CC (no
-  address). Prices change; the page says so. Not built yet, needs a backend: accounts, live sign-up
+  address). Prices change; the page says so. A sticky bar filters by search (name or address), region and kind (不怕下雨 = indoor, sheltered or both; 免費); region and kind are kept as `picobo.venueFilter`. Not built yet, needs a backend: accounts, live sign-up
   counts, a public list, booking and payment.
 - Share is an icon only (no 分享 text), top right on every tool: the rules
   bar, the 計分 and 抽籤 headings, Pico Bowl and its organizer screen. During

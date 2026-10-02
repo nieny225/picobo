@@ -95,4 +95,13 @@ export const VENUES_PAGE = {
   map: '地圖',
   meetup: '在這裡揪團',
   booking: { phone: '電話預約', whatsapp: 'WhatsApp 預約', line: 'LINE 預約', url: '線上預約' },
+  // 頂部篩選：搜尋、區域、類型。區域的短名稱對應上面 city 的值。
+  search: '搜尋場地名稱或地址',
+  regionLabel: '區域',
+  regions: [{ id: '', label: '全部' }, { id: '中區', label: '中' }, { id: '東區', label: '東' }, { id: '西區', label: '西' }, { id: '北區', label: '北' }, { id: '東北區', label: '東北' }],
+  kindLabel: '類型',
+  kinds: [{ id: '', label: '全部' }, { id: 'dry', label: '不怕下雨' }, { id: 'free', label: '免費' }],
+  count: '{n} 個場地',
+  none: '沒有符合的場地，換個條件試試。',
+  free: '免費',
 };
