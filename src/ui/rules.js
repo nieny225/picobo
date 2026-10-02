@@ -85,7 +85,9 @@ const MORE = PAGES.filter(p => !p.sec && p.kind !== 'compare');
 
 // Fun formats have their own pages (#formats/<id>) but are listed here, under
 // the rules tab, whatever the filter.
-const FORMAT_LINKS = FORMATS.map(f => ({ href: `#formats/${f.id}`, id: `formats/${f.id}`, title: f.name, en: f.en, summary: f.tagline }));
+const FORMAT_LINKS = FORMATS.map(f => ({ href: `#formats/${f.id}`, id: `formats/${f.id}`, title: f.name, en: f.en, summary: f.tagline, group: f.group }));
+// Grouped by purpose (人多場地少, 想練技術, …), in data order.
+const FORMAT_GROUPS = [...new Set(FORMATS.map(f => f.group))].map(g => [g, FORMAT_LINKS.filter(p => p.group === g)]);
 
 const link = (p, f) => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}">
   <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span></a>`;
@@ -109,7 +111,7 @@ function indexHtml(f) {
     ${groups}
     <section class="rule-group" id="rules-formats" data-title="${esc(FORMATS_PAGE.title)}"><h3>${esc(FORMATS_PAGE.title)}${enTag(FORMATS_PAGE.en)}</h3>
       <p class="muted small">${esc(FORMATS_PAGE.note)}</p>
-      <div class="rule-list">${FORMAT_LINKS.map(p => link(p)).join('')}</div>
+      ${FORMAT_GROUPS.map(([g, list]) => `<h4 class="format-group">${esc(g)}</h4><div class="rule-list">${list.map(p => link(p)).join('')}</div>`).join('')}
     </section>
     <section class="rule-group" data-title="${esc(RULES_INDEX.more)}"><h3>${esc(RULES_INDEX.more)}${enTag(RULES_INDEX.moreEn)}</h3>
       <div class="rule-list">${MORE.map(p => link(p)).join('')}</div>
@@ -221,12 +223,13 @@ function dragToOpen(tab, open) {
 // Left drawer listing every page, reachable from any rules page. It is a
 // modal <dialog>, so focus, Esc and the backdrop come from the browser.
 function drawerNavHtml(f) {
-  const group = (title, en, pages) => `<h3>${esc(title)}${enTag(en)}</h3>
-    <ul>${pages.map(p => `<li><a href="${p.href ?? `#rules/${p.id}`}" data-id="${p.id}">${esc(p.title)}${enTag(p.en)}</a></li>`).join('')}</ul>`;
+  const item = p => `<li><a href="${p.href ?? `#rules/${p.id}`}" data-id="${p.id}">${esc(p.title)}${enTag(p.en)}</a></li>`;
+  const group = (title, en, pages) => `<h3>${esc(title)}${enTag(en)}</h3><ul>${pages.map(item).join('')}</ul>`;
   return `<p class="drawer-note">${esc(FILTER.showing)}<b>${optionHtml(optionById('play', f.play))}・${optionHtml(optionById('scoring', f.scoring))}</b></p>
     <a class="drawer-home" href="#rules" data-id="">${esc(DRAWER.home)}</a>
     ${SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => group(sec.title, sec.en, sectionPages(sec, f))).join('')}
-    ${group(FORMATS_PAGE.title, FORMATS_PAGE.en, FORMAT_LINKS)}
+    <h3>${esc(FORMATS_PAGE.title)}${enTag(FORMATS_PAGE.en)}</h3>
+    ${FORMAT_GROUPS.map(([g, list]) => `<h4>${esc(g)}</h4><ul>${list.map(item).join('')}</ul>`).join('')}
     ${group(RULES_INDEX.more, RULES_INDEX.moreEn, MORE)}`;
 }
 

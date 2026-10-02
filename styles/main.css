@@ -305,6 +305,8 @@ html.is-fullscreen .drawer-tab { display: none; }
 .drawer-close { width: 44px; height: 44px; border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--surface); font-size: 1.4rem; line-height: 1; font-weight: 700; }
 .drawer-body { overflow-y: auto; padding: 12px 12px calc(24px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 4px; align-content: start; }
 .drawer-body h3 { font-size: 0.9rem; color: var(--muted); margin: 14px 4px 4px; }
+.drawer-body h4 { font-size: 0.8rem; color: var(--muted); font-weight: 700; margin: 8px 4px 2px; }
+.format-group { margin: 6px 0 -2px; font-size: 0.95rem; }
 .drawer-body ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .drawer-body a {
   display: block; min-height: 44px; padding: 9px 12px; line-height: 1.45; border: 2px solid transparent; border-radius: var(--radius-sm);
