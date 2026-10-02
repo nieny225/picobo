@@ -2,7 +2,7 @@
 // Network first, so every visit online gets the latest files; the cache is the
 // fallback when the network is gone or too slow. Every file the page needs is
 // listed in FILES (tests/sw.test.js checks the list against src/ and styles/).
-const CACHE = 'picobo-v1';
+const CACHE = 'picobo-v2';
 const FILES = [
   './',
   'index.html',
@@ -63,7 +63,9 @@ self.addEventListener('fetch', event => {
 
 async function fromNetworkElseCache(req) {
   const cache = await caches.open(CACHE);
-  const network = fetch(req).then(res => {
+  // no-cache: always ask the server (a cheap 304 when nothing changed), never
+  // the browser's HTTP cache, which GitHub Pages lets hold files for 10 minutes.
+  const network = fetch(req, { cache: 'no-cache' }).then(res => {
     if (res.ok) cache.put(req, res.clone());
     return res;
   });
