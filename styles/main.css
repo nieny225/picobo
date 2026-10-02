@@ -560,6 +560,8 @@ footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top
 .swap-group { margin: 10px 0 4px; font-weight: 900; }
 .swap-names { display: flex; flex-wrap: wrap; gap: 8px; }
 .swap-names .btn { min-height: 44px; padding: 6px 12px; }
+.swap-sheet .toolbar { margin-top: 16px; }
+.swap-sheet .toolbar .btn { min-width: 120px; }
 .paste-list { display: grid; gap: 8px; }
 .paste-list[open] { padding-bottom: 4px; }
 .paste-list > *:not(summary) { margin-top: 8px; }
