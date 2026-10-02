@@ -1,5 +1,5 @@
 import { SCORE_SETUP, DRAW_EMPTY, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X, DRAW_SCORE as S, SCORE_SHARE } from '../data/nav.js';
-import { openShareSheet } from './sharecard.js';
+import { openShareSheet, IMAGE_ICON } from './sharecard.js';
 import { parseSignup } from '../signup.js';
 import { toast } from './share.js';
 import { isFull, toggleFull, onFullChange, fullIcon } from './fullscreen.js';
@@ -205,7 +205,7 @@ export function mountDraw(root, { toScore } = {}) {
       <div class="queue queue-4">${play.queue.map(n => nameHtml(n, true)).join('') || `<span class="muted">${esc(OPEN_PLAY.queueEmpty)}</span>`}</div>
       <p class="muted small">${esc(W.hint)}</p>
       ${play.leaving.length ? `<p class="waiting">${esc(OPEN_PLAY.leaving)}${play.leaving.map(esc).join('、')}</p>` : ''}
-      <h3 class="stats-title"><span>${esc(OPEN_PLAY.stats)}</span>${ranked.some(([, r]) => r.played > 0) ? `<button type="button" class="stats-share" aria-label="${esc(SCORE_SHARE.openStats)}" title="${esc(SCORE_SHARE.openStats)}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></button>` : ''}</h3>
+      <h3 class="stats-title"><span>${esc(OPEN_PLAY.stats)}</span>${ranked.some(([, r]) => r.played > 0) ? `<button type="button" class="stats-share" aria-label="${esc(SCORE_SHARE.openStats)}" title="${esc(SCORE_SHARE.openStats)}">${IMAGE_ICON}</button>` : ''}</h3>
       <table class="stats"><thead><tr>${OPEN_PLAY.cols.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
       <tbody>${ranked.map(([n, r]) => `<tr><td>${esc(n)}</td><td class="num">${r.played}</td><td class="num">${r.won}</td></tr>`).join('')}</tbody></table>`;
     for (const b of out.querySelectorAll('[data-win]')) b.addEventListener('click', () => {

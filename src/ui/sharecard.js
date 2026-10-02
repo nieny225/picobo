@@ -214,6 +214,10 @@ function drawSticker(canvas, card) {
   ctx.fillStyle = C.ink; ctx.fillText(T.brand, 12 + w / 2, 504);
 }
 
+// The icon for "share as a picture" (a photo frame), distinct from the
+// three-dot share icon that shares a link.
+export const IMAGE_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>';
+
 const toBlob = canvas => new Promise((resolve, reject) => canvas.toBlob(b => (b ? resolve(b) : reject(new Error('sharecard: no image'))), 'image/png'));
 
 function download(blob, name) {
