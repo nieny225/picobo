@@ -158,7 +158,7 @@ The rules tab was one 16,800 px page on a phone. Now:
 - 玩法 (#formats) mirrors rules: an index grouped by type and one page per
   format (#formats/<id>) with court scenes (queue / resting players drawn
   dimmed in the court's right margin), marked 各球場做法不同.
-- Rules are grouped 球場與基本 / 共通規則 / 側出計分 / 每球得分 / 更多. Two
+- Rules are grouped 球場與線 / 共通規則 / 側出計分 / 每球得分 / 更多. Two
   toggles at the top of #rules (雙打｜單打, 側出計分｜每球得分) filter the
   index, the drawer and prev/next; the choice is kept in localStorage
   (`picobo.rulesFilter`). Data: section `scoring` and rule `play` fields.

@@ -29,13 +29,13 @@ const four = (serving = {}) => [A1(serving.A1), A2(serving.A2), B1(serving.B1), 
 export const SECTIONS = [
   {
     id: 'court',
-    title: '球場與基本',
-    en: 'Court Basics',
+    title: '球場與線',
+    en: 'Court & Lines',
     intro: '先認識場地。後面每一條規則的圖，都是這一張球場。',
     items: [
       {
         id: 'dimensions',
-        title: '球場長什麼樣',
+        title: '球場尺寸',
         en: 'Court Dimensions',
         summary: '球場 13.41 × 6.10 公尺，跟羽球雙打場一樣大。網子兩邊各有一塊 2.13 公尺深的「廚房」。',
         detail: [
@@ -51,7 +51,7 @@ export const SECTIONS = [
       },
       {
         id: 'lines',
-        title: '線算界內還是界外',
+        title: '壓線判定',
         en: 'Line Calls',
         summary: '球碰到任何線都算界內。唯一例外：發球碰到廚房線算失誤。',
         detail: [
@@ -267,7 +267,7 @@ export const SECTIONS = [
   },
   {
     id: 'rally',
-    title: '每球得分制',
+    title: '每球得分',
     en: 'Rally Scoring',
     subtitle: '2026 暫行規則',
     scoring: 'rally',
@@ -276,8 +276,8 @@ export const SECTIONS = [
       {
         id: 'rally-basics',
         play: 'doubles',
-        title: '每球得分怎麼打',
-        en: 'Rally Scoring',
+        title: '計分與站位',
+        en: 'Scoring & Positions',
         summary: '每一球結束都有一隊得 1 分，誰贏這球誰發下一球。沒有第二發球員。',
         detail: [
           '打到 11、15 或 21 分，要贏 2 分。社交球最常用 15 或 21。',
@@ -299,8 +299,8 @@ export const SECTIONS = [
       {
         id: 'rally-singles',
         play: 'singles',
-        title: '每球得分怎麼打',
-        en: 'Rally Scoring',
+        title: '計分與站位',
+        en: 'Scoring & Positions',
         summary: '每一球都有人得分。發球員看自己的分數站：偶數從右邊發、奇數從左邊發。',
         detail: [
           '站位跟側出計分的單打一樣，看發球員自己的分數：偶數右邊、奇數左邊。接球的人站對角。',
@@ -317,7 +317,7 @@ export const SECTIONS = [
       },
       {
         id: 'rally-pro',
-        title: '職業賽怎麼打',
+        title: '職業賽與凍結',
         en: 'Pro Play (MLP)',
         summary: '職業聯盟 MLP 2023 到 2025 年用每球得分加「凍結」：快贏的那隊只有自己發球時才能得分。2026 年雙打改回側出計分。',
         collapsed: true,
