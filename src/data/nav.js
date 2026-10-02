@@ -58,7 +58,7 @@ export const DRAW_SAMPLE = ['Bruce', 'Annie', 'Steven', 'Max', 'Rose', 'Henry', 
 
 // 抽籤：把群組裡的報名接龍貼進來，讀出名字。{n} 人數，{title} 哪一場。
 export const DRAW_PASTE = {
-  open: '貼上報名名單',
+  open: '貼上群組接龍，自動讀出名字',
   hint: '把群組裡的接龍整則貼進來，例如「1. Rose & Max」，一組兩人會拆成兩個名字。',
   placeholder: '9/5 (Sat) 5-7pm\n1. Rose & Max\n2. Henry',
   read: '讀出名字',
