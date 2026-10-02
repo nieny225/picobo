@@ -83,7 +83,6 @@ export const SECTIONS = [
         id: 'serve',
         title: '發球',
         en: 'Serve',
-        rule: '第 4 節',
         summary: '站在底線後，低手把球對角發到對面的發球區，要越過廚房和廚房線。只有一次機會。',
         detail: [
           '揮拍發球（volley serve）：手臂由下往上揮，觸球點低於腰（肚臍），觸球時拍頭要低於手腕。2026 年起這三點都要「明顯」合法，模糊的就判失誤。',
@@ -107,7 +106,6 @@ export const SECTIONS = [
         id: 'two-bounce',
         title: '雙彈跳',
         en: 'Two-Bounce Rule',
-        rule: '第 7 節',
         summary: '發球要落地一次，回球也要落地一次，之後才可以在空中截擊。',
         detail: [
           '接發球的人一定要等球落地才能打，發球方接第三拍也一定要等球落地。',
@@ -133,7 +131,6 @@ export const SECTIONS = [
         id: 'kitchen',
         title: '廚房（非截擊區）',
         en: 'Kitchen',
-        rule: '第 9 節',
         summary: '人碰到廚房或廚房線的時候，不能把球在空中直接打回去。球落地之後隨便你站哪裡。',
         detail: [
           '截擊的整個動作都不能碰到廚房：起跳前、揮拍中、揮完之後因為衝力踩進去，都算犯規，就算球已經死了也一樣。',
@@ -160,7 +157,6 @@ export const SECTIONS = [
         id: 'faults',
         title: '常見犯規',
         en: 'Faults',
-        rule: '第 7 節',
         summary: '球出界、掛網、廚房截擊、雙彈跳違規，還有球打到身上，都是這一球結束。',
         detail: [
           '出界：球落在線外。碰到線算界內。',
@@ -189,7 +185,6 @@ export const SECTIONS = [
         id: 'ends',
         title: '換場',
         en: 'Changing Ends',
-        rule: '第 5 節',
         summary: '每局打完換場。決勝局打到一方 6 分時換場（11 分制）。',
         detail: [
           '三局兩勝的第三局，第一個到 6 分的時候雙方換邊，發球權不變，繼續由原本的人發。15 分制在 8 分換，21 分制在 11 分換。',
@@ -216,7 +211,6 @@ export const SECTIONS = [
         id: 'scoring',
         title: '計分與喊分',
         en: 'Scoring',
-        rule: '第 4 節',
         summary: '只有發球方能得分。打到 11 分、要贏 2 分。雙打喊三個數字：「發球方分數、接球方分數、第幾發球員」。',
         detail: [
           '開局喊「0-0-2」：第一局第一個發球的隊伍只有一個人可以發，所以直接從第二發球員開始。',
@@ -246,7 +240,6 @@ export const SECTIONS = [
         play: 'doubles',
         title: '發球順序與站位',
         en: 'Serving Order & Positions',
-        rule: '第 4 節',
         summary: '拿回發球權時，站在右邊的人先發。得分才換位，接球的隊伍不動。',
         detail: [
           '每次 side-out 的第一球都從右邊發，由當時站右邊的人發，這個人就是這一輪的第一發球員（4.B.6）。沒有固定的第一發球員。',

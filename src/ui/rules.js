@@ -12,7 +12,7 @@ function ruleCard(item, applies = '') {
     ? `<details${item.collapsed ? '' : ''}><summary>更多說明</summary><div class="detail"><ul>${item.detail.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div></details>`
     : '';
   return `<article class="card rule" id="rules-${item.id}">
-    <div class="card-head"><h3>${esc(item.title)}${enTag(item.en)}</h3>${item.rule ? `<span class="rule-no">${esc(item.rule)}</span>` : ''}</div>
+    <div class="card-head"><h3>${esc(item.title)}${enTag(item.en)}</h3></div>
     ${applies}
     <p class="summary">${esc(item.summary)}</p>
     ${sceneBlock(item)}
@@ -42,7 +42,7 @@ const ruleVersions = item => (hasSingles(item)
 // Every page reachable from the index, in reading order: the rules of each
 // section, then the pages that are not one rule (compare, FAQ, glossary).
 const PAGES = [
-  ...SECTIONS.flatMap(sec => sec.items.flatMap(ruleVersions).map(item => ({ id: item.id, kind: 'rule', sec, item, title: item.title, en: item.en, summary: item.summary, rule: item.rule }))),
+  ...SECTIONS.flatMap(sec => sec.items.flatMap(ruleVersions).map(item => ({ id: item.id, kind: 'rule', sec, item, title: item.title, en: item.en, summary: item.summary }))),
   { id: 'compare', kind: 'compare', title: COMPARE.title, en: COMPARE.en, summary: EXTRA_PAGES.compare.summary },
   { id: 'faq', kind: 'faq', title: EXTRA_PAGES.faq.title, en: EXTRA_PAGES.faq.en, summary: EXTRA_PAGES.faq.summary },
   { id: 'glossary', kind: 'glossary', title: EXTRA_PAGES.glossary.title, en: EXTRA_PAGES.glossary.en, summary: EXTRA_PAGES.glossary.summary },
@@ -85,8 +85,7 @@ const MORE = PAGES.filter(p => !p.sec && p.kind !== 'compare');
 const FORMAT_LINKS = FORMATS.map(f => ({ href: `#formats/${f.id}`, id: `formats/${f.id}`, title: f.name, en: f.en, summary: f.tagline }));
 
 const link = (p, f) => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}">
-  <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span>
-  ${p.rule ? `<span class="rule-no">${esc(p.rule)}</span>` : ''}</a>`;
+  <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span></a>`;
 
 // The two switches in the sticky bar: 雙打｜單打 and 側出計分｜每球得分 (English in small type).
 function barFilterHtml(f) {
