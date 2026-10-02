@@ -69,10 +69,10 @@ const link = (p, f) => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}
   <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(f ? textFor(p, f).summary : p.summary)}</span></span>
   ${p.rule ? `<span class="rule-no">${esc(p.rule)}</span>` : ''}</a>`;
 
-// The two switches in the sticky bar: 雙打｜單打 and Side-out｜Rally.
+// The two switches in the sticky bar: 雙打｜單打 and 側出計分｜每球得分 (English in small type).
 function barFilterHtml(f) {
   const seg = k => `<div class="seg bar-seg" role="group" aria-label="${esc(FILTER[k].label)}">${FILTER[k].options.map(o =>
-    `<button type="button" data-filter="${k}" data-value="${o.id}" aria-pressed="${f[k] === o.id}"${o.en ? ` aria-label="${esc(o.label)}" title="${esc(o.label)}"` : ''}>${esc(o.en ?? o.label)}</button>`).join('')}</div>`;
+    `<button type="button" data-filter="${k}" data-value="${o.id}" aria-pressed="${f[k] === o.id}">${esc(o.label)}${o.en ? `<span class="seg-en" aria-hidden="true">${esc(o.en)}</span>` : ''}</button>`).join('')}</div>`;
   return `${seg('play')}${seg('scoring')}`;
 }
 
@@ -94,18 +94,23 @@ function indexHtml(f) {
     </section>`;
 }
 
-// "適用：雙打｜側出計分" under a rule's title.
-function appliesHtml(p) {
-  const play = p.item.play ? optionHtml(optionById('play', p.item.play)) : esc(FILTER.both.play);
+// A rule for both play styles with its own singles text or scenes.
+const hasSingles = item => Boolean(item.singlesScenes || item.singlesSummary || item.singlesDetail);
+
+// "適用：雙打｜側出計分" under a rule's title. A rule with a singles version
+// names the version on screen; 看其他版本 switches to the other one.
+function appliesHtml(p, f) {
+  const play = p.item.play ?? (hasSingles(p.item) ? f.play : null);
+  const playHtml = play ? optionHtml(optionById('play', play)) : esc(FILTER.both.play);
   const scoring = p.sec.scoring ? optionHtml(optionById('scoring', p.sec.scoring)) : esc(FILTER.both.scoring);
-  return `<div class="format-meta applies"><span class="muted">${esc(FILTER.applies)}</span><span>${play}</span><span>${scoring}</span></div>`;
+  return `<div class="format-meta applies"><span class="muted">${esc(FILTER.applies)}</span><span>${playHtml}</span><span>${scoring}</span></div>`;
 }
 
-// "看其他版本：單打｜Rally" under 適用: one tap switches the filter (and, if
+// "看其他版本：單打｜每球得分" under 適用: one tap switches the filter (and, if
 // this rule does not apply there, jumps to its counterpart).
 function othersHtml(f) {
   const other = k => FILTER[k].options.find(o => o.id !== f[k]);
-  const btn = k => { const o = other(k); return `<button type="button" class="link-btn" data-filter="${k}" data-value="${o.id}">${esc(o.en ?? o.label)}</button>`; };
+  const btn = k => { const o = other(k); return `<button type="button" class="link-btn" data-filter="${k}" data-value="${o.id}">${esc(o.label)}</button>`; };
   return `<p class="others small"><span class="muted">${esc(FILTER.others)}</span>${btn('play')}${btn('scoring')}</p>`;
 }
 
@@ -119,7 +124,7 @@ const textFor = (p, f) => {
 };
 
 function pageBody(p, f) {
-  if (p.kind === 'rule') return ruleCard({ ...p.item, ...textFor(p, f), scenes: scenesFor(p, f) }, appliesHtml(p) + othersHtml(f));
+  if (p.kind === 'rule') return ruleCard({ ...p.item, ...textFor(p, f), scenes: scenesFor(p, f) }, appliesHtml(p, f) + othersHtml(f));
   if (p.kind === 'compare') return compareTable(COMPARE);
   if (p.kind === 'faq') {
     return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="sub">${esc(p.en)}</p></div>
@@ -222,7 +227,7 @@ function drawerHtml() {
 // a bad link, not a bad state, so it falls back to the index.
 export function mountRules(root) {
   // A sticky bar on top of every rules page holds the 雙打｜單打 and
-  // Side-out｜Rally switches and share. The contents drawer opens from a small tab on the left edge (tap it or drag
+  // 側出計分｜每球得分 switches and share. The contents drawer opens from a small tab on the left edge (tap it or drag
   // it right); a swipe from the screen edge itself is the system back gesture.
   root.innerHTML = `<div class="rules-bar"><div class="bar-filters"></div><span class="bar-share"></span><p class="filter-hint" hidden>${esc(FILTER.hint)}</p></div>
     <button class="drawer-tab" type="button" aria-haspopup="dialog" aria-label="${esc(DRAWER.title)}"><span>${esc(DRAWER.open)}</span></button>

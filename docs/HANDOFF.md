@@ -240,7 +240,7 @@ The rules tab was one 16,800 px page on a phone. Now:
 - Rules contents drawer opens from a small yellow tab on the left edge,
   halfway down (`.drawer-tab`; tap it or drag it right). Not an edge swipe,
   which is the phone's back gesture. The sticky rules bar now holds the
-  雙打｜單打 and Side-out｜Rally switches and share (the old location line
+  雙打｜單打 and 側出計分｜每球得分 switches and share (the old location line
   and the filter block on the index are gone). First visit shows a hint
   bubble once (`picobo.filterHintSeen`). Rule pages have 看其他版本 buttons
   under 適用. Switching on a rule that does not apply to the new combination

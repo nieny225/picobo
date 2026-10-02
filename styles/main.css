@@ -239,8 +239,10 @@ button { cursor: pointer; }
 }
 @media (prefers-reduced-motion: reduce) { .rules-bar { transition: none; } }
 .bar-filters { flex: 1; min-width: 0; display: flex; gap: 8px; }
-.bar-seg button { min-height: 44px; padding: 0 9px; font-size: 0.85rem; white-space: nowrap; }
-@media (max-width: 340px) { .bar-filters { gap: 4px; } .bar-seg button { padding: 0 6px; } }
+.bar-seg button { min-height: 44px; padding: 0 9px; font-size: 0.85rem; white-space: nowrap; line-height: 1.15; }
+.bar-seg { flex: 1 1 auto; }
+.seg-en { display: block; font-size: 0.68rem; font-weight: 600; opacity: 0.8; }
+@media (max-width: 340px) { .bar-filters { gap: 4px; } .bar-seg button { padding: 0 5px; font-size: 0.8rem; } }
 .filter-hint {
   position: absolute; left: var(--gutter); top: calc(100% + 8px); z-index: 2; margin: 0; max-width: calc(100% - 2 * var(--gutter));
   padding: 8px 12px; border: 2px solid var(--ink); border-radius: var(--radius-sm); background: var(--ink); color: var(--bg); font-weight: 700; font-size: 0.9rem;
