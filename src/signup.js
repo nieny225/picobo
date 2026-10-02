@@ -78,9 +78,9 @@ export function signupText({ sessions, names = [], cap = null, blanks = 3 }, lab
 // (ours or one typed by hand) into sessions of player names, for the draw.
 // A line with a date like 9/5 starts a session; "3. Roger & Amy" adds two
 // players; empty numbers, links and other lines are skipped. "w/ 2 kids" and
-// anything in brackets are notes, not names. IG mentions ("@c.y_o @amyling_08")
-// are one player per @, shown without the @; a plain "Simone Kahyee" stays one
-// name.
+// anything in brackets are notes, not names. Spaces separate players too
+// ("Simone kahyee" is two people, "@c.y_o @amyling_08" too): groups write
+// first names and handles, not full names. IG mentions lose the @.
 const NUMBERED = /^\s*\d{1,2}\s*[.)、．:：]\s*(.*)$/;
 const DATED = /\b\d{1,2}\/\d{1,2}\b/;
 const SPLIT = /\s*(?:&|＆|\+|,|，|、|\/|\band\b|和|跟)\s*/i;
@@ -90,7 +90,7 @@ export function namesIn(entry) {
     .replace(/\s+w\/.*$/i, '')
     .replace(/[(（[【].*?[)）\]】]/g, '')
     .split(SPLIT)
-    .flatMap(part => part.split(/\s+(?=@)/))
+    .flatMap(part => part.split(/\s+/))
     .map(n => n.trim().replace(/^@+/, ''))
     .filter(Boolean);
 }

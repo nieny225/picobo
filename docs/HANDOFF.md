@@ -287,7 +287,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   forward to today. Entry: 發報名訊息 on every court card, plus a small text link under the list for courts not in it (condo courts, a friend's club).
 - 抽籤 has 貼上報名名單 (a collapsible under the roster): paste the group's
   接龍 list, `parseSignup` (src/signup.js) reads numbered lines into names,
-  splitting pairs on & ＆ + , 、 / and 和 跟 and IG mentions (one player per @, shown without the @), dropping "w/ …" and bracketed
+  splitting pairs on & ＆ + , 、 / and 和 跟 and spaces (groups write first names and handles, so "Simone kahyee" is two players; IG mentions shown without the @), dropping "w/ …" and bracketed
   notes; a line with a date like 9/5 starts a session. One session goes
   straight in; several ask which. Names join the roster (or replace the
   example list) and join a running open-play queue.
