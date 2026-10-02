@@ -268,7 +268,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   (handoff kind `meetup`) with a one-line summary for the chat. Hidden for now (`MEETUP.open: false`: no home card, no 在這裡揪團 on courts) — the user prefers a copy-paste sign-up message after booking (接龍 list), under discussion; #meetup still works by URL. Opening it
   only shows the card (map, .ics calendar file, contact, 我也來揪一團); it
   never replaces anything. Last form saved as `picobo.meetup`. #venues reads
-  `src/data/venues.js`: 47 Singapore courts (the app's first audience is
+  `src/data/venues.js`: 48 Singapore courts (ARK Pickle Cuppage added on request) (the app's first audience is
   Taiwanese players in Singapore), grouped 中區／東區／西區／北區／東北區, Pickle &
   Bones @ TRIFECTA (the user's regular court) first. Sources: venue sites,
   ActiveSG, onePA, TheSmartLocal (2026-06), SassyMama (2026-09); left out:
