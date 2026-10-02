@@ -301,6 +301,11 @@ The rules tab was one 16,800 px page on a phone. Now:
   duplicate names refused). `renamePlayer` (src/draw.js) carries the new
   name through a running open play or king of the court: courts, queue,
   leaving and counts.
+- Full screen lives in `src/ui/fullscreen.js` (owner = route: 'score' or
+  'draw'; `<html class="is-fullscreen" data-full="…">`; ends on Esc, the
+  browser's exit, or leaving that tab). The draw's quiet corner icon sits
+  above the courts in 抽籤分組 and 國王球場; full screen hides the roster,
+  sub-tabs and controls, leaving courts, queue and the counts.
 - Share is an icon only (no 分享 text), top right on every tool: the rules
   bar, the 計分 and 抽籤 headings, Pico Bowl and its organizer screen. During
   a game it sits in the board's top-right corner (hand-over link); full

@@ -68,6 +68,7 @@ src/ui/scoreboard.js    scoreboard view
 src/ui/draw.js          draw + rotation view
 src/ui/share.js         share button: system share sheet, else copy link (picobo.net URL)
 src/ui/handoff.js       share-state button + explainer sheet: picobo.net/#<tool>?s=<state>; app.js loads it
+src/ui/fullscreen.js    full screen for one view at a time (scoreboard, draw): real API or in-page fallback
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
 src/ui/install.js       top-bar install button (prompt or steps), an invite/share icon once installed; registers the service worker

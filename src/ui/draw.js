@@ -1,6 +1,7 @@
-import { DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R } from '../data/nav.js';
+import { SCORE_SETUP, DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R } from '../data/nav.js';
 import { parseSignup } from '../signup.js';
 import { toast } from './share.js';
+import { isFull, toggleFull, onFullChange, fullIcon } from './fullscreen.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer } from '../draw.js';
 
@@ -91,6 +92,16 @@ function askRename(name, taken) {
   });
 }
 
+// Full screen keeps only the courts, the queue and the counts (styles/main.css).
+const fullBtnHtml = () => `<div class="out-head"><button class="fs-btn" type="button" id="draw-full" title="${esc(isFull('draw') ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen)}">${fullIcon(SCORE_SETUP)}</button></div>`;
+function wireFull(out) {
+  out.querySelector('#draw-full')?.addEventListener('click', async () => { await toggleFull('draw'); window.scrollTo({ top: 0 }); });
+}
+onFullChange(() => {
+  const b = document.getElementById('draw-full');
+  if (b) { b.innerHTML = fullIcon(SCORE_SETUP); b.title = isFull('draw') ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen; }
+});
+
 // Wires every name button in `out` to swap within `state`, then hands the new state on.
 function wireSwaps(out, state, apply) {
   for (const b of out.querySelectorAll('[data-swap]')) b.addEventListener('click', async () => {
@@ -112,7 +123,7 @@ export function mountDraw(root) {
 
   const html = () => `
     <div class="section-head"><div class="head-row"><h2>抽籤輪轉</h2>${handoffButtonHtml()}</div><p class="intro">先輸入今天的球友，再選要怎麼分。</p></div>
-    <div class="card">
+    <div class="card roster-card">
       <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3>${roster.sample ? '<span class="example-note">範例名單，改成你們的</span>' : ''}</div>
       <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip"><button type="button" class="chip-name" data-rename="${i}">${esc(n)}</button><button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
       ${roster.names.length ? `<p class="muted small">${esc(R.hint)}</p>` : ''}
@@ -129,15 +140,15 @@ export function mountDraw(root) {
     </div>
     <div id="sub-body"></div>`;
 
-  const drawBody = () => `<div class="card">
+  const drawBody = () => `<div class="card draw-card"><div class="draw-controls">
     <div class="row"><div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="${play ? play.courts.length : 1}"></div><div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${esc(play ? OPEN_PLAY.redraw : OPEN_PLAY.start)}</button></div></div>
-    <p class="muted small">${esc(OPEN_PLAY.hint)}</p>
+    <p class="muted small">${esc(OPEN_PLAY.hint)}</p></div>
     <div id="out"></div></div>`;
 
   const renderPlay = out => {
     if (!play) { out.innerHTML = ''; return; }
     const ranked = Object.entries(play.stats).sort((a, b) => b[1].won - a[1].won || a[1].played - b[1].played);
-    out.innerHTML = `<div class="matches">${play.courts.map((c, ci) => c.teams.length === 2 ? `
+    out.innerHTML = `${fullBtnHtml()}<div class="matches">${play.courts.map((c, ci) => c.teams.length === 2 ? `
       <div class="koc-court"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span>
       <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.first === ti, true)}<button class="btn" data-court="${ci}" data-win="${ti}">${esc(OPEN_PLAY.won)}</button></div>`).join('')}</div></div>`
       : `<div class="koc-court"><span class="muted">${esc(OPEN_PLAY.idle.replace('{court}', c.court))}</span></div>`).join('')}</div>
@@ -153,6 +164,7 @@ export function mountDraw(root) {
       renderPlay(out);
     });
     wireSwaps(out, play, next => { setPlay(next); renderPlay(out); });
+    wireFull(out);
   };
 
   const rrBody = () => `<div class="card">
@@ -164,19 +176,19 @@ export function mountDraw(root) {
     <p class="muted small">每輪換搭檔，盡量不重複；人數超過場地容量時輪流休息。</p>
     <div id="out"></div></div>`;
 
-  const kocBody = () => `<div class="card">
+  const kocBody = () => `<div class="card draw-card"><div class="draw-controls">
     <div class="row">
       <div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="1"></div>
       <div class="field"><label for="streak">最多連贏幾場</label><input class="input num" id="streak" type="number" min="1" max="10" value="3"></div>
       <div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${koc ? '重新開始' : '開始'}</button></div>
     </div>
-    <p class="muted small">贏的留場、輸的排隊尾；連贏到上限也下場。</p>
+    <p class="muted small">贏的留場、輸的排隊尾；連贏到上限也下場。</p></div>
     <div id="out"></div></div>`;
 
   const renderKoc = out => {
     if (!koc) { out.innerHTML = ''; return; }
     const streakMax = Number(root.querySelector('#streak').value);
-    out.innerHTML = `<div class="matches">${koc.courts.map((c, ci) => c.teams.length === 2 ? `
+    out.innerHTML = `${fullBtnHtml()}<div class="matches">${koc.courts.map((c, ci) => c.teams.length === 2 ? `
       <div class="koc-court"><div class="row" style="justify-content:space-between"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span><span class="streak">留場隊已連贏 ${c.streak} 場</span></div>
       <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.streak === 0 ? ti === 0 : ti === 1, true)}<button class="btn" data-court="${ci}" data-win="${ti}">這隊贏</button></div>`).join('')}</div></div>`
       : `<div class="koc-court"><span class="muted">${c.court} 號場：人不夠，先休息</span></div>`).join('')}</div>
@@ -187,6 +199,7 @@ export function mountDraw(root) {
       renderKoc(out);
     });
     wireSwaps(out, koc, next => { koc = next; renderKoc(out); });
+    wireFull(out);
   };
 
   const renderSub = () => {

@@ -622,6 +622,15 @@ a.event-card:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(
 .t-edit { justify-self: end; min-height: 44px; }
 .t-champ { font-size: 1.1rem; font-weight: 900; background: var(--mark); color: var(--mark-fg); padding: 6px 10px; border-radius: var(--radius-sm); border: 2px solid #111111; }
 
+/* Full screen on the draw: only the courts, the queue and the counts. */
+.out-head { display: flex; justify-content: flex-end; margin: -8px -8px 4px 0; }
+.out-head .fs-btn { position: static; }
+html.is-fullscreen[data-full="draw"] #view-draw .section-head,
+html.is-fullscreen[data-full="draw"] #view-draw .roster-card,
+html.is-fullscreen[data-full="draw"] #view-draw .subtabs,
+html.is-fullscreen[data-full="draw"] #view-draw .draw-controls { display: none; }
+html.is-fullscreen[data-full="draw"] #view-draw .draw-card { box-shadow: none; margin-right: 0; padding-top: max(12px, env(safe-area-inset-top, 0px)); padding-bottom: max(24px, env(safe-area-inset-bottom, 0px)); }
+
 /* Full screen (scoreboard only): nothing but the board, spread evenly down
    the screen with big score buttons and a bigger court. */
 html.is-fullscreen .topbar, html.is-fullscreen .bottom-nav, html.is-fullscreen #footer,

@@ -33,6 +33,7 @@ const FILES = [
   'src/ui/draw.js',
   'src/ui/event.js',
   'src/ui/formats.js',
+  'src/ui/fullscreen.js',
   'src/ui/handoff.js',
   'src/ui/home.js',
   'src/ui/install.js',
