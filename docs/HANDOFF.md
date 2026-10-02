@@ -265,7 +265,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   matchmaking / booking; plan in the session plan file). #meetup: the host
   fills date, time, place, play, level, how many needed, optional contact
   (LINE ID / WhatsApp); the card shares as picobo.net/#meetup?s=<state>
-  (handoff kind `meetup`) with a one-line summary for the chat. Opening it
+  (handoff kind `meetup`) with a one-line summary for the chat. Hidden for now (`MEETUP.open: false`: no home card, no 在這裡揪團 on courts) — the user prefers a copy-paste sign-up message after booking (接龍 list), under discussion; #meetup still works by URL. Opening it
   only shows the card (map, .ics calendar file, contact, 我也來揪一團); it
   never replaces anything. Last form saved as `picobo.meetup`. #venues reads
   `src/data/venues.js`: 47 Singapore courts (the app's first audience is

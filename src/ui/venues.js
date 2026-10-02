@@ -1,5 +1,6 @@
 import { VENUES, VENUES_PAGE as V } from '../data/venues.js';
 import { mapUrl } from '../meetup.js';
+import { MEETUP } from '../data/meetup.js';
 import { esc } from './scenes.js';
 import { shareButtonHtml, sharePage } from './share.js';
 
@@ -28,7 +29,7 @@ function venueCard(v) {
     <div class="meetup-actions">
       ${(v.booking ?? []).map(b => link(bookingHref(b), b.label || V.booking[b.type])).join('')}
       ${link(mapUrl({ place: v.name, address: v.address }), V.map)}
-      ${link(`#meetup?venue=${encodeURIComponent(v.id)}`, V.meetup, 'btn btn-primary')}
+      ${MEETUP.open ? link(`#meetup?venue=${encodeURIComponent(v.id)}`, V.meetup, 'btn btn-primary') : ''}
     </div>
   </article>`;
 }

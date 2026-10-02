@@ -162,6 +162,8 @@ button { cursor: pointer; }
 }
 .home-entry b { font-size: 1.2rem; font-weight: 900; }
 .home-entry span { color: var(--muted); font-size: 0.9rem; }
+/* A card left alone on the last row takes the full width. */
+.home-entry:not(.lead):nth-child(2n):last-child { grid-column: 1 / -1; }
 .home-entry.lead { grid-column: 1 / -1; background: var(--mark); color: var(--mark-fg); }
 .home-entry.lead span { color: var(--mark-fg); }
 .home-entry:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--shadow-ink); }

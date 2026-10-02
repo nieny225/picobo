@@ -2,6 +2,7 @@ import { renderCourt } from '../court.js';
 import { HOME } from '../data/home.js';
 import { esc, enTag } from './scenes.js';
 import { eventCardHtml } from './event.js';
+import { MEETUP } from '../data/meetup.js';
 
 // "Pick one" is the serving player, "pick a place" the lit service box.
 const HERO_SCENE = {
@@ -15,7 +16,8 @@ const HERO_SCENE = {
 };
 
 export function mountHome(root) {
-  const [lead, ...rest] = HOME.entries;
+  // 揪團 stays reachable by URL but has no entry card until it opens.
+  const [lead, ...rest] = HOME.entries.filter(e => e.route !== 'meetup' || MEETUP.open);
   const entry = (e, cls) => `<a class="home-entry ${cls}" href="#${e.route}">
     <b>${esc(e.title)}${enTag(e.en)}</b><span>${esc(e.desc)}</span></a>`;
   root.innerHTML = `

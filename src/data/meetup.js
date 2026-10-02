@@ -1,5 +1,7 @@
 // 揪團卡的介面文字。summaryText／icsText（src/meetup.js）用到的字也在這裡。
 export const MEETUP = {
+  // false：首頁和場地卡不放入口，頁面照樣能用網址 #meetup 打開。
+  open: false,
   title: '揪團',
   en: 'Find Players',
   intro: '填好時間、地點、缺幾人，產生一張揪團卡，丟到 LINE、WhatsApp 或 IG。',
