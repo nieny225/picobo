@@ -12,6 +12,7 @@ test('normalize trims, checks and keeps only known fields', () => {
   assert.equal(m.place, '大安 球場');
   assert.equal(m.need, 2);
   assert.equal(m.whatsapp, '886912345678');
+  assert.equal(normalizeMeetup({ ...base, whatsapp: '9123 4567' }).whatsapp, '6591234567');
   assert.equal(m.line, 'bruce.lee');
   assert.equal('extra' in m, false);
 });

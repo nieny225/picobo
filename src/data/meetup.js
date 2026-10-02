@@ -44,7 +44,7 @@ export const MEETUP = {
     need: '缺幾人請填 0 到 20。',
     host: '主揪名字 12 字以內。',
     line: 'LINE ID 看起來不對，只能有英數字和 . _ -。',
-    whatsapp: 'WhatsApp 號碼看起來不對，例如 0912345678 或 +886912345678。',
+    whatsapp: 'WhatsApp 號碼看起來不對，例如 9123 4567 或 +65 9123 4567。',
     note: '備註 140 字以內。',
   },
   // src/meetup.js 用的字。

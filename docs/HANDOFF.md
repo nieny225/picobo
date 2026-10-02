@@ -268,8 +268,13 @@ The rules tab was one 16,800 px page on a phone. Now:
   (handoff kind `meetup`) with a one-line summary for the chat. Opening it
   only shows the card (map, .ics calendar file, contact, 我也來揪一團); it
   never replaces anything. Last form saved as `picobo.meetup`. #venues reads
-  `src/data/venues.js`, empty until the user sends the pilot courts' details
-  (shows 整理中). Not built yet, needs a backend: accounts, live sign-up
+  `src/data/venues.js`: 47 Singapore courts (the app's first audience is
+  Taiwanese players in Singapore), grouped 中區／東區／西區／北區／東北區, Pickle &
+  Bones @ TRIFECTA (the user's regular court) first. Sources: venue sites,
+  ActiveSG, onePA, TheSmartLocal (2026-06), SassyMama (2026-09); left out:
+  Performance Pickleball's second site, New Bahru, the Astrium, ActiveSG
+  school halls (no addresses), Buona Vista / Thomson / Marymount CC (no
+  address). Prices change; the page says so. Not built yet, needs a backend: accounts, live sign-up
   counts, a public list, booking and payment.
 - Share is an icon only (no 分享 text), top right on every tool: the rules
   bar, the 計分 and 抽籤 headings, Pico Bowl and its organizer screen. During

@@ -80,7 +80,7 @@ src/data/home.js        首頁 slogan 與入口文字
 src/data/nav.js         目錄、上一條／下一條、玩法頁的介面文字
 src/data/event.js       Pico Bowl 比賽資訊（open: false 時首頁卡片顯示 Coming soon）
 src/data/meetup.js      揪團卡的介面文字
-src/data/venues.js      場地名錄（只放場地方或熟識球友提供的資料，不自己猜）
+src/data/venues.js      新加坡場地名錄（依區域分組；只放有來源的資料，來源寫在 source 欄）
 tests/*.test.js         node:test for the pure modules
 ```
 

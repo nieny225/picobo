@@ -34,6 +34,8 @@ export function normalizeMeetup(d) {
     if (!/^\d+$/.test(whatsapp)) fail('whatsapp');
     // A Taiwan mobile written locally (09xx-xxx-xxx) becomes +886 9xx…
     if (/^09\d{8}$/.test(whatsapp)) whatsapp = `886${whatsapp.slice(1)}`;
+    // A Singapore number written locally (8 digits starting 8 or 9) becomes +65.
+    if (/^[89]\d{7}$/.test(whatsapp)) whatsapp = `65${whatsapp}`;
     if (whatsapp.length < 8 || whatsapp.length > 15) fail('whatsapp');
   }
   return {

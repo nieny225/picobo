@@ -8,6 +8,7 @@ const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 // A booking contact as a link: phone dials, LINE and web open in a new tab.
 function bookingHref(b) {
   if (b.type === 'phone') return `tel:${b.value.replace(/[^\d+]/g, '')}`;
+  if (b.type === 'whatsapp') return `https://wa.me/${b.value.replace(/\D/g, '')}`;
   if (b.type === 'line') return b.value.startsWith('http') ? b.value : `https://line.me/R/ti/p/${encodeURIComponent(b.value)}`;
   if (b.type === 'url') return b.value;
   throw new Error(`venues: unknown booking type ${b.type}`);
@@ -36,7 +37,7 @@ function venueCard(v) {
 export function mountVenues(root) {
   const cities = [...new Set(VENUES.map(v => v.city))];
   root.innerHTML = `
-    <div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(V.intro)}</p></div>
+    <div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(V.intro)}</p><p class="muted small">${esc(V.disclaimer)}</p></div>
     ${VENUES.length === 0 ? `<article class="card"><p>${esc(V.empty)}</p></article>`
     : cities.map(c => `<section class="rule-group"><h3>${esc(c)}</h3>${VENUES.filter(v => v.city === c).map(venueCard).join('')}</section>`).join('')}`;
   root.querySelector('.share-btn').addEventListener('click', () => sharePage(V.title));
