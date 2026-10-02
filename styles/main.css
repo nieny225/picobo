@@ -527,7 +527,8 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .round h3 { display: flex; justify-content: space-between; align-items: baseline; }
 .koc-court { display: grid; gap: 8px; padding: 12px; background: var(--surface-2); border: 2px solid var(--ink); border-radius: var(--radius); }
 /* Each game is a little court seen from above: one team per half, the net
-   down the middle, kitchens either side of it, team colors as on the scoreboard. */
+   down the middle, kitchens either side of it, a thin team-color stripe by
+   each name as on the scoreboard; the 這隊贏 buttons stay plain. */
 .koc-teams {
   position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 8px;
   background: linear-gradient(90deg, var(--court) 0 34%, var(--court-nvz) 34% 66%, var(--court) 66%);
@@ -535,9 +536,7 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 }
 .koc-teams::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; transform: translateX(-50%); background: var(--court-line); }
 .koc-team { display: grid; gap: 6px; grid-template-rows: 1fr auto; } /* buttons line up even when one team has the 先發球 tag */
-.koc-team .btn { width: 100%; color: var(--team-fg); }
-.koc-team:first-child .btn { background: var(--team-a); }
-.koc-team:nth-child(2) .btn { background: var(--team-b); }
+.koc-team .btn { width: 100%; }
 .koc-team .name-btn { border: 0; border-left: 6px solid var(--team-a); }
 .koc-team:nth-child(2) .name-btn { border-left-color: var(--team-b); }
 .koc-team .team-names { align-content: start; }
