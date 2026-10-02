@@ -120,11 +120,14 @@ function ballPath(ball) {
 // labels are turned back to stay upright. Players placed off the court by
 // coordinates (a queue, people resting) are drawn outside that group when
 // lying down: under the court, left to right in queue order.
+// A player with `field: true` stands at [x, y] in court coordinates (e.g.
+// chasing a ball wide of the sideline) and turns with the court.
+const offCourt = p => Array.isArray(p.at) && !p.field;
 function players(list, land, rotated) {
   return (list ?? []).map(p => {
     let [x, y] = p.at ? (SPOTS[p.at] ?? p.at) : SPOTS[`${p.side}:${p.pos}:${p.depth ?? 'baseline'}`];
     if (!x && x !== 0) throw new Error(`court: cannot place player ${p.label}`);
-    const off = Array.isArray(p.at);
+    const off = offCourt(p);
     // keepSide: the queue belongs to one end of the court, so it turns with the
     // court (far end on the right). Otherwise one queue runs left to right.
     if (land && off && !rotated) [x, y] = p.keepSide ? [VIEW.h - y, VIEW.w - 10] : [y, VIEW.w - 10];
@@ -157,7 +160,7 @@ export function renderCourt(el, scene = {}, opts = {}) {
     hl + lines() + (scene.labels ? dimensionLabels(land) : '') +
     ballPath(scene.ball) +
     (land
-      ? players(scene.players?.filter(q => !Array.isArray(q.at)), true, true) + '</g>' + players(scene.players?.filter(q => Array.isArray(q.at)), true, false)
+      ? players(scene.players?.filter(q => !offCourt(q)), true, true) + '</g>' + players(scene.players?.filter(offCourt), true, false)
       : players(scene.players, false, false)) +
     `</svg>`;
 }

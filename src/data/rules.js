@@ -395,6 +395,23 @@ export const SECTIONS = [
         ],
       },
       {
+        // 繞柱球與網子：USA Pickleball 11.K（網柱）、11.L（網子、11.L.3 繞柱球）。
+        id: 'net',
+        title: '擦網與繞柱球',
+        en: 'Net & Around the Post',
+        summary: '回球不一定要從網子上面過。從網柱外側繞過去、落在對面界內也算好球，叫繞柱球（ATP）。',
+        detail: [
+          '球擦網後掉進對面界內，照打。發球擦網也照打，沒有重發。',
+          '繞柱球可以比網子還低，只要落在對面界內就好。常見在對手把球斜斜打到很外面的時候。',
+          '球打到網柱，或從網子和網柱中間穿過去，算打的那一方失誤。',
+          '打繞柱球可以跑出場外、甚至跑到隔壁場，但人和球拍都不能碰到網柱或網子，也不能踩進對方的場地。',
+        ],
+        scenes: [
+          { caption: '乙斜斜 dink 到很外面，球在甲這邊的廚房彈一下，往場外飛。', players: [A1({ pos: 'right', depth: 'mid' }), B1({ depth: 'kitchenLine' })], ball: { path: ['far:right:kitchenLine', 'near:right:kitchen', [270, 318]], bounces: [1] } },
+          { caption: '甲追到場外，從網柱外側把球打回去。球比網子還低，但沒碰到網柱、落在對面界內，算好球。', highlight: ['net'], players: [A1({ at: [266, 326], field: true }), B1({ depth: 'kitchenLine' })], ball: { path: [[266, 318], [268, 252], [170, 120]], bounces: [2] } },
+        ],
+      },
+      {
         id: 'ends',
         title: '換場',
         en: 'Changing Ends',
