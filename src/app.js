@@ -15,8 +15,9 @@ import { HANDOFF, SCORE_SETUP } from './data/nav.js';
 import { RULEBOOK } from './data/rules.js';
 
 const ROUTES = ['home', 'rules', 'formats', 'score', 'draw', 'picobowl', 'meetup', 'venues'];
-// Fun formats live under the rules tab; Pico Bowl, 揪團 and 找場地 under home.
-const TAB_OF = { formats: 'rules', picobowl: 'home', meetup: 'home', venues: 'home' };
+// Fun formats live under the rules tab, Pico Bowl under home; 揪團 sits with
+// 找場地 under the 約球 tab.
+const TAB_OF = { formats: 'rules', picobowl: 'home', meetup: 'venues' };
 
 // Hash shape: #<route> or #<route>/<sub>, e.g. #rules/kitchen. Links from v1
 // used #rules-<id>; those are rewritten in place.

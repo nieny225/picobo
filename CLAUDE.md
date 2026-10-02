@@ -39,10 +39,11 @@ static site later. There is no backend and no build step.
 ## Layout
 
 ```
-index.html              the page; hash-routed tabs: #home (default) #rules #score #draw,
-                        sub-pages #rules/<id> and #formats/<id> (fun formats sit
-                        under the rules tab), #picobowl (tournament page), #meetup
-                        (揪團卡) and #venues (場地名錄), all three under home; tabs in the header on desktop, in a bottom bar on
+index.html              the page; hash-routed tabs: #home (default) #rules #score #draw
+                        #venues (約球: 場地名錄), sub-pages #rules/<id> and
+                        #formats/<id> (fun formats sit under the rules tab),
+                        #picobowl (tournament page, under home), #meetup (揪團卡,
+                        under 約球, no entry point yet); tabs in the header on desktop, in a bottom bar on
                         phones (< 768px)
 styles/main.css         design tokens on :root, dark mode, mobile-first
 manifest.webmanifest    installable web app (name, icons, standalone)
