@@ -7,7 +7,7 @@
 //   name      場地名稱
 //   city      區域，名錄依這個分組，陣列順序就是區域順序
 //   address   地址（地圖連結用）
-//   setting   'indoor' 室內｜'outdoor' 戶外｜'sheltered' 有頂棚｜'both' 室內＋戶外
+//   setting   'indoor' 室內｜'sheltered' 有頂棚｜'outdoor' 戶外；兩種都有就寫陣列，例如 ['sheltered', 'outdoor']
 //   courts    幾面匹克球場（數字，不確定就不寫）
 //   fee       費用，一句話（新幣）
 //   hours     開放時間，一句話
@@ -26,7 +26,7 @@ const FREE_NOTE = '組屋區公共球場，不用預約，網子通常要自備�
 export const VENUES = [
   // ===== 中區 =====
   { id: 'pickle-bones', name: 'Pickle & Bones @ TRIFECTA', city: '中區', address: 'Upper Deck, TRIFECTA, 10A Exeter Rd, Singapore 239958', setting: 'sheltered', courts: 1, fee: '非尖峰 S$59.95／小時，尖峰 S$70.85', hours: '每天 8:00–23:00', booking: [{ type: 'url', value: 'https://pickleandbones.playbypoint.com/book/PickleandBones' }, { type: 'whatsapp', value: '6580836643' }, { type: 'phone', value: '+65 8841 7080' }], note: 'Somerset 旁、TRIFECTA 頂層，另有 dink 練習區；可租球拍和球，有淋浴間。一次最多 12 人。', source: 'trifectasingapore.com/pickle-bones; TheSmartLocal; baseline.sg' },
-  { id: 'ark-cuppage', name: 'ARK Pickle Cuppage', city: '中區', address: '51 Cuppage Rd, Level 10 Roof Garden, Singapore 229469', setting: 'both', courts: 2, fee: 'S$25／小時起', hours: '每天 8:00–23:00', booking: [{ type: 'url', value: 'https://www.theark.sg/pickleball/booking' }, { type: 'phone', value: '9185 2555' }], note: 'Cuppage Plaza 旁、舊 StarHub Centre 10 樓頂樓，Somerset 站走路約 4 分鐘。官網寫露天，開幕貼文寫室內有冷氣，看起來室內戶外都有，訂場時問清楚是哪一面。', source: 'theark.sg/pickleball/venue (Open Air); The Ark Facebook/IG 2026 opening post (indoors, sheltered, air-conditioned); TikTok (rooftop); Waze (phone)' },
+  { id: 'ark-cuppage', name: 'ARK Pickle Cuppage', city: '中區', address: '51 Cuppage Rd, Level 10 Roof Garden, Singapore 229469', setting: ['indoor', 'outdoor'], courts: 2, fee: 'S$25／小時起', hours: '每天 8:00–23:00', booking: [{ type: 'url', value: 'https://www.theark.sg/pickleball/booking' }, { type: 'phone', value: '9185 2555' }], note: 'Cuppage Plaza 旁、舊 StarHub Centre 10 樓頂樓，Somerset 站走路約 4 分鐘。官網寫露天，開幕貼文寫室內有冷氣，看起來室內戶外都有，訂場時問清楚是哪一面。', source: 'theark.sg/pickleball/venue (Open Air); The Ark Facebook/IG 2026 opening post (indoors, sheltered, air-conditioned); TikTok (rooftop); Waze (phone)' },
   { id: 'kallang', name: 'The Kallang Hard Courts', city: '中區', address: '1 Stadium Drive, Singapore 397694', setting: 'outdoor', courts: 6, fee: '本地人 S$5.50–10／小時，外國人 S$8.50–15.50', hours: '平日 7:00–18:00（3 號場到 22:00），週末 7:00–22:00', booking: [{ type: 'url', value: 'https://thekallang.perfectgym.com/clientportal2/#/FacilityBooking?clubId=1&zoneTypeId=94' }], note: '國家體育場 13 號門旁，Stadium 站。', source: 'thekallang.com.sg/sport-fitness/pickleball' },
   { id: 'farrer-park', name: 'ActiveSG Courts @ Farrer Park', city: '中區', address: '5A Race Course Road, Singapore 219775', setting: 'sheltered', courts: 8, fee: ACTIVESG_FEE, hours: '週一至週六 9:00–21:00', booking: [ACTIVESG, { type: 'phone', value: '6293 9058' }], note: `舊巴士轉運站改建，2026 年 3 月啟用。${ACTIVESG_NOTE}`, source: 'activesgcircle.gov.sg; Sport Singapore 2026-03-14' },
   { id: 'delta', name: 'Delta Outdoor Courts', city: '中區', address: '900 Tiong Bahru Road, Singapore 158790', setting: 'outdoor', courts: 4, fee: ACTIVESG_FEE, booking: [ACTIVESG, { type: 'phone', value: '6203 9246' }], note: `4 面中有 2 面有遮蔽。${ACTIVESG_NOTE}`, source: 'activesg.gov.sg; TheSmartLocal' },
@@ -73,7 +73,7 @@ export const VENUES = [
 
   // ===== 東北區 =====
   { id: 'play-pickle-serangoon', name: 'Play! Pickle Serangoon', city: '東北區', address: '756 Upper Serangoon Road #04-27, Singapore 534626', setting: 'indoor', courts: 5, fee: '平日白天 S$38／小時，晚上和週末 S$48（單打小場較便宜）', hours: '每天 7:00–24:00', booking: [PLAY_PICKLE], note: '冷氣室內，4 面標準場加 1 面單打場；15 天前開放預約。', source: 'playpickle.sg/court-booking' },
-  { id: 'play-pickle-punggol', name: 'Play! Pickle Punggol', city: '東北區', address: '10 Tebing Lane, Singapore 828836', setting: 'both', courts: 8, fee: '有頂棚場 S$20–35／小時，戶外 S$10–28', hours: '每天 7:00–24:00', booking: [PLAY_PICKLE, { type: 'phone', value: '8228 4334' }], note: '6 面有頂棚標準場、1 面單打場、1 面戶外場。', source: 'playpickle.sg/court-booking; TheSmartLocal' },
+  { id: 'play-pickle-punggol', name: 'Play! Pickle Punggol', city: '東北區', address: '10 Tebing Lane, Singapore 828836', setting: ['sheltered', 'outdoor'], courts: 8, fee: '有頂棚場 S$20–35／小時，戶外 S$10–28', hours: '每天 7:00–24:00', booking: [PLAY_PICKLE, { type: 'phone', value: '8228 4334' }], note: '6 面有頂棚標準場、1 面單打場、1 面戶外場。', source: 'playpickle.sg/court-booking; TheSmartLocal' },
   { id: 'sports-arina-jalan-kayu', name: 'The Sports Arina @ Jalan Kayu', city: '東北區', address: '20A Fernvale Rd, Singapore 799951', courts: 10, fee: '非會員 S$25–35／小時', hours: '每天 8:00–22:00', booking: [{ type: 'url', value: 'https://playtomic.com/clubs/tsa-jalan-kayu?sport=PICKLEBALL', label: 'Playtomic 預約' }, { type: 'phone', value: '+65 8088 1795' }], note: 'Thanggam 輕軌站附近，2026 年 4 月開幕。', source: 'TheSmartLocal' },
   { id: 'performance-pickleball-punggol', name: 'Performance Pickleball Punggol', city: '東北區', address: '11 Northshore Drive #01-23, Singapore 828670', setting: 'sheltered', courts: 2, fee: '約 S$32–40／小時', booking: [{ type: 'url', value: 'https://app.courtreserve.com/', label: 'CourtReserve 預約' }], note: '每天 9:00 開放 14 天後的時段。', source: 'TheSmartLocal; SassyMama' },
   { id: 'sengkang-outdoor', name: 'Sengkang Outdoor Pickleball Courts', city: '東北區', address: '57 Anchorvale Road, Singapore 544964', setting: 'outdoor', courts: 3, fee: ACTIVESG_FEE, hours: '每天 7:00–22:00', booking: [ACTIVESG, { type: 'phone', value: '6315 3574' }], note: ACTIVESG_NOTE, source: 'activesg.gov.sg' },
@@ -89,7 +89,7 @@ export const VENUES_PAGE = {
   intro: '新加坡可以打匹克球的場地，怎麼預約、怎麼去。',
   disclaimer: '價格和時間整理自場地官網和網路整理（2026 年 10 月），可能會變，預約前以場地公告為準。',
   empty: '場地名錄整理中，很快會放上第一批合作場地。',
-  settings: { indoor: '室內', outdoor: '戶外', sheltered: '有頂棚', both: '室內＋戶外' },
+  settings: { indoor: '室內', sheltered: '有頂棚', outdoor: '戶外' },
   courts: '{n} 面場',
   fee: '費用',
   hours: '開放時間',

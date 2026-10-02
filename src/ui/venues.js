@@ -5,6 +5,8 @@ import { SIGNUP } from '../data/signup.js';
 import { esc } from './scenes.js';
 import { shareButtonHtml, sharePage } from './share.js';
 
+// A court's setting: one of indoor / sheltered / outdoor, or a list when it has both kinds.
+const settingsOf = v => [v.setting ?? []].flat().map(k => { if (!V.settings[k]) throw new Error(`venues: unknown setting ${k}`); return k; });
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 
 // A booking contact as a link: phone dials, LINE and web open in a new tab.
@@ -20,7 +22,7 @@ function venueCard(v) {
   const link = (href, label, cls = 'btn') => `<a class="${cls}" href="${esc(href)}"${href.startsWith('#') || href.startsWith('tel:') ? '' : ' target="_blank" rel="noopener"'}>${esc(label)}</a>`;
   return `<article class="card venue" id="venue-${esc(v.id)}">
     <div class="card-head venue-head"><h3>${esc(v.name)}</h3><button type="button" class="fav-btn" data-fav="${esc(v.id)}" aria-pressed="${favs.has(v.id)}" aria-label="${esc(favs.has(v.id) ? V.unfav : V.fav)}">${heart(favs.has(v.id))}</button></div>
-    <div class="format-meta"><span>${esc(V.settings[v.setting] ?? '')}</span>${v.courts ? `<span>${esc(fill(V.courts, { n: v.courts }))}</span>` : ''}</div>
+    <div class="format-meta">${settingsOf(v).map(k => `<span>${esc(V.settings[k])}</span>`).join('')}${v.courts ? `<span>${esc(fill(V.courts, { n: v.courts }))}</span>` : ''}</div>
     ${v.address ? `<a class="venue-address" href="${esc(mapUrl({ place: v.name, address: v.address }))}" target="_blank" rel="noopener" aria-label="${esc(`${V.map}：${v.address}`)}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>${esc(v.address)}</span></a>` : ''}
     <dl class="event-facts">
       ${v.fee ? `<div><dt>${esc(V.fee)}</dt><dd>${esc(v.fee)}</dd></div>` : ''}
@@ -60,7 +62,7 @@ function saveFilter({ region, kind }) {
 }
 const KIND_TEST = {
   '': () => true,
-  dry: v => ['indoor', 'sheltered', 'both'].includes(v.setting),
+  dry: v => settingsOf(v).some(k => k === 'indoor' || k === 'sheltered'),
   free: v => v.fee === V.free,
   fav: v => favs.has(v.id),
 };
