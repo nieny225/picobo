@@ -130,5 +130,8 @@ export const FORMATS_PAGE = {
   en: 'Fun Formats',
   note: '各球場做法不同，不是官方規則。',
   unofficial: '各球場做法不同',
+  // 玩法頁頂部切換列：依目的分組的短名稱（key 是 formats.js 的 group），點了跳到那一組的第一個玩法。
+  groupLabel: '依目的',
+  groupShort: { 人多場地少: '人多', 人數湊不齊: '缺人', 想練技術: '練技術', 想玩熱鬧: '熱鬧' },
   scoring: '計分：',
 };

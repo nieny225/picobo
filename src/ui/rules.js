@@ -136,6 +136,14 @@ function pageBody(p, f) {
     <div class="glossary">${GLOSSARY.map(g => `<div class="term"><b>${esc(g.zh)} <span class="en">${esc(g.en)}</span></b>${g.alias ? `<span class="muted small">${esc(g.alias)}</span>` : ''}<span class="small">${esc(g.def)}</span></div>`).join('')}</div>`;
 }
 
+// On a fun format's page the bar switches purpose group instead: the current
+// format's group is pressed, another one jumps to that group's first format.
+function formatBarHtml(i) {
+  const short = FORMATS_PAGE.groupShort;
+  return `<div class="seg bar-seg" role="group" aria-label="${esc(FORMATS_PAGE.groupLabel)}">${FORMAT_GROUPS.map(([g]) =>
+    `<button type="button" data-format-group="${esc(g)}" aria-pressed="${FORMATS[i].group === g}" aria-label="${esc(g)}">${esc(short[g] ?? g)}</button>`).join('')}</div>`;
+}
+
 // A fun format's page (#formats/<id>): prev / next walk the formats.
 function formatPageHtml(i) {
   const prev = FORMATS[i - 1], next = FORMATS[i + 1];
@@ -268,8 +276,8 @@ export function mountRules(root) {
     const p = PAGES.find(q => q.id === current);
     const fi = formatIndex(current);
     pageEl.innerHTML = p ? pageHtml(p, filter) : fi >= 0 ? formatPageHtml(fi) : indexHtml(filter);
-    // Fun formats are not filtered by play or scoring: their bar holds only share.
-    filtersEl.innerHTML = fi >= 0 ? '' : barFilterHtml(filter);
+    // Fun formats are not filtered by play or scoring: their bar picks a purpose group.
+    filtersEl.innerHTML = fi >= 0 ? formatBarHtml(fi) : barFilterHtml(filter);
     if (fi >= 0) hintEl.hidden = true;
     shareSlot.innerHTML = p || fi >= 0 ? shareButtonHtml() : '';
     drawerNav.innerHTML = drawerNavHtml(filter);
@@ -286,6 +294,8 @@ export function mountRules(root) {
   // not apply to the new combination hands over to its counterpart, or to the
   // index with a note.
   root.addEventListener('click', e => {
+    const g = e.target.closest('[data-format-group]');
+    if (g) { location.hash = FORMAT_GROUPS.find(([name]) => name === g.dataset.formatGroup)[1][0].href; return; }
     const b = e.target.closest('[data-filter]');
     if (!b) return;
     filter = { ...filter, [b.dataset.filter]: b.dataset.value };
