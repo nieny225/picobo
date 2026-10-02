@@ -54,6 +54,7 @@ function show() {
   for (const r of ROUTES) if (r !== 'formats') document.getElementById(`view-${r}`).hidden = r !== view;
   // CSS keys off the current tab, e.g. phones drop the top bar under 規則.
   document.documentElement.dataset.tab = TAB_OF[route] ?? route;
+  document.documentElement.dataset.route = route;
   for (const tab of document.querySelectorAll('.tab')) {
     tab.setAttribute('aria-selected', String(tab.dataset.route === (TAB_OF[route] ?? route)));
   }
