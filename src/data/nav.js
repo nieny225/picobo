@@ -13,6 +13,13 @@ export const FILTER = {
   applies: '適用',
   both: { play: '單打・雙打', scoring: '兩種計分' },
   showing: '目前顯示：',
+  // 頂部切換列第一次出現時的提示泡泡（看過一次就不再出現）。
+  hint: '點這裡切換單打／雙打、計分方式',
+  // 規則頁「適用」下面那行：一鍵切到另一個版本。
+  others: '看其他版本：',
+  // 切換後這條不適用：跳到對應的那一條，或回目錄。
+  jumped: '已切到「{title}」',
+  backToIndex: '這條不適用{combo}，已回到目錄',
 };
 
 // 計分板的模式選擇：打法沿用 FILTER.play，計分是 FILTER.scoring 再加「快打」。

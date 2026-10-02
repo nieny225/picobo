@@ -1,9 +1,9 @@
-import { SECTIONS, COMPARE } from '../data/rules.js';
+import { SECTIONS, COMPARE, COUNTERPARTS } from '../data/rules.js';
 import { FORMATS } from '../data/formats.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
 import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER, FILTER, FORMATS_PAGE } from '../data/nav.js';
 import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
-import { shareButtonHtml, sharePage } from './share.js';
+import { shareButtonHtml, sharePage, toast } from './share.js';
 
 
 function ruleCard(item, applies = '') {
@@ -69,11 +69,11 @@ const link = (p, f) => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}
   <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(f ? textFor(p, f).summary : p.summary)}</span></span>
   ${p.rule ? `<span class="rule-no">${esc(p.rule)}</span>` : ''}</a>`;
 
-function filterHtml(f) {
-  const row = k => `<div class="seg-row"><span class="seg-label">${esc(FILTER[k].label)}</span>
-    <div class="seg" role="group" aria-label="${esc(FILTER[k].label)}">${FILTER[k].options.map(o =>
-      `<button type="button" data-filter="${k}" data-value="${o.id}" aria-pressed="${f[k] === o.id}"${o.en ? ` aria-label="${esc(o.label)}" title="${esc(o.label)}"` : ''}>${esc(o.en ?? o.label)}</button>`).join('')}</div></div>`;
-  return `<div class="filters">${row('play')}${row('scoring')}</div>`;
+// The two switches in the sticky bar: 雙打｜單打 and Side-out｜Rally.
+function barFilterHtml(f) {
+  const seg = k => `<div class="seg bar-seg" role="group" aria-label="${esc(FILTER[k].label)}">${FILTER[k].options.map(o =>
+    `<button type="button" data-filter="${k}" data-value="${o.id}" aria-pressed="${f[k] === o.id}"${o.en ? ` aria-label="${esc(o.label)}" title="${esc(o.label)}"` : ''}>${esc(o.en ?? o.label)}</button>`).join('')}</div>`;
+  return `${seg('play')}${seg('scoring')}`;
 }
 
 function indexHtml(f) {
@@ -84,7 +84,6 @@ function indexHtml(f) {
     </section>`).join('');
   return `
     <div class="section-head"><h2>${esc(RULES_INDEX.title)}</h2><p class="intro">${esc(RULES_INDEX.intro)}</p></div>
-    ${filterHtml(f)}
     ${groups}
     <section class="rule-group" id="rules-formats" data-title="${esc(FORMATS_PAGE.title)}"><h3>${esc(FORMATS_PAGE.title)}${enTag(FORMATS_PAGE.en)}</h3>
       <p class="muted small">${esc(FORMATS_PAGE.note)}</p>
@@ -102,6 +101,14 @@ function appliesHtml(p) {
   return `<div class="format-meta applies"><span class="muted">${esc(FILTER.applies)}</span><span>${play}</span><span>${scoring}</span></div>`;
 }
 
+// "看其他版本：單打｜Rally" under 適用: one tap switches the filter (and, if
+// this rule does not apply there, jumps to its counterpart).
+function othersHtml(f) {
+  const other = k => FILTER[k].options.find(o => o.id !== f[k]);
+  const btn = k => { const o = other(k); return `<button type="button" class="link-btn" data-filter="${k}" data-value="${o.id}">${esc(o.en ?? o.label)}</button>`; };
+  return `<p class="others small"><span class="muted">${esc(FILTER.others)}</span>${btn('play')}${btn('scoring')}</p>`;
+}
+
 // Rules that apply to both play styles carry a two-player version of their
 // scenes; show it when the reader picked singles.
 const scenesFor = (p, f) => (f.play === 'singles' && p.item.singlesScenes) || p.item.scenes;
@@ -112,7 +119,7 @@ const textFor = (p, f) => {
 };
 
 function pageBody(p, f) {
-  if (p.kind === 'rule') return ruleCard({ ...p.item, ...textFor(p, f), scenes: scenesFor(p, f) }, appliesHtml(p));
+  if (p.kind === 'rule') return ruleCard({ ...p.item, ...textFor(p, f), scenes: scenesFor(p, f) }, appliesHtml(p) + othersHtml(f));
   if (p.kind === 'compare') return compareTable(COMPARE);
   if (p.kind === 'faq') {
     return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="sub">${esc(p.en)}</p></div>
@@ -214,13 +221,14 @@ function drawerHtml() {
 // Renders the index (sub = '') or one page (sub = page id). An unknown id is
 // a bad link, not a bad state, so it falls back to the index.
 export function mountRules(root) {
-  // A sticky bar on top of every rules page shows where the reader is. The
-  // contents drawer opens from a small tab on the left edge (tap it or drag
+  // A sticky bar on top of every rules page holds the 雙打｜單打 and
+  // Side-out｜Rally switches and share. The contents drawer opens from a small tab on the left edge (tap it or drag
   // it right); a swipe from the screen edge itself is the system back gesture.
-  root.innerHTML = `<div class="rules-bar"><span class="rules-where"></span><span class="bar-share"></span></div>
+  root.innerHTML = `<div class="rules-bar"><div class="bar-filters"></div><span class="bar-share"></span><p class="filter-hint" hidden>${esc(FILTER.hint)}</p></div>
     <button class="drawer-tab" type="button" aria-haspopup="dialog" aria-label="${esc(DRAWER.title)}"><span>${esc(DRAWER.open)}</span></button>
     <div class="rules-page"></div>${drawerHtml()}`;
-  const whereEl = root.querySelector('.rules-where');
+  const filtersEl = root.querySelector('.bar-filters');
+  const hintEl = root.querySelector('.filter-hint');
   const shareSlot = root.querySelector('.bar-share');
   shareSlot.addEventListener('click', e => { if (e.target.closest('.share-btn')) sharePage(PAGES.find(q => q.id === current)?.title ?? RULES_INDEX.title); });
   const pageEl = root.querySelector('.rules-page');
@@ -233,34 +241,10 @@ export function mountRules(root) {
   swipeToClose(drawer);
   let filter = loadFilter();
   let current = null;
-  // Where the reader is: on a rule page its section and title; on the index
-  // the filter and the section currently scrolled under the bar.
-  const filterLabel = () => `${optionById('play', filter.play).label}・${optionById('scoring', filter.scoring).label}`;
-  const setWhere = () => {
-    const p = PAGES.find(q => q.id === current);
-    let upper, lower;
-    if (p) [upper, lower] = [p.sec?.title ?? RULES_INDEX.more, p.title];
-    else {
-      const barBottom = root.querySelector('.rules-bar').getBoundingClientRect().bottom;
-      const groups = [...pageEl.querySelectorAll('.rule-group')];
-      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
-      // At the very bottom the last group may never reach the bar; count it then.
-      const passed = atBottom ? groups : groups.filter(g => g.getBoundingClientRect().top <= barBottom + 8);
-      [upper, lower] = [filterLabel(), passed.length ? passed[passed.length - 1].dataset.title : RULES_INDEX.title];
-    }
-    const html = `<small>${esc(upper)}</small><b>${esc(lower)}</b>`;
-    if (whereEl.innerHTML !== html) whereEl.innerHTML = html;
-  };
-  let ticking = false;
-  window.addEventListener('scroll', () => {
-    if (current !== '' || root.hidden || ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { ticking = false; setWhere(); });
-  }, { passive: true });
   const render = () => {
     const p = PAGES.find(q => q.id === current);
     pageEl.innerHTML = p ? pageHtml(p, filter) : indexHtml(filter);
-    setWhere();
+    filtersEl.innerHTML = barFilterHtml(filter);
     shareSlot.innerHTML = p ? shareButtonHtml() : '';
     drawerNav.innerHTML = drawerNavHtml(filter);
     for (const a of drawerNav.querySelectorAll('a[data-id]')) {
@@ -271,14 +255,37 @@ export function mountRules(root) {
       if (wrap) wireScene(wrap, scenesFor(p, filter));
     }
   };
-  pageEl.addEventListener('click', e => {
+  // Switching play or scoring, from the bar or a rule page. A rule that does
+  // not apply to the new combination hands over to its counterpart, or to the
+  // index with a note.
+  root.addEventListener('click', e => {
     const b = e.target.closest('[data-filter]');
     if (!b) return;
     filter = { ...filter, [b.dataset.filter]: b.dataset.value };
     saveFilter(filter);
+    const p = PAGES.find(q => q.id === current);
+    if (p && !pageShown(p, filter)) {
+      const to = COUNTERPARTS[p.id]?.[`${filter.play}:${filter.scoring}`];
+      const combo = `${optionById('play', filter.play).label}・${optionById('scoring', filter.scoring).label}`;
+      if (to) toast(esc(FILTER.jumped.replace('{title}', PAGES.find(q => q.id === to).title)));
+      else toast(esc(FILTER.backToIndex.replace('{combo}', combo)));
+      location.hash = to ? `#rules/${to}` : '#rules';
+      return;
+    }
     render();
-    pageEl.querySelector(`[data-filter="${b.dataset.filter}"][data-value="${b.dataset.value}"]`)?.focus();
+    filtersEl.querySelector(`[data-filter="${b.dataset.filter}"][data-value="${b.dataset.value}"]`)?.focus();
   });
+  // First visit: a bubble under the switches, gone at the first tap anywhere.
+  const HINT_KEY = 'picobo.filterHintSeen';
+  let hintSeen = true;
+  try { hintSeen = localStorage.getItem(HINT_KEY) === '1'; } catch { /* storage unavailable: no hint */ }
+  if (!hintSeen) {
+    hintEl.hidden = false;
+    document.addEventListener('pointerdown', () => {
+      hintEl.hidden = true;
+      try { localStorage.setItem(HINT_KEY, '1'); } catch { /* storage unavailable */ }
+    }, { once: true });
+  }
   return {
     show(sub) {
       if (MOVED[sub]) { history.replaceState(null, '', `#rules/${MOVED[sub]}`); sub = MOVED[sub]; }

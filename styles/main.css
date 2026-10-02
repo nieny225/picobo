@@ -238,7 +238,17 @@ button { cursor: pointer; }
   html[data-tab="rules"] .rules-bar { top: env(safe-area-inset-top, 0px); }
 }
 @media (prefers-reduced-motion: reduce) { .rules-bar { transition: none; } }
-.rules-where { flex: 1; min-width: 0; display: grid; line-height: 1.3; }
+.bar-filters { flex: 1; min-width: 0; display: flex; gap: 8px; }
+.bar-seg button { min-height: 44px; padding: 0 9px; font-size: 0.85rem; white-space: nowrap; }
+@media (max-width: 340px) { .bar-filters { gap: 4px; } .bar-seg button { padding: 0 6px; } }
+.filter-hint {
+  position: absolute; left: var(--gutter); top: calc(100% + 8px); z-index: 2; margin: 0; max-width: calc(100% - 2 * var(--gutter));
+  padding: 8px 12px; border: 2px solid var(--ink); border-radius: var(--radius-sm); background: var(--ink); color: var(--bg); font-weight: 700; font-size: 0.9rem;
+}
+.filter-hint::before { content: ""; position: absolute; left: 22px; top: -8px; border: 7px solid transparent; border-top: 0; border-bottom-color: var(--ink); }
+.filter-hint[hidden] { display: none; }
+.others { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -4px 0 0; }
+.link-btn { min-height: 44px; padding: 0 10px; border: 2px solid var(--ink); border-radius: 999px; background: var(--surface); color: var(--fg); font-weight: 700; }
 .bar-share { flex: none; }
 .share-btn {
   display: inline-flex; align-items: center; gap: 6px; min-height: 44px; min-width: 44px; padding: 0 12px;

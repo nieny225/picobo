@@ -348,3 +348,13 @@ export const COMPARE = {
     ['一局多久', '約 15 到 25 分鐘', '約 10 到 15 分鐘'],
   ],
 };
+
+// 在單條規則頁切換「打法 × 計分」時，這條不適用新組合就跳到對應的那一條。
+// key 是新的組合「打法:計分」；沒寫到的組合就回目錄總覽。
+export const COUNTERPARTS = {
+  positions: { 'singles:sideout': 'scoring', 'doubles:rally': 'rally-basics', 'singles:rally': 'rally-singles' },
+  scoring: { 'doubles:rally': 'rally-basics', 'singles:rally': 'rally-singles' },
+  'rally-basics': { 'singles:rally': 'rally-singles', 'doubles:sideout': 'scoring', 'singles:sideout': 'scoring' },
+  'rally-singles': { 'doubles:rally': 'rally-basics', 'doubles:sideout': 'scoring', 'singles:sideout': 'scoring' },
+  'rally-pro': { 'doubles:sideout': 'scoring', 'singles:sideout': 'scoring' },
+};
