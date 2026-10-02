@@ -80,13 +80,18 @@ export function signupText({ sessions, names = [], cap = null, blanks = 3 }, lab
 // players; empty numbers, links and other lines are skipped. "w/ 2 kids" and
 // anything in brackets are notes, not names. Spaces separate players too
 // ("Simone kahyee" is two people, "@c.y_o @amyling_08" too): groups write
-// first names and handles, not full names. IG mentions lose the @.
+// first names and handles, not full names. IG mentions lose the @, and
+// emoji (a ✅ after a name, or alone on a line) are dropped.
 const NUMBERED = /^\s*\d{1,2}\s*[.)、．:：]\s*(.*)$/;
 const DATED = /\b\d{1,2}\/\d{1,2}\b/;
 const SPLIT = /\s*(?:&|＆|\+|,|，|、|\/|\band\b|和|跟)\s*/i;
 
+// Emoji are check-ins and moods (✅ 🙋 👍🏻 ❤️), never part of a name.
+const EMOJI = /[\p{Extended_Pictographic}\p{Regional_Indicator}\u{1F3FB}-\u{1F3FF}\u200D\uFE0E\uFE0F\u20E3]/gu;
+
 export function namesIn(entry) {
   return entry
+    .replace(EMOJI, ' ')
     .replace(/\s+w\/.*$/i, '')
     .replace(/[(（[【].*?[)）\]】]/g, '')
     .split(SPLIT)

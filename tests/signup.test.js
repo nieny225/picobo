@@ -100,3 +100,8 @@ test('IG mentions and spaces: one player each, without the @', () => {
   const s = parseSignup('10/4 (Sat) 5-7pm\n1. @drsteven1988\n2. @c.y_o @amyling_08\n3. Annie & Bruce\n4. @max3066 @chienying_________\n5. Simone kahyee\n6. @frankchang0522 @caseyhua & @apgoh');
   assert.deepEqual(s[0].names, ['drsteven1988', 'c.y_o', 'amyling_08', 'Annie', 'Bruce', 'max3066', 'chienying_________', 'Simone', 'kahyee', 'frankchang0522', 'caseyhua', 'apgoh']);
 });
+
+test('emoji are not names', () => {
+  const s = parseSignup('10/4 (Sat) 5-7pm\n1. Mahsiu\n2. ✅\n3. Nick✅\n4. Casey ✅ 👍🏻\n5. 🙋‍♀️Rose & Max❤️\n6. 🇸🇬 Bruce');
+  assert.deepEqual(s[0].names, ['Mahsiu', 'Nick', 'Casey', 'Rose', 'Max', 'Bruce']);
+});
