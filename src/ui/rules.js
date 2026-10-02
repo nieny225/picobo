@@ -98,20 +98,12 @@ function indexHtml(f) {
 const hasSingles = item => Boolean(item.singlesScenes || item.singlesSummary || item.singlesDetail);
 
 // "適用：雙打｜側出計分" under a rule's title. A rule with a singles version
-// names the version on screen; 看其他版本 switches to the other one.
+// names the version on screen; the bar switches to the other one.
 function appliesHtml(p, f) {
   const play = p.item.play ?? (hasSingles(p.item) ? f.play : null);
   const playHtml = play ? optionHtml(optionById('play', play)) : esc(FILTER.both.play);
   const scoring = p.sec.scoring ? optionHtml(optionById('scoring', p.sec.scoring)) : esc(FILTER.both.scoring);
   return `<div class="format-meta applies"><span class="muted">${esc(FILTER.applies)}</span><span>${playHtml}</span><span>${scoring}</span></div>`;
-}
-
-// "看其他版本：單打｜每球得分" under 適用: one tap switches the filter (and, if
-// this rule does not apply there, jumps to its counterpart).
-function othersHtml(f) {
-  const other = k => FILTER[k].options.find(o => o.id !== f[k]);
-  const btn = k => { const o = other(k); return `<button type="button" class="link-btn" data-filter="${k}" data-value="${o.id}">${esc(o.label)}</button>`; };
-  return `<p class="others small"><span class="muted">${esc(FILTER.others)}</span>${btn('play')}${btn('scoring')}</p>`;
 }
 
 // Rules that apply to both play styles carry a two-player version of their
@@ -124,7 +116,7 @@ const textFor = (p, f) => {
 };
 
 function pageBody(p, f) {
-  if (p.kind === 'rule') return ruleCard({ ...p.item, ...textFor(p, f), scenes: scenesFor(p, f) }, appliesHtml(p, f) + othersHtml(f));
+  if (p.kind === 'rule') return ruleCard({ ...p.item, ...textFor(p, f), scenes: scenesFor(p, f) }, appliesHtml(p, f));
   if (p.kind === 'compare') return compareTable(COMPARE);
   if (p.kind === 'faq') {
     return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="sub">${esc(p.en)}</p></div>

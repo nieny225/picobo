@@ -242,8 +242,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   which is the phone's back gesture. The sticky rules bar now holds the
   雙打｜單打 and 側出計分｜每球得分 switches and share (the old location line
   and the filter block on the index are gone). First visit shows a hint
-  bubble once (`picobo.filterHintSeen`). Rule pages have 看其他版本 buttons
-  under 適用. Switching on a rule that does not apply to the new combination
+  bubble once (`picobo.filterHintSeen`). Switching on a rule that does not apply to the new combination
   jumps via `COUNTERPARTS` in `src/data/rules.js`, else back to the index,
   with a toast either way.
 - Fun formats: 11 in five groups (see CLAUDE.md). Added 2026-10-02 at the
