@@ -21,7 +21,7 @@ export const HOME = {
   },
   entries: [
     { route: 'rules', title: '學規則', en: 'Rules', desc: '圖解一步步搞懂規則' },
-    { route: 'score', title: '計分板', en: 'Scoreboard', desc: '誰發球、站哪邊，按一下就算好。' },
+    { route: 'score', title: '計分板', en: 'Scoreboard', desc: '輕鬆算好站位、發球、計分' },
     { route: 'draw', title: '抽籤輪轉', en: 'Draw', desc: '分組、輪轉賽、國王球場，人多也不亂。' },
     { route: 'meetup', title: '揪團', en: 'Find Players', desc: '填時間地點缺幾人，一張卡丟到群組。' },
     { route: 'venues', title: '找場地', en: 'Courts', desc: '哪裡能打、怎麼預約、怎麼去。' },
