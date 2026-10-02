@@ -1,6 +1,7 @@
 import { VENUES, VENUES_PAGE as V } from '../data/venues.js';
 import { mapUrl } from '../meetup.js';
 import { MEETUP } from '../data/meetup.js';
+import { SIGNUP } from '../data/signup.js';
 import { esc } from './scenes.js';
 import { shareButtonHtml, sharePage } from './share.js';
 
@@ -29,7 +30,8 @@ function venueCard(v) {
     <div class="meetup-actions">
       ${(v.booking ?? []).map(b => link(bookingHref(b), b.label || V.booking[b.type])).join('')}
       ${link(mapUrl({ place: v.name, address: v.address }), V.map)}
-      ${MEETUP.open ? link(`#meetup?venue=${encodeURIComponent(v.id)}`, V.meetup, 'btn btn-primary') : ''}
+      ${link(`#signup?venue=${encodeURIComponent(v.id)}`, SIGNUP.fromVenue, 'btn btn-primary')}
+      ${MEETUP.open ? link(`#meetup?venue=${encodeURIComponent(v.id)}`, V.meetup, 'btn') : ''}
     </div>
   </article>`;
 }
@@ -74,7 +76,7 @@ function listHtml(f) {
 
 // Courts directory (#venues), grouped by region in data order.
 export function mountVenues(root) {
-  const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(V.intro)}</p><p class="muted small">${esc(V.disclaimer)}</p></div>`;
+  const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(V.intro)}</p><p class="muted small">${esc(V.disclaimer)}</p><a class="btn btn-primary" href="#signup">${esc(SIGNUP.fromVenue)}</a></div>`;
   if (VENUES.length === 0) { root.innerHTML = `${head}<article class="card"><p>${esc(V.empty)}</p></article>`; return; }
   const f = loadFilter();
   root.innerHTML = `${head}${barHtml(f)}<div class="venue-list"></div>`;

@@ -22,6 +22,19 @@ export function toast(html) {
   toastTimer = setTimeout(() => { el.hidden = true; }, 4000);
 }
 
+// Plain text (a sign-up list) through the share sheet, else to the clipboard.
+export async function shareText(title, text) {
+  if (navigator.share) {
+    try { await navigator.share({ title, text }); return; } catch (e) { if (e.name === 'AbortError') return; }
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    toast(esc(SHARE.copied));
+  } catch {
+    toast(esc(SHARE.manual));
+  }
+}
+
 // `url` defaults to this page on the public site; `text` is an optional line
 // that goes with it in the share sheet.
 export async function sharePage(title, url = SHARE.url + location.hash, text) {

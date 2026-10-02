@@ -546,6 +546,11 @@ footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top
 .venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
 .venue-list { display: grid; gap: 14px; }
 .venue .event-facts div { grid-template-columns: 5em 1fr; }
+.signup-sessions { display: grid; gap: 12px; }
+.signup-session { margin: 0; padding: 10px 12px 12px; border: 2px solid var(--ink); border-radius: var(--radius-sm); display: grid; gap: 8px; min-width: 0; }
+.signup-session legend { display: flex; align-items: center; gap: 10px; padding: 0 6px; font-weight: 900; }
+.signup-preview { margin: 0; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-body); font-size: 0.95rem; line-height: 1.55; background: var(--surface-2); border: 2px dashed var(--ink); border-radius: var(--radius-sm); min-height: 6em; user-select: text; }
+.section-head a.btn { display: inline-flex; align-items: center; text-decoration: none; margin-top: 6px; }
 a.btn-block { display: flex; align-items: center; justify-content: center; text-decoration: none; }
 textarea.input { font-family: inherit; line-height: 1.5; resize: vertical; }
 
