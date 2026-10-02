@@ -1,6 +1,6 @@
 // 首頁文字。slogan 每一行一個元素；概念先不講明，只留形象。
 export const HOME = {
-  slogan: ['Pick one,', 'pick a place,', 'picobo.'],
+  slogan: ['Pick a day,', 'pick a place,', 'picobo.'],
   entriesLabel: '從這裡開始',
   intro: '痞克柏是你的匹克球場邊夥伴。',
   courtAlt: '一個人在發球，對面亮起一塊發球區',

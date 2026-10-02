@@ -4,7 +4,8 @@ import { esc, enTag } from './scenes.js';
 import { eventCardHtml } from './event.js';
 import { MEETUP } from '../data/meetup.js';
 
-// "Pick one" is the serving player, "pick a place" the lit service box.
+// Slogan "Pick a day, pick a place, picobo." (set a time, find a court, play);
+// the hero shows a serve landing in the lit service box.
 const HERO_SCENE = {
   alt: HOME.courtAlt,
   highlight: ['serviceBox:far:right'],

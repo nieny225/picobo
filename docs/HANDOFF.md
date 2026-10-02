@@ -163,7 +163,7 @@ The rules tab was one 16,800 px page on a phone. Now:
   index, the drawer and prev/next; the choice is kept in localStorage
   (`picobo.rulesFilter`). Data: section `scoring` and rule `play` fields.
   Each rule page shows 適用：<play>｜<scoring>.
-- Home (#home, the default route): slogan "Pick one, pick a place, picobo.",
+- Home (#home, the default route): slogan "Pick a day, pick a place, picobo." (was "Pick one, …"),
   a hero court from court.js, entry cards to
   rules / score / draw. The slogan hints at future social play, court
   matching and events; the user wants that kept unsaid for now.
