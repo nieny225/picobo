@@ -1,4 +1,4 @@
-import { SCORE_SETUP, DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R } from '../data/nav.js';
+import { SCORE_SETUP, DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X } from '../data/nav.js';
 import { parseSignup } from '../signup.js';
 import { toast } from './share.js';
 import { isFull, toggleFull, onFullChange, fullIcon } from './fullscreen.js';
@@ -25,6 +25,25 @@ function loadPlay() {
 function savePlay(p) {
   try { p ? localStorage.setItem(PLAY_KEY, JSON.stringify(p)) : localStorage.removeItem(PLAY_KEY); } catch { /* ignore */ }
 }
+
+// Mixed doubles: the switch, and each name's tag (♂ / ♀), kept per name on
+// this phone so next week's roster already knows.
+const MIX_KEY = 'picobo.mixed', GENDER_KEY = 'picobo.genders';
+function loadMix() {
+  try { return localStorage.getItem(MIX_KEY) === '1'; } catch { return false; }
+}
+function saveMix(on) {
+  try { localStorage.setItem(MIX_KEY, on ? '1' : '0'); } catch { /* ignore */ }
+}
+// Only 'm' / 'f' survive, whatever was stored or handed over.
+const cleanGenders = g => Object.fromEntries(Object.entries(g && typeof g === 'object' ? g : {}).filter(([, v]) => v === 'm' || v === 'f'));
+function loadGenders() {
+  try { return cleanGenders(JSON.parse(localStorage.getItem(GENDER_KEY))); } catch { return {}; }
+}
+function saveGenders(g) {
+  try { localStorage.setItem(GENDER_KEY, JSON.stringify(g)); } catch { /* ignore */ }
+}
+const NEXT_GENDER = { '': 'm', m: 'f', f: '' };
 
 // A name on court or in the queue is a button when players can be swapped by hand.
 const nameHtml = (n, swap) => (swap ? `<button type="button" class="name-btn" data-swap="${esc(n)}">${esc(n)}</button>` : `<span>${esc(n)}</span>`);
@@ -120,13 +139,22 @@ export function mountDraw(root) {
   let koc = null;
   let play = loadPlay();
   const setPlay = p => { play = p; savePlay(p); };
+  let mix = loadMix();
+  let genders = loadGenders();
+  // What the pairing sees: tags only while mixed doubles is on.
+  const mixGenders = () => (mix ? genders : null);
+  const showTags = () => mix && sub === 'draw';
+  const tagHtml = (n, i) => {
+    const g = genders[n] ?? '';
+    return `<button type="button" class="chip-sex" data-sex="${i}" data-g="${g || 'none'}" aria-label="${esc(X.tag.replace('{name}', n).replace('{label}', X.labels[g]))}">${X.symbols[g]}</button>`;
+  };
 
   const html = () => `
     <div class="section-head"><div class="head-row"><h2>抽籤輪轉</h2>${handoffButtonHtml()}</div><p class="intro">先輸入今天的球友，再選要怎麼分。</p></div>
     <div class="card roster-card">
       <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3>${roster.sample ? '<span class="example-note">範例名單，改成你們的</span>' : ''}</div>
-      <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip"><button type="button" class="chip-name" data-rename="${i}">${esc(n)}</button><button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
-      ${roster.names.length ? `<p class="muted small">${esc(R.hint)}</p>` : ''}
+      <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip">${showTags() ? tagHtml(n, i) : ''}<button type="button" class="chip-name" data-rename="${i}">${esc(n)}</button><button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
+      ${roster.names.length ? `<p class="muted small">${esc(showTags() ? `${R.hint}${X.hint}` : R.hint)}</p>` : ''}
       <form class="row" id="add-form"><input class="input" id="add-name" placeholder="輸入名字" maxlength="8" autocomplete="off"><button class="btn" type="submit" style="flex:0 0 auto">加入</button><button class="btn btn-ghost" type="button" id="clear" style="flex:0 0 auto">清空</button></form>
       <details class="paste-list"><summary>${esc(P.open)}</summary>
         <p class="muted small">${esc(P.hint)}</p>
@@ -142,6 +170,7 @@ export function mountDraw(root) {
 
   const drawBody = () => `<div class="card draw-card"><div class="draw-controls">
     <div class="row"><div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="${play ? play.courts.length : 1}"></div><div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${esc(play ? OPEN_PLAY.redraw : OPEN_PLAY.start)}</button></div></div>
+    <label class="mix-toggle"><input type="checkbox" id="mix"${mix ? ' checked' : ''}> ${esc(X.toggle)}</label>
     <p class="muted small">${esc(OPEN_PLAY.hint)}</p></div>
     <div id="out"></div></div>`;
 
@@ -149,7 +178,7 @@ export function mountDraw(root) {
     if (!play) { out.innerHTML = ''; return; }
     const ranked = Object.entries(play.stats).sort((a, b) => b[1].won - a[1].won || a[1].played - b[1].played);
     out.innerHTML = `${fullBtnHtml()}<div class="matches">${play.courts.map((c, ci) => c.teams.length === 2 ? `
-      <div class="koc-court"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span>
+      <div class="koc-court"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span>${mix && c.mixed === false ? ` <span class="waiting">${esc(X.notMixed)}</span>` : ''}
       <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.first === ti, true)}<button class="btn" data-court="${ci}" data-win="${ti}">${esc(OPEN_PLAY.won)}</button></div>`).join('')}</div></div>`
       : `<div class="koc-court"><span class="muted">${esc(OPEN_PLAY.idle.replace('{court}', c.court))}</span></div>`).join('')}</div>
       <p class="small" style="margin-top:10px"><b>${esc(OPEN_PLAY.queue)}</b>${esc(OPEN_PLAY.queueHint)}</p>
@@ -160,7 +189,7 @@ export function mountDraw(root) {
       <table class="stats"><thead><tr>${OPEN_PLAY.cols.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
       <tbody>${ranked.map(([n, r]) => `<tr><td>${esc(n)}</td><td class="num">${r.played}</td><td class="num">${r.won}</td></tr>`).join('')}</tbody></table>`;
     for (const b of out.querySelectorAll('[data-win]')) b.addEventListener('click', () => {
-      setPlay(finishOpenPlayGame(play, Number(b.dataset.court), Number(b.dataset.win)));
+      setPlay(finishOpenPlayGame(play, Number(b.dataset.court), Number(b.dataset.win), Math.random, mixGenders()));
       renderPlay(out);
     });
     wireSwaps(out, play, next => { setPlay(next); renderPlay(out); });
@@ -214,9 +243,8 @@ export function mountDraw(root) {
     body.querySelector('#go').addEventListener('click', () => {
       if (sub === 'draw') {
         if (!guard(4)) return;
-        // A redraw reshuffles everyone and keeps the counts.
         // A redraw keeps the counts and puts whoever has played least first.
-        setPlay(createOpenPlay(roster.names, courts(), Math.random, play?.stats ?? {}));
+        setPlay(createOpenPlay(roster.names, courts(), Math.random, play?.stats ?? {}, mixGenders()));
         body.querySelector('#go').textContent = OPEN_PLAY.redraw;
         renderPlay(out);
       } else if (sub === 'rr') {
@@ -229,6 +257,9 @@ export function mountDraw(root) {
         renderKoc(out);
       }
     });
+    // Mixed doubles on or off: the tags show on the roster; courts already
+    // playing stay as they are, the next games pair by the tags.
+    body.querySelector('#mix')?.addEventListener('change', e => { mix = e.target.checked; saveMix(mix); render(); });
     if (sub === 'koc') renderKoc(out);
     if (sub === 'draw') renderPlay(out);
   };
@@ -240,7 +271,7 @@ export function mountDraw(root) {
       const v = root.querySelector('#add-name').value.trim();
       if (!v || roster.names.includes(v)) return;
       roster = { names: [...roster.names, v], sample: false };
-      if (play) setPlay(joinOpenPlay(play, v));
+      if (play) setPlay(joinOpenPlay(play, v, Math.random, mixGenders()));
       saveRoster(roster); render();
       root.querySelector('#add-name').focus();
     });
@@ -249,7 +280,7 @@ export function mountDraw(root) {
     const addNames = names => {
       const fresh = names.filter(n => !(roster.sample ? [] : roster.names).includes(n));
       roster = { names: [...(roster.sample ? [] : roster.names), ...fresh], sample: false };
-      if (play) for (const n of fresh) setPlay(joinOpenPlay(play, n));
+      if (play) for (const n of fresh) setPlay(joinOpenPlay(play, n, Math.random, mixGenders()));
       saveRoster(roster); render();
       toast(esc(P.added.replace('{n}', fresh.length)));
     };
@@ -263,12 +294,20 @@ export function mountDraw(root) {
       for (const b of pick.querySelectorAll('[data-session]')) b.addEventListener('click', () => addNames(sessions[Number(b.dataset.session)].names));
     });
     root.querySelector('#clear').addEventListener('click', () => { roster = { names: [], sample: false }; koc = null; setPlay(null); saveRoster(roster); render(); });
+    for (const b of root.querySelectorAll('[data-sex]')) b.addEventListener('click', () => {
+      const n = roster.names[Number(b.dataset.sex)];
+      const g = NEXT_GENDER[genders[n] ?? ''];
+      genders = { ...genders };
+      if (g) genders[n] = g; else delete genders[n];
+      saveGenders(genders); render();
+    });
     // Tap a name to fix it; a running session follows the new name.
     for (const b of root.querySelectorAll('[data-rename]')) b.addEventListener('click', async () => {
       const i = Number(b.dataset.rename), old = roster.names[i];
       const name = await askRename(old, v => roster.names.includes(v));
       if (!name) return;
       roster = { names: roster.names.map((n, j) => (j === i ? name : n)), sample: false };
+      if (genders[old]) { genders = { ...genders, [name]: genders[old] }; delete genders[old]; saveGenders(genders); }
       const has = s => s && (s.queue.includes(old) || s.courts.some(c => c.teams.flat().includes(old)) || old in (s.stats ?? {}));
       if (has(play)) setPlay(renamePlayer(play, old, name));
       if (has(koc)) koc = renamePlayer(koc, old, name);
@@ -281,7 +320,7 @@ export function mountDraw(root) {
       koc = null; saveRoster(roster); render();
     });
     for (const t of root.querySelectorAll('.subtab')) t.addEventListener('click', () => { sub = t.dataset.sub; render(); });
-    root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('draw', { roster, play, koc, sub }));
+    root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('draw', { roster, play, koc, sub, mix, genders: Object.fromEntries(roster.names.filter(n => genders[n]).map(n => [n, genders[n]])) }));
     renderSub();
   };
   render();
@@ -292,6 +331,8 @@ export function mountDraw(root) {
     receive(data) {
       if (!Array.isArray(data?.roster?.names)) throw new Error('draw: not a draw hand-over');
       roster = data.roster; play = data.play ?? null; koc = data.koc ?? null; sub = data.sub ?? 'draw';
+      if (typeof data.mix === 'boolean') { mix = data.mix; saveMix(mix); }
+      if (data.genders) { genders = { ...genders, ...cleanGenders(data.genders) }; saveGenders(genders); }
       saveRoster(roster); savePlay(play); render();
     },
   };

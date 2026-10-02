@@ -345,6 +345,13 @@ http redirects to https (checked 2026-10-01). Possibly still open on the
 user's side: default branch `main`, apex AAAA records, domain verification TXT. Before that, `picobo.net` pointed at Gandi's
 parking IP 217.70.184.38. There was no `main` branch yet; the remote default
 branch was the old session branch `ccr-e7df49dc-8t69j2`.
+- 抽籤分組 has a 混雙 checkbox (off by default, `picobo.mixed`). While it is
+  on, roster chips show a tag before each name (? → ♂ → ♀ per tap), kept per
+  name on this phone in `picobo.genders` and carried by the hand-over link.
+  `mixTeams` in draw.js splits each court's four into one man + one woman
+  per team when the tags allow (untagged players fit anywhere); the queue
+  order never changes for it, and a court that cannot be mixed plays anyway
+  and shows 「這場不是混雙」. King of the court has no mixed option yet.
 
 ## Known gaps and ideas not yet scheduled
 

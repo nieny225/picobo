@@ -113,7 +113,11 @@ export function advanceKingOfCourt(state, courtIndex, winnerIndex, maxStreak = 3
 // first on each court (coin flip). A redraw passes the counts so far: the
 // shuffle then puts whoever has played least at the front (random among
 // equals) and keeps the counts.
-export function createOpenPlay(names, courtCount, rng = Math.random, prior = {}) {
+// Mixed doubles: pass `genders` ({ name: 'm' | 'f' }, untagged players fit
+// anywhere) and each court's four are paired one man + one woman per team
+// when they can be; the queue order never changes for it. Such a court
+// carries `mixed: true | false`.
+export function createOpenPlay(names, courtCount, rng = Math.random, prior = {}, genders = null) {
   assertNames(names, 4);
   if (!Number.isInteger(courtCount) || courtCount < 1) throw new Error('draw: courtCount must be >= 1');
   const played = n => prior[n]?.played ?? 0;
@@ -121,17 +125,33 @@ export function createOpenPlay(names, courtCount, rng = Math.random, prior = {})
   const stats = {};
   for (const n of names) stats[n] = prior[n] ?? { played: 0, won: 0 };
   const courts = [];
-  for (let c = 1; c <= courtCount; c++) courts.push(fillCourt(c, queue, rng));
+  for (let c = 1; c <= courtCount; c++) courts.push(fillCourt(c, queue, rng, genders));
   return { courts, queue, stats, leaving: [] };
 }
 
-function fillCourt(court, queue, rng) {
+function fillCourt(court, queue, rng, genders = null) {
   if (queue.length < 4) return { court, teams: [], first: 0 };
   const g = queue.splice(0, 4);
-  return { court, teams: [[g[0], g[1]], [g[2], g[3]]], first: coinFlip(rng) === 'A' ? 0 : 1 };
+  const first = coinFlip(rng) === 'A' ? 0 : 1;
+  if (!genders) return { court, teams: [[g[0], g[1]], [g[2], g[3]]], first };
+  return { court, ...mixTeams(g, genders), first };
 }
 
-export function finishOpenPlayGame(state, courtIndex, winnerIndex, rng = Math.random) {
+// Four players into two teams of one man + one woman where the tags allow.
+// The usual split (1+2 against 3+4) wins when it already works, then 1+4
+// against 2+3 (which still keeps the last winners apart), then 1+3 / 2+4.
+export function mixTeams(four, genders) {
+  if (four.length !== 4) throw new Error('draw: mixTeams needs four players');
+  for (const n of four) if (genders[n] && genders[n] !== 'm' && genders[n] !== 'f') throw new Error(`draw: unknown gender ${genders[n]}`);
+  const [a, b, c, d] = four;
+  const fits = t => !(genders[t[0]] && genders[t[0]] === genders[t[1]]);
+  for (const teams of [[[a, b], [c, d]], [[a, d], [b, c]], [[a, c], [b, d]]]) {
+    if (teams.every(fits)) return { teams, mixed: true };
+  }
+  return { teams: [[a, b], [c, d]], mixed: false };
+}
+
+export function finishOpenPlayGame(state, courtIndex, winnerIndex, rng = Math.random, genders = null) {
   const court = state.courts[courtIndex];
   if (!court || court.teams.length !== 2) throw new Error('draw: no game on that court');
   if (winnerIndex !== 0 && winnerIndex !== 1) throw new Error('draw: winnerIndex must be 0 or 1');
@@ -143,19 +163,19 @@ export function finishOpenPlayGame(state, courtIndex, winnerIndex, rng = Math.ra
   queue.push(...back);
   const leaving = state.leaving.filter(n => !court.teams.flat().includes(n));
   const courts = state.courts.slice();
-  courts[courtIndex] = fillCourt(court.court, queue, rng);
+  courts[courtIndex] = fillCourt(court.court, queue, rng, genders);
   // A court that was idle for lack of players can start now too.
-  for (let i = 0; i < courts.length; i++) if (courts[i].teams.length === 0) courts[i] = fillCourt(courts[i].court, queue, rng);
+  for (let i = 0; i < courts.length; i++) if (courts[i].teams.length === 0) courts[i] = fillCourt(courts[i].court, queue, rng, genders);
   return { courts, queue, stats, leaving };
 }
 
 // A new player (or one who left earlier) joins the back of the queue; an idle
 // court starts if it can. Someone on court who was leaving just stays.
-export function joinOpenPlay(state, name, rng = Math.random) {
+export function joinOpenPlay(state, name, rng = Math.random, genders = null) {
   const present = state.queue.includes(name) || state.courts.some(c => c.teams.flat().includes(name));
   if (present && !state.leaving.includes(name)) throw new Error('draw: duplicate player names');
   const queue = present ? state.queue.slice() : [...state.queue, name];
-  const courts = state.courts.map(c => (c.teams.length === 0 ? fillCourt(c.court, queue, rng) : c));
+  const courts = state.courts.map(c => (c.teams.length === 0 ? fillCourt(c.court, queue, rng, genders) : c));
   const stats = { ...state.stats, [name]: state.stats[name] ?? { played: 0, won: 0 } };
   return { courts, queue, stats, leaving: state.leaving.filter(n => n !== name) };
 }

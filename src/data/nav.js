@@ -91,6 +91,16 @@ export const DRAW_SWAP = {
   done: '{a} 和 {b} 換好了',
 };
 
+// 抽籤分組的混雙：開了才在名字前顯示性別，點一下換（未標 → ♂ → ♀）。
+export const DRAW_MIX = {
+  toggle: '混雙',
+  hint: '點 ? 標性別（♂、♀），沒標的人誰都能配。',
+  symbols: { '': '?', m: '♂\uFE0E', f: '♀\uFE0E' },
+  labels: { '': '未標性別', m: '男', f: '女' },
+  tag: '{name}：{label}，點一下更換',
+  notMixed: '這場不是混雙',
+};
+
 // 抽籤分組（排隊輪流上場）。{court} 換成場地編號。
 export const OPEN_PLAY = {
   start: '開始抽籤',

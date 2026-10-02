@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer } from '../src/draw.js';
+import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, mixTeams } from '../src/draw.js';
 
 function seeded(seed) {
   let s = seed >>> 0;
@@ -166,4 +166,31 @@ test('a redraw keeps counts and puts whoever played least first', () => {
   const order = [...s.courts[0].teams.flat(), ...s.queue];
   assert.deepEqual(order.map(n => prior[n].played), [0, 0, 1, 2, 3, 3]);
   assert.deepEqual(s.stats.P1, { played: 3, won: 2 });
+});
+
+test('mixed doubles: one man + one woman per team when the tags allow', () => {
+  const g = { A: 'm', B: 'm', C: 'f', D: 'f', E: 'm' };
+  assert.deepEqual(mixTeams(['A', 'C', 'B', 'D'], g), { teams: [['A', 'C'], ['B', 'D']], mixed: true });
+  assert.deepEqual(mixTeams(['A', 'B', 'C', 'D'], g), { teams: [['A', 'D'], ['B', 'C']], mixed: true });
+  assert.deepEqual(mixTeams(['A', 'C', 'D', 'B'], g), { teams: [['A', 'C'], ['D', 'B']], mixed: true });
+  // Untagged players fit anywhere.
+  assert.deepEqual(mixTeams(['A', 'B', 'X', 'Y'], g), { teams: [['A', 'Y'], ['B', 'X']], mixed: true });
+  // Three men: play anyway, flagged.
+  assert.deepEqual(mixTeams(['A', 'B', 'E', 'C'], g), { teams: [['A', 'B'], ['E', 'C']], mixed: false });
+  assert.throws(() => mixTeams(['A', 'B', 'C'], g), /four/);
+  assert.throws(() => mixTeams(['A', 'B', 'C', 'Z'], { Z: 'x' }), /gender/);
+});
+
+test('mixed open play pairs each court and never reorders the queue', () => {
+  const g = { P1: 'm', P2: 'm', P3: 'm', P4: 'm', P5: 'f', P6: 'f', P7: 'f', P8: 'f' };
+  let s = createOpenPlay(names(8), 2, seeded(5), {}, g);
+  const plain = createOpenPlay(names(8), 2, seeded(5));
+  assert.deepEqual(s.queue, plain.queue);
+  for (const c of s.courts) {
+    assert.deepEqual(c.teams.flat().sort(), plain.courts[c.court - 1].teams.flat().sort());
+    if (c.mixed) for (const t of c.teams) assert.notEqual(g[t[0]], g[t[1]]);
+  }
+  s = finishOpenPlayGame(s, 0, 0, seeded(6), g);
+  assert.equal(typeof s.courts[0].mixed, 'boolean');
+  assert.equal('mixed' in finishOpenPlayGame(plain, 0, 0, seeded(6)).courts[0], false);
 });
