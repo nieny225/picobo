@@ -439,9 +439,15 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 /* Scoreboard play */
 .board { display: grid; gap: 16px; position: relative; }
 .board > .share-btn { position: absolute; top: -6px; right: -6px; }
+/* Full screen: no frame, half see-through, like a video player's corner icon. */
+.fs-btn {
+  position: absolute; top: -6px; left: -6px; width: 44px; height: 44px; display: grid; place-items: center;
+  border: 0; background: none; color: var(--fg); opacity: 0.55;
+}
+.fs-btn:hover, .fs-btn:focus-visible { opacity: 1; }
+.fs-btn svg { width: 22px; height: 22px; }
 .icon-btn { display: inline-flex; align-items: center; gap: 6px; }
-#fullscreen { width: 48px; padding: 0; justify-content: center; }
-/* Reset keeps its distance from undo and full screen. */
+/* Reset keeps its distance from undo. */
 .board .toolbar #reset { margin-left: 18px; }
 .icon-btn svg { width: 20px; height: 20px; flex: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

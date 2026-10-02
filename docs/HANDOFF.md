@@ -259,7 +259,7 @@ The rules tab was one 16,800 px page on a phone. Now:
 - Share is an icon only (no 分享 text), top right on every tool: the rules
   bar, the 計分 and 抽籤 headings, Pico Bowl and its organizer screen. During
   a game it sits in the board's top-right corner (hand-over link); full
-  screen moved into the bottom toolbar (復原 · full screen · 重設).
+  screen is a frameless, half see-through icon in the top-left corner.
 - Fun formats: 11 in four purpose groups (see CLAUDE.md; regrouped by purpose at the user's pick, no extra filter). Added 2026-10-02 at the
   user's pick: 接力團體賽, 繞場, 蘇格蘭雙打, 截擊大戰, 第三拍挑戰. Not added:
   上下河 (Up and Down the River), 雙球大亂鬥, 非慣用手, 精彩球加分. Off-court
