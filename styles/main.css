@@ -548,6 +548,22 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .queue span { background: var(--surface); border: 2px solid var(--ink); border-radius: 4px; padding: 2px 10px; font-size: 0.9rem; font-weight: 700; }
 .queue span:first-child, .queue span:nth-child(2) { background: var(--mark); color: var(--mark-fg); }
 .queue-4 span:nth-child(3), .queue-4 span:nth-child(4) { background: var(--mark); color: var(--mark-fg); }
+/* 今天戰績 title with its share icon. */
+.stats-title { display: flex; align-items: center; justify-content: space-between; }
+.stats-share { width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: none; color: var(--fg); padding: 0; border-radius: var(--radius-sm); }
+.stats-share svg { width: 22px; height: 22px; }
+/* Share-as-picture sheet (src/ui/sharecard.js): the preview fits the phone. */
+.share-sheet { width: min(420px, calc(100vw - 24px)); max-width: none; max-height: calc(100dvh - 24px); overflow-y: auto; display: grid; gap: 10px; padding: 14px; }
+.share-sheet[open] { display: grid; }
+.share-sheet [hidden] { display: none !important; }
+.share-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.share-sheet-head .btn { min-height: 44px; padding: 4px 12px; }
+.share-photo { display: flex; gap: 8px; flex-wrap: wrap; }
+.share-photo .btn { flex: 1; text-align: center; cursor: pointer; display: grid; place-items: center; }
+.share-preview { display: block; width: auto; max-width: 100%; max-height: 48dvh; margin: 0 auto; border: 2px solid var(--ink); border-radius: 6px; background: var(--surface-2); }
+.share-preview.is-sticker { background: repeating-conic-gradient(#ccc 0 25%, #fff 0 50%) 0 0 / 20px 20px; }
+.share-actions .btn { flex: 1; }
+.share-hint { margin: 0; }
 .stats-title { margin: 14px 0 6px; font-size: 1rem; }
 .stats { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
 .stats th, .stats td { text-align: left; padding: 6px 8px; border-bottom: 2px solid var(--line-soft); }

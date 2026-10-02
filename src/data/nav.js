@@ -44,6 +44,43 @@ export const SCORE_SETUP = {
   },
 };
 
+// 分享比分／戰績成圖片（IG 限動、貼文）。照片只在手機上畫，不上傳。{n} 換成數字。
+export const SCORE_SHARE = {
+  open: '分享比分',
+  openStats: '分享今天戰績',
+  title: '分享成圖片',
+  tabs: { image: '圖片', sticker: '貼紙' },
+  formats: { story: '限動 9:16', post: '貼文 4:5' },
+  addPhoto: '加照片',
+  changePhoto: '換照片',
+  removePhoto: '拿掉照片',
+  share: '分享',
+  save: '存圖',
+  copySticker: '複製貼紙',
+  saveSticker: '存貼紙',
+  close: '關閉',
+  hint: '按「分享」選 Instagram，就能發限動或貼文。照片只用在這支手機上，不會上傳。',
+  stickerHint: '複製後到 IG 限動，在照片上長按選「貼上」，貼紙可以拖、縮放、轉。貼不上的話，改按「存貼紙」，再從相簿加進限動。',
+  saved: '圖片存好了',
+  copied: '貼紙複製好了，到 IG 限動貼上',
+  copyFailed: '這裡不能複製圖片，改按「存貼紙」。',
+  photoFailed: '這張照片讀不出來，換一張試試。',
+  preview: '分享圖片預覽',
+  brand: 'picobo.',
+  brandZh: '痞克柏',
+  sport: 'PICKLEBALL',
+  statsTitle: '今天戰績',
+  played: '打',
+  won: '贏',
+  rest: '…其餘 {n} 人',
+  people: '{n} 人',
+  thanks: '一起打球的大家，謝謝！',
+  play: { doubles: '雙打', singles: '單打' },
+  scoring: { sideout: '側出計分', rally: '每球得分', fun: '快打' },
+  target: '打到 {n} 分',
+  file: 'picobo',
+};
+
 // 分享目前這一頁。url 是正式網址，在 artifact 裡分享出去的也是這個網址。
 export const SHARE = {
   url: 'https://picobo.net/',

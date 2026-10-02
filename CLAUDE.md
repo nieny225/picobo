@@ -59,6 +59,7 @@ src/tournament.js       pure Pico Bowl logic: pools, court queue, standings, pla
 src/handoff.js          pack / unpack a tool's state into a hand-over link (#score?s=…)
 src/signup.js           pure 報名訊息 text: 9/5 (Sat) 5-7pm, 📍 place, short map link, numbered list;
                         parseSignup reads a pasted list back into sessions of names (抽籤 uses it)
+src/sharecard.js        pure share-image content: a finished game's score card, the 抽籤 戰績 ranking
 src/meetup.js           pure 揪團卡 logic: check the form, chat summary line, .ics, map / LINE / WhatsApp links
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes
@@ -69,6 +70,7 @@ src/ui/draw.js          draw + rotation view
 src/ui/share.js         share button: system share sheet, else copy link (picobo.net URL)
 src/ui/handoff.js       share-state button + explainer sheet: picobo.net/#<tool>?s=<state>; app.js loads it
 src/ui/fullscreen.js    full screen for one view at a time (scoreboard, draw): real API or in-page fallback
+src/ui/sharecard.js     share as picture: canvas card (B1 score / 戰績), own photo, IG sticker; share sheet or save
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
 src/ui/install.js       top-bar install button (prompt or steps), an invite/share icon once installed; registers the service worker

@@ -1,7 +1,8 @@
 import { renderCourt } from '../court.js';
 import { MODES, createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other, gamePoint } from '../scoring.js';
 import { coinFlip } from '../draw.js';
-import { FILTER, SCORE_SETUP, DRAW_SCORE as D } from '../data/nav.js';
+import { FILTER, SCORE_SETUP, DRAW_SCORE as D, SCORE_SHARE } from '../data/nav.js';
+import { openShareSheet } from './sharecard.js';
 import { LANDSCAPE } from './scenes.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { shareButtonHtml, sharePage } from './share.js';
@@ -111,6 +112,9 @@ function modeLabel(state) {
 // the top-right); src/ui/fullscreen.js does the work.
 const fullscreenIcon = () => fullIcon(SCORE_SETUP);
 
+// The same three-dot share icon as the page share button.
+const SHARE_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
+
 function playHtml(state) {
   const A = state.teams.A.names.join('・'), B = state.teams.B.names.join('・');
   const teamName = id => (id === 'A' ? '甲隊' : '乙隊');
@@ -143,7 +147,7 @@ function playHtml(state) {
     <div class="toolbar">
       <button class="btn icon-btn" id="undo" aria-label="復原上一球"${state.history.length ? '' : ' disabled'}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span class="btn-text">復原上一球</span></button>
       ${state.finished && state.from ? `<button class="btn btn-primary" id="to-draw">${esc(D.back.replace('{names}', state.teams[state.winner].names.join('・')))}</button>` : ''}
-      ${state.finished ? `<button class="btn${state.from ? '' : ' btn-primary'}" id="again">再來一局</button>` : ''}
+      ${state.finished ? `<button class="btn${state.from ? '' : ' btn-primary'}" id="again">再來一局</button><button class="btn icon-btn" id="share-score">${SHARE_ICON}<span class="btn-text">${esc(SCORE_SHARE.open)}</span></button>` : ''}
       <button class="btn btn-ghost icon-btn" id="reset" aria-label="重新設定"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg><span class="btn-text">重新設定</span></button>
     </div>
   </div>`;
@@ -265,6 +269,8 @@ export function mountScoreboard(root, { toDraw } = {}) {
     root.querySelector('#win-A').addEventListener('click', () => update(pointWon(state, 'A')));
     root.querySelector('#win-B').addEventListener('click', () => update(pointWon(state, 'B')));
     root.querySelector('#undo').addEventListener('click', () => update(undo(state)));
+    // A finished game as a picture for IG and friends (src/ui/sharecard.js).
+    root.querySelector('#share-score')?.addEventListener('click', () => openShareSheet('score', state));
     root.querySelector('#switched')?.addEventListener('click', () => update(markSidesSwitched(state)));
     root.querySelector('#again')?.addEventListener('click', () => {
       update(createMatch({

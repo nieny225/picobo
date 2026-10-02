@@ -2,7 +2,7 @@
 // Network first, so every visit online gets the latest files; the cache is the
 // fallback when the network is gone or too slow. Every file the page needs is
 // listed in FILES (tests/sw.test.js checks the list against src/ and styles/).
-const CACHE = 'picobo-v4';
+const CACHE = 'picobo-v5';
 const FILES = [
   './',
   'index.html',
@@ -19,6 +19,7 @@ const FILES = [
   'src/handoff.js',
   'src/meetup.js',
   'src/scoring.js',
+  'src/sharecard.js',
   'src/signup.js',
   'src/tournament.js',
   'src/data/event.js',
@@ -41,6 +42,7 @@ const FILES = [
   'src/ui/rules.js',
   'src/ui/scenes.js',
   'src/ui/scoreboard.js',
+  'src/ui/sharecard.js',
   'src/ui/share.js',
   'src/ui/signup.js',
   'src/ui/theme.js',

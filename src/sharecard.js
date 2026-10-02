@@ -1,0 +1,39 @@
+// What goes on a share image (src/ui/sharecard.js draws it): a finished
+// game's score, or the 抽籤 戰績 ranking. No DOM; words come in as `labels`
+// (src/data/nav.js SCORE_SHARE) and the date as "YYYY-MM-DD".
+import { dateText } from './signup.js';
+
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
+
+// A finished match from src/scoring.js: both teams' names, the scores, which
+// side won (0 = 甲, 1 = 乙) and one meta line, e.g.
+// "10/2 (Thu)・雙打・側出計分・打到 11 分".
+export function scoreCard(match, date, labels) {
+  if (!match?.teams?.A || !match?.teams?.B || !match.scores) throw new Error('sharecard: not a match');
+  const doubles = match.teams.A.names.length > 1;
+  const scoring = match.mode === 'fun' ? 'fun' : match.mode.split('-')[0];
+  if (!labels.scoring[scoring]) throw new Error(`sharecard: unknown mode ${match.mode}`);
+  const winner = match.finished ? (match.winner === 'A' ? 0 : 1) : null;
+  return {
+    teams: [match.teams.A.names.slice(), match.teams.B.names.slice()],
+    scores: [match.scores.A, match.scores.B],
+    winner,
+    meta: [dateText(date), labels.play[doubles ? 'doubles' : 'singles'], labels.scoring[scoring], fill(labels.target, { n: match.target })].join('・'),
+  };
+}
+
+// 抽籤 counts ({ name: { played, won } }) ranked like the 今天戰績 table
+// (most wins, then fewest games), the top `limit` rows and how many are left.
+export function statsCard(stats, date, labels, limit = 5) {
+  const ranked = Object.entries(stats ?? {})
+    .filter(([, r]) => r.played > 0)
+    .sort((a, b) => b[1].won - a[1].won || a[1].played - b[1].played);
+  if (ranked.length === 0) throw new Error('sharecard: no games yet');
+  const total = Object.keys(stats).length;
+  return {
+    title: labels.statsTitle,
+    meta: [dateText(date), fill(labels.people, { n: total })].join('・'),
+    rows: ranked.slice(0, limit).map(([name, r], i) => ({ rank: i + 1, name, played: r.played, won: r.won })),
+    rest: total - Math.min(limit, ranked.length) > 0 ? fill(labels.rest, { n: total - Math.min(limit, ranked.length) }) : '',
+  };
+}
