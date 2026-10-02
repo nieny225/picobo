@@ -245,6 +245,11 @@ The rules tab was one 16,800 px page on a phone. Now:
   bubble once (`picobo.filterHintSeen`). Switching on a rule that does not apply to the new combination
   jumps via `COUNTERPARTS` in `src/data/rules.js`, else back to the index,
   with a toast either way.
+- Rules with singles fields (singlesScenes / singlesSummary / singlesDetail)
+  are split into two pages in `src/ui/rules.js`: doubles `#rules/<id>`,
+  singles `#rules/<id>-singles`. Switching play jumps to the twin silently.
+  Opening a rule outside the current filter (a shared link) switches the
+  bar to match. Old `#rules/singles` lands on `scoring-singles`.
 - Fun formats: 11 in five groups (see CLAUDE.md). Added 2026-10-02 at the
   user's pick: 接力團體賽, 繞場, 蘇格蘭雙打, 截擊大戰, 第三拍挑戰. Not added:
   上下河 (Up and Down the River), 雙球大亂鬥, 非慣用手, 精彩球加分. Off-court

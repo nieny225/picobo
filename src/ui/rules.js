@@ -27,17 +27,28 @@ function compareTable(c) {
   </table></div></article>`;
 }
 
+// A rule for both play styles with its own singles text or scenes gets two
+// pages: doubles at #rules/<id>, singles at #rules/<id>-singles.
+const hasSingles = item => Boolean(item.singlesScenes || item.singlesSummary || item.singlesDetail);
+const SINGLES = '-singles';
+const ruleVersions = item => (hasSingles(item)
+  ? [{ ...item, play: 'doubles' }, {
+    ...item, id: item.id + SINGLES, play: 'singles',
+    summary: item.singlesSummary ?? item.summary, detail: item.singlesDetail ?? item.detail, scenes: item.singlesScenes ?? item.scenes,
+  }]
+  : [item]);
+
 // Every page reachable from the index, in reading order: the rules of each
 // section, then the pages that are not one rule (compare, FAQ, glossary).
 const PAGES = [
-  ...SECTIONS.flatMap(sec => sec.items.map(item => ({ id: item.id, kind: 'rule', sec, item, title: item.title, en: item.en, summary: item.summary, rule: item.rule }))),
+  ...SECTIONS.flatMap(sec => sec.items.flatMap(ruleVersions).map(item => ({ id: item.id, kind: 'rule', sec, item, title: item.title, en: item.en, summary: item.summary, rule: item.rule }))),
   { id: 'compare', kind: 'compare', title: COMPARE.title, en: COMPARE.en, summary: EXTRA_PAGES.compare.summary },
   { id: 'faq', kind: 'faq', title: EXTRA_PAGES.faq.title, en: EXTRA_PAGES.faq.en, summary: EXTRA_PAGES.faq.summary },
   { id: 'glossary', kind: 'glossary', title: EXTRA_PAGES.glossary.title, en: EXTRA_PAGES.glossary.en, summary: EXTRA_PAGES.glossary.summary },
 ];
 
 // Pages that were removed or merged: old links land on their replacement.
-const MOVED = { singles: 'scoring' };
+const MOVED = { singles: 'scoring-singles' };
 
 // Which combination of play (doubles / singles) and scoring (side-out /
 // rally) the reader cares about. Remembered per device.
@@ -66,7 +77,7 @@ const pageShown = (p, f) => p.kind !== 'rule' || (sectionShown(p.sec, f) && (!p.
 const FORMAT_LINKS = FORMATS.map(f => ({ href: `#formats/${f.id}`, id: `formats/${f.id}`, title: f.name, en: f.en, summary: f.tagline }));
 
 const link = (p, f) => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}">
-  <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(f ? textFor(p, f).summary : p.summary)}</span></span>
+  <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span>
   ${p.rule ? `<span class="rule-no">${esc(p.rule)}</span>` : ''}</a>`;
 
 // The two switches in the sticky bar: 雙打｜單打 and 側出計分｜每球得分 (English in small type).
@@ -94,29 +105,15 @@ function indexHtml(f) {
     </section>`;
 }
 
-// A rule for both play styles with its own singles text or scenes.
-const hasSingles = item => Boolean(item.singlesScenes || item.singlesSummary || item.singlesDetail);
-
-// "適用：雙打｜側出計分" under a rule's title. A rule with a singles version
-// names the version on screen; the bar switches to the other one.
-function appliesHtml(p, f) {
-  const play = p.item.play ?? (hasSingles(p.item) ? f.play : null);
-  const playHtml = play ? optionHtml(optionById('play', play)) : esc(FILTER.both.play);
+// "適用：雙打｜側出計分" under a rule's title.
+function appliesHtml(p) {
+  const playHtml = p.item.play ? optionHtml(optionById('play', p.item.play)) : esc(FILTER.both.play);
   const scoring = p.sec.scoring ? optionHtml(optionById('scoring', p.sec.scoring)) : esc(FILTER.both.scoring);
   return `<div class="format-meta applies"><span class="muted">${esc(FILTER.applies)}</span><span>${playHtml}</span><span>${scoring}</span></div>`;
 }
 
-// Rules that apply to both play styles carry a two-player version of their
-// scenes; show it when the reader picked singles.
-const scenesFor = (p, f) => (f.play === 'singles' && p.item.singlesScenes) || p.item.scenes;
-// The same for the rule's text: singles wording when the reader picked singles.
-const textFor = (p, f) => {
-  if (p.kind !== 'rule' || f.play !== 'singles') return { summary: p.summary, detail: p.item?.detail };
-  return { summary: p.item.singlesSummary ?? p.summary, detail: p.item.singlesDetail ?? p.item.detail };
-};
-
 function pageBody(p, f) {
-  if (p.kind === 'rule') return ruleCard({ ...p.item, ...textFor(p, f), scenes: scenesFor(p, f) }, appliesHtml(p, f));
+  if (p.kind === 'rule') return ruleCard(p.item, appliesHtml(p));
   if (p.kind === 'compare') return compareTable(COMPARE);
   if (p.kind === 'faq') {
     return `<div class="section-head"><h2>${esc(p.title)}</h2><p class="sub">${esc(p.en)}</p></div>
@@ -249,7 +246,7 @@ export function mountRules(root) {
     }
     if (p?.kind === 'rule') {
       const wrap = pageEl.querySelector('.scene-wrap');
-      if (wrap) wireScene(wrap, scenesFor(p, filter));
+      if (wrap) wireScene(wrap, p.item.scenes);
     }
   };
   // Switching play or scoring, from the bar or a rule page. A rule that does
@@ -262,6 +259,9 @@ export function mountRules(root) {
     saveFilter(filter);
     const p = PAGES.find(q => q.id === current);
     if (p && !pageShown(p, filter)) {
+      // The same rule's other play version first, silently; else its counterpart.
+      const twin = PAGES.find(q => q.id === (p.id.endsWith(SINGLES) ? p.id.slice(0, -SINGLES.length) : p.id + SINGLES));
+      if (twin && pageShown(twin, filter)) { location.hash = `#rules/${twin.id}`; return; }
       const to = COUNTERPARTS[p.id]?.[`${filter.play}:${filter.scoring}`];
       const combo = `${optionById('play', filter.play).label}・${optionById('scoring', filter.scoring).label}`;
       if (to) toast(esc(FILTER.jumped.replace('{title}', PAGES.find(q => q.id === to).title)));
@@ -290,6 +290,13 @@ export function mountRules(root) {
       if (drawer.open) drawer.close();
       if (key === current) return;
       current = key;
+      // A link to a rule outside the current filter (a friend's shared link)
+      // switches the bar to that rule's play and scoring.
+      const p = PAGES.find(q => q.id === key);
+      if (p?.kind === 'rule' && !pageShown(p, filter)) {
+        filter = { play: p.item.play ?? filter.play, scoring: p.sec.scoring ?? filter.scoring };
+        saveFilter(filter);
+      }
       render();
     },
   };
