@@ -20,7 +20,7 @@ export const HOME = {
     invite: { aria: '邀請朋友一起用痞克柏', title: 'Picobo 痞克柏', text: '痞克柏：匹克球規則圖解、計分板、抽籤輪轉，打球一起用。' },
   },
   entries: [
-    { route: 'rules', title: '學規則', en: 'Rules', desc: '看球場圖一步一步弄懂發球、廚房、計分，還有趣味玩法。' },
+    { route: 'rules', title: '學規則', en: 'Rules', desc: '圖解一步步搞懂規則' },
     { route: 'score', title: '計分板', en: 'Scoreboard', desc: '誰發球、站哪邊，按一下就算好。' },
     { route: 'draw', title: '抽籤輪轉', en: 'Draw', desc: '分組、輪轉賽、國王球場，人多也不亂。' },
     { route: 'meetup', title: '揪團', en: 'Find Players', desc: '填時間地點缺幾人，一張卡丟到群組。' },
