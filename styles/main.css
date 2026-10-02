@@ -237,7 +237,7 @@ button { cursor: pointer; }
 /* Phones, under 規則 and 抽籤: no top bar at all; the bottom bar handles
    navigation and, under 規則, the 目錄 bar sits at the top. */
 @media (max-width: 767px) {
-  html[data-tab="rules"] .topbar, html[data-tab="draw"] .topbar { display: none; }
+  html[data-tab="rules"] .topbar, html[data-tab="draw"] .topbar, html[data-tab="score"] .topbar { display: none; }
   html[data-tab="rules"] .rules-bar { top: env(safe-area-inset-top, 0px); }
 }
 @media (prefers-reduced-motion: reduce) { .rules-bar { transition: none; } }
@@ -477,10 +477,9 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 @media (max-width: 767px) { .board .court-wrap { max-width: none; width: calc(100% + 16px); margin: 0 -8px; } }
 /* Desktop keeps the upright court under the buttons so they stay on screen. */
 @media (min-width: 768px) { .board #board-court { order: 1; } }
-/* Phones, during a game: the top bar and the page title fold away so the
-   board gets the screen. The bottom bar stays for navigation. */
+/* Phones, during a game: the page title folds away too (the top bar is
+   already hidden under 計分) so the board gets the screen. */
 @media (max-width: 767px) {
-  html:has(#view-score.score-playing:not([hidden])) .topbar { display: none; }
   #view-score.score-playing .section-head { display: none; }
 }
 /* Short phones: keep the score buttons above the bottom bar. */
