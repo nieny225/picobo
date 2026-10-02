@@ -100,7 +100,11 @@ export const VENUES_PAGE = {
   regionLabel: '區域',
   regions: [{ id: '', label: '全部' }, { id: '中區', label: '中' }, { id: '東區', label: '東' }, { id: '西區', label: '西' }, { id: '北區', label: '北' }, { id: '東北區', label: '東北' }],
   kindLabel: '類型',
-  kinds: [{ id: '', label: '全部' }, { id: 'dry', label: '不怕下雨' }, { id: 'free', label: '免費' }],
+  kinds: [{ id: '', label: '全部' }, { id: 'fav', label: '♥ 最愛' }, { id: 'dry', label: '不怕下雨' }, { id: 'free', label: '免費' }],
+  // 場地卡右上角的愛心：存成最愛（只存在這支手機）。
+  fav: '加到最愛',
+  unfav: '從最愛移除',
+  noFav: '還沒有最愛的場地。在場地卡右上角按愛心，就會出現在這裡。',
   count: '{n} 個場地',
   none: '沒有符合的場地，換個條件試試。',
   // 名錄最下面：不在名單上的場地（公寓球場、朋友的俱樂部）也能發報名訊息。

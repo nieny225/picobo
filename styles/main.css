@@ -29,6 +29,7 @@
   --team-fg: #111111;
   --warn-bg: #e4ff3a;
   --warn-fg: #111111;
+  --fav: #e0245e;
   --bw: 3px;
   --shadow: 4px 4px 0 var(--shadow-ink);
   --shadow-lg: 6px 6px 0 var(--shadow-ink);
@@ -548,6 +549,10 @@ footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top
 .chrome-hidden .venue-bar { top: 0; }
 .venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
 .venue-list { display: grid; gap: 14px; }
+.venue-head { flex-wrap: nowrap; align-items: flex-start; }
+.fav-btn { flex: none; width: 44px; height: 44px; margin: -8px -8px 0 0; display: grid; place-items: center; border: 0; background: none; color: var(--muted); }
+.fav-btn[aria-pressed="true"] { color: var(--fav); }
+.fav-btn svg { width: 24px; height: 24px; }
 .venue .event-facts div { grid-template-columns: 5em 1fr; }
 .name-btn {
   display: block; width: 100%; min-height: 44px; padding: 4px 8px; text-align: left; font: inherit; font-weight: 700; color: var(--fg);

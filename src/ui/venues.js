@@ -19,7 +19,7 @@ function bookingHref(b) {
 function venueCard(v) {
   const link = (href, label, cls = 'btn') => `<a class="${cls}" href="${esc(href)}"${href.startsWith('#') || href.startsWith('tel:') ? '' : ' target="_blank" rel="noopener"'}>${esc(label)}</a>`;
   return `<article class="card venue" id="venue-${esc(v.id)}">
-    <h3>${esc(v.name)}</h3>
+    <div class="card-head venue-head"><h3>${esc(v.name)}</h3><button type="button" class="fav-btn" data-fav="${esc(v.id)}" aria-pressed="${favs.has(v.id)}" aria-label="${esc(favs.has(v.id) ? V.unfav : V.fav)}">${heart(favs.has(v.id))}</button></div>
     <div class="format-meta"><span>${esc(V.settings[v.setting] ?? '')}</span>${v.courts ? `<span>${esc(fill(V.courts, { n: v.courts }))}</span>` : ''}</div>
     ${v.address ? `<p>${esc(v.address)}</p>` : ''}
     <dl class="event-facts">
@@ -35,6 +35,17 @@ function venueCard(v) {
     </div>
   </article>`;
 }
+
+// Favourite courts, kept on this phone only.
+const FAV_KEY = 'picobo.favVenues';
+function loadFavs() {
+  try { const f = JSON.parse(localStorage.getItem(FAV_KEY)); return new Set(Array.isArray(f) ? f : []); } catch { return new Set(); }
+}
+function saveFavs(favs) {
+  try { localStorage.setItem(FAV_KEY, JSON.stringify([...favs])); } catch { /* storage unavailable: this visit only */ }
+}
+const favs = loadFavs();
+const heart = on => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>`;
 
 // Filters: a search box plus region and kind switches, remembered per device.
 const FILTER_KEY = 'picobo.venueFilter';
@@ -52,6 +63,7 @@ const KIND_TEST = {
   '': () => true,
   dry: v => ['indoor', 'sheltered', 'both'].includes(v.setting),
   free: v => v.fee === V.free,
+  fav: v => favs.has(v.id),
 };
 const matches = (v, f) => (!f.region || v.city === f.region) && KIND_TEST[f.kind](v)
   && (!f.q || `${v.name} ${v.address ?? ''}`.toLowerCase().includes(f.q.toLowerCase()));
@@ -70,7 +82,7 @@ function listHtml(f) {
   const shown = VENUES.filter(v => matches(v, f));
   // Courts not in the list (a condo court, a friend's club) still get a sign-up message.
   const unlisted = `<p class="muted small venue-unlisted">${esc(V.unlisted)} <a href="#signup">${esc(SIGNUP.fromVenue)}</a></p>`;
-  if (shown.length === 0) return `<article class="card"><p>${esc(V.none)}</p></article>${unlisted}`;
+  if (shown.length === 0) return `<article class="card"><p>${esc(f.kind === 'fav' && favs.size === 0 && !f.q ? V.noFav : V.none)}</p></article>${unlisted}`;
   const cities = [...new Set(shown.map(v => v.city))];
   return `<p class="muted small">${esc(fill(V.count, { n: shown.length }))}</p>
     ${cities.map(c => `<section class="rule-group"><h3>${esc(c)}</h3>${shown.filter(v => v.city === c).map(venueCard).join('')}</section>`).join('')}
@@ -88,6 +100,13 @@ export function mountVenues(root) {
   render();
   root.querySelector('.share-btn').addEventListener('click', () => sharePage(V.title));
   root.querySelector('#venue-q').addEventListener('input', e => { f.q = e.target.value.trim(); render(); });
+  list.addEventListener('click', e => {
+    const b = e.target.closest('[data-fav]');
+    if (!b) return;
+    if (favs.has(b.dataset.fav)) favs.delete(b.dataset.fav); else favs.add(b.dataset.fav);
+    saveFavs(favs);
+    render();
+  });
   root.querySelector('.venue-bar').addEventListener('click', e => {
     const b = e.target.closest('[data-vf]');
     if (!b) return;
