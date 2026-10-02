@@ -4,6 +4,11 @@
 
 const P = (team, side, pos, label, extra = {}) => ({ team, side, pos, label, ...extra });
 const wait = (team, i, label) => ({ team, at: [262, 80 + i * 40], label, dim: true });
+// 繞場的兩排：各自屬於球場的一端，球場橫放時也跟著留在自己那一端。
+const queueFar = (team, i, label) => ({ team, at: [262, 80 + i * 40], label, dim: true, keepSide: true });
+const queueNear = (team, i, label) => ({ team, at: [262, 440 - i * 40], label, dim: true, keepSide: true });
+// 出局的人：畫在球場左側場外。
+const out = label => ({ team: 'A', at: [18, 260], label, dim: true });
 const serve = { depth: 'behind', serving: true };
 const atLine = { depth: 'kitchenLine' };
 export const FORMATS = [
@@ -128,5 +133,110 @@ export const FORMATS = [
       { caption: '每球得分，誰贏這球誰發下一球。先到 7 分就結束，不用贏 2 分。', players: [P('A', 'near', 'right', '甲1', serve), P('A', 'near', 'left', '甲2'), P('B', 'far', 'right', '乙1'), P('B', 'far', 'left', '乙2')], ball: { path: ['near:right:behind', 'far:right:mid'], bounces: [1] } },
     ],
     tip: '計分板選「快打」模式，分數設 7、贏 1 分就好。',
+  },
+  {
+    id: 'relay',
+    name: '接力團體賽',
+    en: 'Relay',
+    group: '團體類',
+    players: '8 到 16 人、分兩隊',
+    tagline: '兩隊輪流派兩個人上場，一起打一場到 21 分。',
+    rules: [
+      '分成兩隊，每隊 4 到 8 人，先排好上場的兩人一組順序。',
+      '兩隊各派一組上場，打一場每球得分、到 21 分的長局。',
+      '兩隊比分加起來到 4 的倍數（4、8、12…），兩隊都換下一組上場，比分照算。',
+      '輪到最後一組之後，再從第一組開始。先到 21 分的隊伍贏。',
+    ],
+    scoring: '每球得分打到 21 分，要贏 2 分（時間不夠就 21 分直接結束）。',
+    scenes: [
+      { caption: '兩隊各 4 人，先派一組上場，其他人在場邊等。', players: [P('A', 'near', 'right', '甲1', serve), P('A', 'near', 'left', '甲2'), P('B', 'far', 'right', '乙1'), P('B', 'far', 'left', '乙2'), wait('A', 0, '甲3'), wait('A', 1, '甲4'), wait('B', 2, '乙3'), wait('B', 3, '乙4')] },
+      { caption: '比分 3:1，加起來 4 分，兩隊都換下一組上場。比分接著算，不歸零。', players: [P('A', 'near', 'right', '甲3', serve), P('A', 'near', 'left', '甲4'), P('B', 'far', 'right', '乙3'), P('B', 'far', 'left', '乙4'), wait('A', 0, '甲1'), wait('A', 1, '甲2'), wait('B', 2, '乙1'), wait('B', 3, '乙2')] },
+      { caption: '輪完一圈再從第一組開始。先到 21 分的隊伍贏，場邊的人負責加油。', players: [P('A', 'near', 'right', '甲1'), P('A', 'near', 'left', '甲2'), P('B', 'far', 'right', '乙1', serve), P('B', 'far', 'left', '乙2'), wait('A', 0, '甲3'), wait('A', 1, '甲4'), wait('B', 2, '乙3'), wait('B', 3, '乙4')] },
+    ],
+    tip: '計分板選每球得分、打到 21 分；看大比分加起來是不是 4 的倍數就知道要不要換人。',
+  },
+  {
+    id: 'around',
+    name: '繞場',
+    en: 'Around the World',
+    group: '團體類',
+    players: '6 人以上，越多越熱鬧',
+    tagline: '每人打一拍就跑到對面排隊，漏接就出局。',
+    rules: [
+      '大家分成兩排，一邊一排，站在底線後面。',
+      '第一個人發球，打完馬上跑到對面那一排的最後面。',
+      '對面排最前面的人把球打回來，打完一樣跑到另一邊排隊。每個人每次只打一拍。',
+      '漏接、出界或掛網的人出局。剩兩個人時，打一分定勝負。',
+    ],
+    scoring: '不計分，最後留下來的人贏。',
+    scenes: [
+      { caption: '分成兩排，一邊一排。甲先發球，打完就跑到對面那排的最後面。', players: [P('A', 'near', 'right', '甲', serve), P('B', 'far', 'right', '乙'), queueFar('B', 0, '丙'), queueFar('B', 1, '丁'), queueNear('A', 0, '戊'), queueNear('A', 1, '己')], ball: { path: ['near:right:behind', 'far:right:mid'], bounces: [1] } },
+      { caption: '對面的乙把球打回來，打完也跑到另一邊。下一球由戊接，每個人只打一拍。', players: [P('A', 'near', 'right', '戊'), P('B', 'far', 'right', '乙'), queueFar('B', 0, '丙'), queueFar('B', 1, '丁'), queueFar('B', 2, '甲'), queueNear('A', 0, '己')], ball: { path: ['far:right:mid', 'near:right:mid'], bounces: [1] } },
+      { caption: '漏接、出界或掛網就出局，到場邊加油。剩兩個人時打一分定勝負。', players: [P('A', 'near', 'right', '己'), P('B', 'far', 'right', '丙'), queueFar('B', 0, '丁'), queueNear('A', 0, '乙'), out('戊')], ball: { path: ['far:right:mid', 'near:left:behind'] } },
+    ],
+    tip: '人多時可以每人有三條命，出局三次才淘汰，大家打得比較久。',
+  },
+  {
+    id: 'scotch',
+    name: '蘇格蘭雙打',
+    en: 'Scotch Doubles',
+    group: '挑戰類',
+    players: '4 人',
+    tagline: '同一隊兩個人要輪流打，同一個人不能連打兩拍。',
+    rules: [
+      '照一般雙打的規則打，只多一條：同一隊兩個人一定要輪流擊球。',
+      '發球也算一拍，所以第三拍一定是發球員的搭檔打。',
+      '接發球方也一樣：接發球的人打完，下一拍換他的搭檔。',
+      '同一個人連打兩拍，就輸這一球。',
+    ],
+    scoring: '照平常的計分，側出或每球得分都可以。',
+    scenes: [
+      { caption: '甲1 發球，乙1 接發球。', players: [P('A', 'near', 'right', '甲1', serve), P('A', 'near', 'left', '甲2'), P('B', 'far', 'right', '乙1'), P('B', 'far', 'left', '乙2')], ball: { path: ['near:right:behind', 'far:right:mid', 'near:left:mid', 'far:left:mid'], bounces: [1, 2], step: 1 } },
+      { caption: '球回到甲隊：甲1 剛發過球，這一拍一定要甲2 打。', players: [P('A', 'near', 'right', '甲1'), P('A', 'near', 'left', '甲2'), P('B', 'far', 'right', '乙1'), P('B', 'far', 'left', '乙2')], ball: { path: ['near:right:behind', 'far:right:mid', 'near:left:mid', 'far:left:mid'], bounces: [1, 2], step: 2 } },
+      { caption: '換到乙隊：乙1 剛接過發球，這一拍換乙2 打。打錯人就輸這一球。', players: [P('A', 'near', 'right', '甲1'), P('A', 'near', 'left', '甲2'), P('B', 'far', 'right', '乙1'), P('B', 'far', 'left', '乙2')], ball: { path: ['near:right:behind', 'far:right:mid', 'near:left:mid', 'far:left:mid'], bounces: [1, 2], step: 3 } },
+    ],
+    tip: '一開始先慢慢打。習慣之後會發現，誰下一拍、要站哪裡，比打得多用力重要。',
+  },
+  {
+    id: 'volley',
+    name: '截擊大戰',
+    en: 'Volley Wars',
+    group: '挑戰類',
+    players: '2 或 4 人',
+    tagline: '開球之後球都不能落地，全部在空中打。',
+    rules: [
+      '大家站在廚房線後面一步，用輕輕送過網的球開球。',
+      '之後球都不能落地，每一拍都要在空中直接打回去。',
+      '球落地、掛網或出界的一方輸這一球。',
+      '廚房規則照常：截擊時腳不能碰到廚房或廚房線。',
+    ],
+    scoring: '每球得分，打到 11 分。',
+    scenes: [
+      { caption: '四個人站在廚房線後面一步，用輕送球開球。', players: [P('A', 'near', 'right', '甲1', atLine), P('A', 'near', 'left', '甲2', atLine), P('B', 'far', 'right', '乙1', atLine), P('B', 'far', 'left', '乙2', atLine)], ball: { path: ['near:right:kitchenLine', 'far:left:kitchenLine', 'near:left:kitchenLine', 'far:right:kitchen'], step: 1 } },
+      { caption: '之後球都不能落地，全部在空中打回去。', players: [P('A', 'near', 'right', '甲1', atLine), P('A', 'near', 'left', '甲2', atLine), P('B', 'far', 'right', '乙1', atLine), P('B', 'far', 'left', '乙2', atLine)], ball: { path: ['near:right:kitchenLine', 'far:left:kitchenLine', 'near:left:kitchenLine', 'far:right:kitchen'], step: 2 } },
+      { caption: '球落地、掛網或出界就輸這一球。截擊時腳一樣不能踩進廚房。', highlight: ['nvz'], players: [P('A', 'near', 'right', '甲1', atLine), P('A', 'near', 'left', '甲2', atLine), P('B', 'far', 'right', '乙1', atLine), P('B', 'far', 'left', '乙2', atLine)], ball: { path: ['near:right:kitchenLine', 'far:left:kitchenLine', 'near:left:kitchenLine', 'far:right:kitchen'], bounces: [3], step: 3 } },
+    ],
+    tip: '練手速和反應最有效。站太近容易踩進廚房，站在廚房線後一步剛好。',
+  },
+  {
+    id: 'thirdshot',
+    name: '第三拍挑戰',
+    en: 'Third-Shot Challenge',
+    group: '挑戰類',
+    players: '4 人',
+    tagline: '第三拍吊進廚房、又贏下那一球，算 2 分。',
+    rules: [
+      '照一般雙打打。',
+      '發球方的第三拍如果落在對面廚房裡，而且發球方最後贏下這一球，這一球算 2 分。',
+      '第三拍沒有落進廚房，就照平常計分。',
+      '接發球方得分照常，不加分。',
+    ],
+    scoring: '用平常的計分，吊球成功又贏球的那一球算 2 分，建議打到 15 分。',
+    scenes: [
+      { caption: '甲1 發球，乙1 回一個深球，乙隊往前上網。', players: [P('A', 'near', 'right', '甲1', serve), P('A', 'near', 'left', '甲2'), P('B', 'far', 'right', '乙1', { depth: 'mid' }), P('B', 'far', 'left', '乙2', { depth: 'mid' })], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchen'], bounces: [1, 2], step: 2 } },
+      { caption: '第三拍：甲1 把球輕輕吊進對面廚房，乙隊只能往上撈。', highlight: ['nvz:far'], players: [P('A', 'near', 'right', '甲1'), P('A', 'near', 'left', '甲2'), P('B', 'far', 'right', '乙1', atLine), P('B', 'far', 'left', '乙2', atLine)], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchen'], bounces: [1, 2, 3], step: 3 } },
+      { caption: '甲隊趁機上網，最後贏下這一球：這一球算 2 分。', highlight: ['nvz:far'], players: [P('A', 'near', 'right', '甲1', atLine), P('A', 'near', 'left', '甲2', atLine), P('B', 'far', 'right', '乙1', atLine), P('B', 'far', 'left', '乙2', atLine)], ball: { path: ['near:right:behind', 'far:right:mid', 'near:right:mid', 'far:left:kitchen'], bounces: [1, 2, 3], step: 3 } },
+    ],
+    tip: '鼓勵大家練第三拍吊球（third shot drop），不要只會抽球。比分跳得比較快，可以打到 15 分。',
   },
 ].map(f => ({ ...f, official: false }));

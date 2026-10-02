@@ -125,7 +125,9 @@ function players(list, land, rotated) {
     let [x, y] = p.at ? (SPOTS[p.at] ?? p.at) : SPOTS[`${p.side}:${p.pos}:${p.depth ?? 'baseline'}`];
     if (!x && x !== 0) throw new Error(`court: cannot place player ${p.label}`);
     const off = Array.isArray(p.at);
-    if (land && off && !rotated) [x, y] = [y, VIEW.w - 10];
+    // keepSide: the queue belongs to one end of the court, so it turns with the
+    // court (far end on the right). Otherwise one queue runs left to right.
+    if (land && off && !rotated) [x, y] = p.keepSide ? [VIEW.h - y, VIEW.w - 10] : [y, VIEW.w - 10];
     const label = esc(String(p.label ?? '').slice(0, 2));
     const cls = `player team-${p.team ?? 'A'}${p.serving ? ' serving' : ''}${p.dim ? ' dim' : ''}${off ? ' off' : ''}`;
     // Lying down the court is drawn smaller, so players and labels grow.

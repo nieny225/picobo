@@ -50,7 +50,7 @@ code follows it except where noted under "Decisions" below.
 | Repo scaffold, `CLAUDE.md` | done |
 | `src/court.js` shared SVG court | done |
 | Rules content (`src/data/rules.js`, 31 scenes) | done, zh-TW copy reviewed once |
-| Fun formats ×6, glossary ×16, misconceptions ×7 | done |
+| Fun formats ×11, glossary ×16, misconceptions ×8 | done |
 | Tests (`node --test`) | 38, all green: scoring + oracle, draw + open play, tournament, handoff, sw precache list |
 | Rules view with step carousel, scoreboard view, draw view | done |
 | Layout check at 390px and 1280px, light and dark | done, no overflow |
@@ -237,6 +237,11 @@ The rules tab was one 16,800 px page on a phone. Now:
   rallies so undo still works. A link is a snapshot, not a live sync.
 - The top-bar install button turns into a share icon (invite friends to
   picobo.net) once the app runs installed or wherever install is not offered.
+- Fun formats: 11 in five groups (see CLAUDE.md). Added 2026-10-02 at the
+  user's pick: 接力團體賽, 繞場, 蘇格蘭雙打, 截擊大戰, 第三拍挑戰. Not added:
+  上下河 (Up and Down the River), 雙球大亂鬥, 非慣用手, 精彩球加分. Off-court
+  players with `keepSide: true` stay at their own end when the court lies down
+  (繞場's two lines); other queues run left to right under the court.
 - Installable web app: `manifest.webmanifest`, `icons/` (PNGs rendered from
   `icons/icon.svg` with Playwright: open the SVG at 192/512/180 px and
   screenshot), `sw.js` (network first with a 3 s timeout, cache fallback;

@@ -70,7 +70,8 @@ src/ui/install.js       top-bar install button (prompt or steps), an invite/shar
 src/ui/event.js         Pico Bowl tournament page + its home-page card
 src/ui/tournament.js    organizer screen at #picobowl/manage (local to one phone)
 src/data/rules.js       rule copy + court scene definitions
-src/data/formats.js     fun formats + their court scenes (國王球場, 輪轉賽, 3 人制, 半場單打, 廚房戰, 快打短局)
+src/data/formats.js     fun formats + their court scenes: 排隊類 (國王球場, 輪轉賽), 人數變化類 (3 人制, 半場單打),
+                        練習類 (廚房戰, 快打短局), 團體類 (接力團體賽, 繞場), 挑戰類 (蘇格蘭雙打, 截擊大戰, 第三拍挑戰)
 src/data/glossary.js    中英術語對照 + 常見誤解
 src/data/home.js        首頁 slogan 與入口文字
 src/data/nav.js         目錄、上一條／下一條、玩法頁的介面文字
