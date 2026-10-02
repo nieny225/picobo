@@ -550,6 +550,9 @@ footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top
 .venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
 .venue-list { display: grid; gap: 14px; }
 .venue-head { flex-wrap: nowrap; align-items: flex-start; }
+/* The address is the map link: dotted underline and a pin. */
+.venue-address { display: inline-flex; align-items: flex-start; gap: 6px; min-height: 44px; padding-top: 2px; color: var(--fg); text-decoration: underline dotted; text-underline-offset: 4px; }
+.venue-address svg { flex: none; width: 18px; height: 18px; margin-top: 4px; color: var(--accent); }
 .fav-btn { flex: none; width: 44px; height: 44px; margin: -8px -8px 0 0; display: grid; place-items: center; border: 0; background: none; color: var(--muted); }
 .fav-btn[aria-pressed="true"] { color: var(--fav); }
 .fav-btn svg { width: 24px; height: 24px; }

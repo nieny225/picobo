@@ -21,7 +21,7 @@ function venueCard(v) {
   return `<article class="card venue" id="venue-${esc(v.id)}">
     <div class="card-head venue-head"><h3>${esc(v.name)}</h3><button type="button" class="fav-btn" data-fav="${esc(v.id)}" aria-pressed="${favs.has(v.id)}" aria-label="${esc(favs.has(v.id) ? V.unfav : V.fav)}">${heart(favs.has(v.id))}</button></div>
     <div class="format-meta"><span>${esc(V.settings[v.setting] ?? '')}</span>${v.courts ? `<span>${esc(fill(V.courts, { n: v.courts }))}</span>` : ''}</div>
-    ${v.address ? `<p>${esc(v.address)}</p>` : ''}
+    ${v.address ? `<a class="venue-address" href="${esc(mapUrl({ place: v.name, address: v.address }))}" target="_blank" rel="noopener" aria-label="${esc(`${V.map}：${v.address}`)}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>${esc(v.address)}</span></a>` : ''}
     <dl class="event-facts">
       ${v.fee ? `<div><dt>${esc(V.fee)}</dt><dd>${esc(v.fee)}</dd></div>` : ''}
       ${v.hours ? `<div><dt>${esc(V.hours)}</dt><dd>${esc(v.hours)}</dd></div>` : ''}
@@ -29,7 +29,6 @@ function venueCard(v) {
     ${v.note ? `<p class="muted small">${esc(v.note)}</p>` : ''}
     <div class="meetup-actions">
       ${(v.booking ?? []).map(b => link(bookingHref(b), b.label || V.booking[b.type])).join('')}
-      ${link(mapUrl({ place: v.name, address: v.address }), V.map)}
       ${link(`#signup?venue=${encodeURIComponent(v.id)}`, SIGNUP.fromVenue, 'btn btn-primary')}
       ${MEETUP.open ? link(`#meetup?venue=${encodeURIComponent(v.id)}`, V.meetup, 'btn') : ''}
     </div>
