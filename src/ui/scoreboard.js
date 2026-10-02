@@ -81,11 +81,11 @@ function courtScene(state) {
   return { players, alt: '目前站位與發球者' };
 }
 
-// "雙打・Rally・打到 11 分": which mode this game is using.
+// "雙打・每球得分・打到 11 分": which mode this game is using.
 function modeLabel(state) {
   const scoring = state.mode === 'fun' ? SCORE_SETUP.fun : FILTER.scoring.options.find(o => state.mode.startsWith(o.id));
   const play = FILTER.play.options.find(o => o.id === (state.teams.A.names.length > 1 ? 'doubles' : 'singles'));
-  return SCORE_SETUP.playing.replace('{play}', play.label).replace('{scoring}', scoring.en ?? scoring.label).replace('{target}', state.target);
+  return SCORE_SETUP.playing.replace('{play}', play.label).replace('{scoring}', scoring.label).replace('{target}', state.target);
 }
 
 // Full screen sits as an icon in the board's top-right corner: four corners
