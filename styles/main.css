@@ -273,11 +273,12 @@ button { cursor: pointer; }
 .rules-where small, .rules-where b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rules-where small { color: var(--muted); font-size: 0.8rem; font-weight: 700; }
 .rules-where b { font-weight: 900; }
-/* Contents tab on the left edge, halfway down: a narrow ball-yellow tag with
-   vertical text. The button is 44px wide for the thumb; only the left 28px
-   are drawn. */
+/* Contents tab on the left edge, low down (out of the reading area, near
+   the thumb, just above the bottom bar on phones): a narrow ball-yellow tag
+   with vertical text. The button is 44px wide for the thumb; only the left
+   28px are drawn. */
 .drawer-tab {
-  position: fixed; z-index: 12; left: 0; top: 50%; transform: translateY(-50%);
+  position: fixed; z-index: 12; left: 0; bottom: 32px;
   width: 44px; height: 92px; padding: 0; border: 0; background: transparent; touch-action: none;
 }
 .drawer-tab span {
@@ -287,6 +288,7 @@ button { cursor: pointer; }
   box-shadow: 2px 2px 0 var(--shadow-ink); opacity: 0.92;
 }
 .drawer-tab:active span { transform: translateX(3px); }
+@media (max-width: 767px) { .drawer-tab { bottom: calc(112px + env(safe-area-inset-bottom, 0px)); } }
 #view-rules[hidden] .drawer-tab { display: none; }
 html.is-fullscreen .drawer-tab { display: none; }
 .drawer {

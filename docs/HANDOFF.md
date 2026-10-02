@@ -238,7 +238,7 @@ The rules tab was one 16,800 px page on a phone. Now:
 - The top-bar install button turns into a share icon (invite friends to
   picobo.net) once the app runs installed or wherever install is not offered.
 - Rules contents drawer opens from a small yellow tab on the left edge,
-  halfway down (`.drawer-tab`; tap it or drag it right). Not an edge swipe,
+  low on the left edge, just above the bottom bar (`.drawer-tab`; tap it or drag it right). Not an edge swipe,
   which is the phone's back gesture. The sticky rules bar now holds the
   雙打｜單打 and 側出計分｜每球得分 switches and share (the old location line
   and the filter block on the index are gone). First visit shows a hint
