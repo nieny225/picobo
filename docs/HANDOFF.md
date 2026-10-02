@@ -237,6 +237,11 @@ The rules tab was one 16,800 px page on a phone. Now:
   rallies so undo still works. A link is a snapshot, not a live sync.
 - The top-bar install button turns into a share icon (invite friends to
   picobo.net) once the app runs installed or wherever install is not offered.
+- Rules contents drawer opens from a small yellow tab on the left edge,
+  halfway down (`.drawer-tab`; tap it or drag it right). Not an edge swipe,
+  which is the phone's back gesture. The sticky rules bar keeps the location
+  and share. Proposed and waiting on the user: move the 雙打｜單打 and
+  Side-out｜Rally toggles into that bar (segmented, with a one-time hint).
 - Fun formats: 11 in five groups (see CLAUDE.md). Added 2026-10-02 at the
   user's pick: 接力團體賽, 繞場, 蘇格蘭雙打, 截擊大戰, 第三拍挑戰. Not added:
   上下河 (Up and Down the River), 雙球大亂鬥, 非慣用手, 精彩球加分. Off-court

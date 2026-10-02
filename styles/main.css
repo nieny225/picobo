@@ -222,7 +222,7 @@ button { cursor: pointer; }
 .pager-link.next .muted { color: var(--accent-fg); opacity: 0.85; }
 .pager-link:active { transform: translate(2px, 2px); box-shadow: none; }
 
-/* Rules drawer: a left sheet opened by a floating button in the thumb zone */
+/* Rules drawer: a left sheet opened by the tab on the left edge */
 .rules-page { display: grid; gap: 20px; min-width: 0; }
 .rules-page > * { min-width: 0; }
 .rules-bar {
@@ -259,12 +259,22 @@ button { cursor: pointer; }
 .rules-where small, .rules-where b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rules-where small { color: var(--muted); font-size: 0.8rem; font-weight: 700; }
 .rules-where b { font-weight: 900; }
-.drawer-open {
-  flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px;
-  border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--mark); color: var(--mark-fg); font-weight: 900;
+/* Contents tab on the left edge, halfway down: a narrow ball-yellow tag with
+   vertical text. The button is 44px wide for the thumb; only the left 28px
+   are drawn. */
+.drawer-tab {
+  position: fixed; z-index: 12; left: 0; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 92px; padding: 0; border: 0; background: transparent; touch-action: none;
 }
-.drawer-open::before { content: ""; width: 18px; height: 14px; background: linear-gradient(currentColor 0 0) top / 100% 3px no-repeat, linear-gradient(currentColor 0 0) center / 100% 3px no-repeat, linear-gradient(currentColor 0 0) bottom / 100% 3px no-repeat; }
-.drawer-open:active { transform: translate(2px, 2px); }
+.drawer-tab span {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 28px; display: grid; place-items: center;
+  writing-mode: vertical-rl; text-orientation: upright; letter-spacing: 0.2em; font-weight: 900; font-size: 0.85rem;
+  background: var(--mark); color: var(--mark-fg); border: 2px solid var(--ink); border-left: 0; border-radius: 0 10px 10px 0;
+  box-shadow: 2px 2px 0 var(--shadow-ink); opacity: 0.92;
+}
+.drawer-tab:active span { transform: translateX(3px); }
+#view-rules[hidden] .drawer-tab { display: none; }
+html.is-fullscreen .drawer-tab { display: none; }
 .drawer {
   position: fixed; inset: 0 auto 0 0; margin: 0; padding: 0; width: min(320px, 86vw); height: 100dvh; max-height: 100dvh; max-width: none;
   border: 0; border-right: var(--bw) solid var(--ink); background: var(--bg); color: var(--fg);

@@ -181,6 +181,17 @@ function swipeToClose(drawer) {
 
 // Renders the index (sub = '') or one page (sub = page id). An unknown id is
 // a bad link, not a bad state, so it falls back to the index.
+// The edge tab opens the drawer on a tap, or when dragged right past 24px.
+function dragToOpen(tab, open) {
+  let x0 = null;
+  tab.addEventListener('click', open);
+  tab.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  tab.addEventListener('touchmove', e => {
+    if (x0 !== null && e.touches[0].clientX - x0 > 24) { x0 = null; open(); }
+  }, { passive: true });
+  tab.addEventListener('touchend', () => { x0 = null; });
+}
+
 // Left drawer listing every page, reachable from any rules page. It is a
 // modal <dialog>, so focus, Esc and the backdrop come from the browser.
 function drawerNavHtml(f) {
@@ -203,9 +214,11 @@ function drawerHtml() {
 // Renders the index (sub = '') or one page (sub = page id). An unknown id is
 // a bad link, not a bad state, so it falls back to the index.
 export function mountRules(root) {
-  // A sticky bar on top of every rules page: the drawer button and where the
-  // reader is. It replaces a floating button that collided with content.
-  root.innerHTML = `<div class="rules-bar"><button class="drawer-open" type="button" aria-haspopup="dialog">${esc(DRAWER.open)}</button><span class="rules-where"></span><span class="bar-share"></span></div>
+  // A sticky bar on top of every rules page shows where the reader is. The
+  // contents drawer opens from a small tab on the left edge (tap it or drag
+  // it right); a swipe from the screen edge itself is the system back gesture.
+  root.innerHTML = `<div class="rules-bar"><span class="rules-where"></span><span class="bar-share"></span></div>
+    <button class="drawer-tab" type="button" aria-haspopup="dialog" aria-label="${esc(DRAWER.title)}"><span>${esc(DRAWER.open)}</span></button>
     <div class="rules-page"></div>${drawerHtml()}`;
   const whereEl = root.querySelector('.rules-where');
   const shareSlot = root.querySelector('.bar-share');
@@ -213,7 +226,7 @@ export function mountRules(root) {
   const pageEl = root.querySelector('.rules-page');
   const drawer = root.querySelector('.drawer');
   const drawerNav = drawer.querySelector('.drawer-body');
-  root.querySelector('.drawer-open').addEventListener('click', () => drawer.showModal());
+  dragToOpen(root.querySelector('.drawer-tab'), () => drawer.showModal());
   root.querySelector('.drawer-close').addEventListener('click', () => drawer.close());
   // A click on the backdrop lands on the dialog element itself.
   drawer.addEventListener('click', e => { if (e.target === drawer || e.target.closest('a')) drawer.close(); });
