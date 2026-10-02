@@ -85,7 +85,7 @@ export const DRAW_SWAP = {
   title: '{name} 要跟誰交換？',
   note: '兩個人互換位置，戰績不變。',
   queue: '排隊中',
-  court: '{court} 號場',
+  court: '{court} 號場上',
   cancel: '取消',
   none: '目前沒有可以交換的人。',
   done: '{a} 和 {b} 換好了',
