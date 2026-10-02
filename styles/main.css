@@ -254,14 +254,14 @@ button { cursor: pointer; }
 .filter-hint[hidden] { display: none; }
 .link-btn { min-height: 44px; padding: 0 10px; border: 2px solid var(--ink); border-radius: 999px; background: var(--surface); color: var(--fg); font-weight: 700; }
 .bar-share { flex: none; }
+/* Share is an icon only, the same square everywhere. */
 .share-btn {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; min-width: 44px; padding: 0 12px;
+  display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex: none; padding: 0;
   border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--surface); color: var(--fg); font-weight: 900;
 }
 .share-btn svg { width: 20px; height: 20px; }
 .rule-top .share-btn { margin-left: auto; }
 .head-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
-@media (max-width: 420px) { .rules-bar .share-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .rules-bar .share-btn { padding: 0; justify-content: center; } }
 .toast {
   position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   max-width: calc(100% - 32px); padding: 10px 14px; border: var(--bw) solid var(--ink); border-radius: var(--radius-sm);
@@ -438,13 +438,10 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 
 /* Scoreboard play */
 .board { display: grid; gap: 16px; position: relative; }
-.fs-btn {
-  position: absolute; top: -6px; right: -6px; width: 44px; height: 44px; display: grid; place-items: center;
-  border: 2px solid var(--ink); border-radius: var(--radius-sm); background: var(--surface); color: var(--fg);
-}
-.fs-btn svg { width: 20px; height: 20px; }
+.board > .share-btn { position: absolute; top: -6px; right: -6px; }
 .icon-btn { display: inline-flex; align-items: center; gap: 6px; }
-/* Reset keeps its distance from undo and share. */
+#fullscreen { width: 48px; padding: 0; justify-content: center; }
+/* Reset keeps its distance from undo and full screen. */
 .board .toolbar #reset { margin-left: 18px; }
 .icon-btn svg { width: 20px; height: 20px; flex: none; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

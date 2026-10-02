@@ -4,6 +4,7 @@ import { coinFlip } from '../draw.js';
 import { FILTER, SCORE_SETUP } from '../data/nav.js';
 import { LANDSCAPE } from './scenes.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
+import { shareButtonHtml, sharePage } from './share.js';
 
 const KEY = 'picobo.match';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -43,7 +44,7 @@ function setupHtml(prefill) {
     <input class="input" id="name-${team}-0" value="${esc(list[0] ?? '')}" placeholder="球員 1" maxlength="6">
     <input class="input" id="name-${team}-1" value="${esc(list[1] ?? '')}" placeholder="球員 2" maxlength="6" data-doubles-only>
   </div>`;
-  return `<div class="section-head"><h2>計分板</h2><p class="intro">按誰贏了這一球，站位、換發、喊分自動算好。</p></div>
+  return `<div class="section-head"><div class="head-row"><h2>計分板</h2>${shareButtonHtml()}</div><p class="intro">按誰贏了這一球，站位、換發、喊分自動算好。</p></div>
   <form class="card" id="setup">
     <div class="field"><span class="field-label">${esc(SCORE_SETUP.mode)}</span>${modes}</div>
     <div class="row">
@@ -88,7 +89,7 @@ function modeLabel(state) {
   return SCORE_SETUP.playing.replace('{play}', play.label).replace('{scoring}', scoring.label).replace('{target}', state.target);
 }
 
-// Full screen sits as an icon in the board's top-right corner: four corners
+// Full screen sits in the bottom toolbar: four corners
 // pointing out to enter, pointing in to leave. Where the browser allows it
 // (Android, desktop) it is real full screen; where it does not (iPhone Safari,
 // the claude.ai preview) the same layout fills the page instead. Either way
@@ -121,7 +122,7 @@ function playHtml(state) {
     ? `<p class="winner">${teamName(state.winner)}贏了 🎉 ${state.scores.A}-${state.scores.B}</p>` : '';
   return `<div class="board">
     <p class="mode-tag">${esc(modeLabel(state))}</p>
-    <button class="fs-btn" type="button" id="fullscreen" title="${esc(isFull() ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen)}">${fullscreenIcon()}</button>
+    ${handoffButtonHtml()}
     <div class="announce"><div class="big num" id="big">${esc(announce(state))}</div><div class="who">${who}</div>${gpTag}</div>
     ${banner}${winner}
     ${state.mode === 'fun' ? '' : '<div class="court-wrap" id="board-court"></div>'}
@@ -130,10 +131,10 @@ function playHtml(state) {
       <button class="score-btn team-B" id="win-B"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.B}</span><span class="name">${esc(B)} 贏這球</span></button>
     </div>
     <div class="toolbar">
-      <button class="btn icon-btn" id="undo" aria-label="復原上一球"${state.history.length ? '' : ' disabled'}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span class="btn-text">復原上一球</span></button>
+      <button class="btn icon-btn" id="undo" aria-label="復原上一球"${state.history.length ? '' : ' disabled'}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span class="btn-text">復原</span></button>
       ${state.finished ? '<button class="btn btn-primary" id="again">再來一局</button>' : ''}
-      ${handoffButtonHtml()}
-      <button class="btn btn-ghost icon-btn" id="reset" aria-label="重新設定"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg><span class="btn-text">重新設定</span></button>
+      <button class="btn icon-btn" type="button" id="fullscreen" title="${esc(isFull() ? SCORE_SETUP.exitFullscreen : SCORE_SETUP.fullscreen)}">${fullscreenIcon()}</button>
+      <button class="btn btn-ghost icon-btn" id="reset" aria-label="重新設定"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg><span class="btn-text">重設</span></button>
     </div>
   </div>`;
 }
@@ -198,6 +199,7 @@ export function mountScoreboard(root) {
 
   const renderSetup = () => {
     root.innerHTML = setupHtml(prefill);
+    root.querySelector('.section-head .share-btn').addEventListener('click', () => sharePage('計分板'));
     const form = root.querySelector('#setup');
     const pick = k => form.querySelector(`[data-k="${k}"][aria-pressed="true"]`).dataset.v;
     const syncMode = () => {

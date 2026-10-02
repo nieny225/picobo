@@ -100,13 +100,12 @@ export function renderManage(root) {
     }).join('');
     const queue = readyMatches(s).slice(0, 4);
     return `
-      <div class="section-head"><h2>${esc(T.title)}</h2></div>
+      <div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${handoffButtonHtml()}</div></div>
       <section class="card"><h3>${esc(T.onCourt)}</h3><div class="t-courts">${onCourt}</div>
         <h4>${esc(T.next)}</h4>${queue.length ? queue.map(m => matchCard(s, m, false)).join('') : `<p class="muted">${esc(T.nothingNext)}</p>`}
       </section>
       ${s.divisions.map(d => divisionHtml(s, d)).join('')}
       <div class="toolbar"><button class="btn" type="button" id="t-copy">${esc(T.copy)}</button>
-        ${handoffButtonHtml()}
         <button class="btn btn-ghost" type="button" id="t-reset">${esc(T.reset)}</button></div>
       <p class="t-copied muted small" hidden></p>`;
   };

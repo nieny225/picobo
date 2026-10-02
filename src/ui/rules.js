@@ -279,7 +279,7 @@ export function mountRules(root) {
     // Fun formats are not filtered by play or scoring: their bar picks a purpose group.
     filtersEl.innerHTML = fi >= 0 ? formatBarHtml(fi) : barFilterHtml(filter);
     if (fi >= 0) hintEl.hidden = true;
-    shareSlot.innerHTML = p || fi >= 0 ? shareButtonHtml() : '';
+    shareSlot.innerHTML = shareButtonHtml();
     drawerNav.innerHTML = drawerNavHtml(filter);
     for (const a of drawerNav.querySelectorAll('a[data-id]')) {
       if (a.dataset.id === current) a.setAttribute('aria-current', 'page');
