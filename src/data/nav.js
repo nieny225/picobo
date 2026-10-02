@@ -111,7 +111,6 @@ export const DRAWER = {
 };
 
 export const RULE_PAGE = {
-  back: '目錄',
   prev: '上一條',
   next: '下一條',
 };
@@ -129,5 +128,4 @@ export const FORMATS_PAGE = {
   note: '各球場做法不同，不是官方規則。',
   unofficial: '各球場做法不同',
   scoring: '計分：',
-  intro: '人多想熱鬧、人數不對、場地不夠，或想換個方式練球時用。這些都不是官方規則，各球場做法不同，開打前先講好版本。',
 };

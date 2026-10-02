@@ -58,7 +58,7 @@ src/tournament.js       pure Pico Bowl logic: pools, court queue, standings, pla
 src/handoff.js          pack / unpack a tool's state into a hand-over link (#score?s=…)
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes
-src/ui/formats.js       fun formats index + one page per format with court scenes
+src/ui/formats.js       one fun format card; shown inside the rules view (bar, drawer)
 src/ui/scenes.js        court scene carousel shared by rules and formats
 src/ui/scoreboard.js    scoreboard view
 src/ui/draw.js          draw + rotation view

@@ -1,6 +1,5 @@
 import { mountHome } from './ui/home.js';
 import { mountRules } from './ui/rules.js';
-import { mountFormats } from './ui/formats.js';
 import { mountScoreboard } from './ui/scoreboard.js';
 import { mountDraw } from './ui/draw.js';
 import { mountEvent } from './ui/event.js';
@@ -39,7 +38,6 @@ registerServiceWorker();
 mountInstallButton(document.getElementById('install-btn'));
 mountHome(document.getElementById('view-home'));
 const rules = mountRules(document.getElementById('view-rules'));
-const formats = mountFormats(document.getElementById('view-formats'));
 const scoreboard = mountScoreboard(document.getElementById('view-score'));
 const draw = mountDraw(document.getElementById('view-draw'));
 const event = mountEvent(document.getElementById('view-picobowl'));
@@ -47,14 +45,16 @@ document.getElementById('footer').textContent = `正統規則依據 ${RULEBOOK}�
 
 function show() {
   const { route, sub } = parseHash();
-  for (const r of ROUTES) document.getElementById(`view-${r}`).hidden = r !== route;
+  // Fun formats (#formats/<id>) are pages of the rules view.
+  const view = route === 'formats' ? 'rules' : route;
+  for (const r of ROUTES) if (r !== 'formats') document.getElementById(`view-${r}`).hidden = r !== view;
   // CSS keys off the current tab, e.g. phones drop the top bar under 規則.
   document.documentElement.dataset.tab = TAB_OF[route] ?? route;
   for (const tab of document.querySelectorAll('.tab')) {
     tab.setAttribute('aria-selected', String(tab.dataset.route === (TAB_OF[route] ?? route)));
   }
   if (route === 'rules') rules.show(sub);
-  if (route === 'formats') formats.show(sub);
+  if (route === 'formats') rules.show(`formats/${sub}`);
   if (route === 'picobowl') event.show(sub);
   window.scrollTo({ top: 0 });
   topbar.show();

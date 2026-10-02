@@ -3,6 +3,7 @@ import { FORMATS } from '../data/formats.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
 import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER, FILTER, FORMATS_PAGE } from '../data/nav.js';
 import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
+import { formatCardHtml, wireFormat } from './formats.js';
 import { shareButtonHtml, sharePage, toast } from './share.js';
 
 
@@ -130,6 +131,17 @@ function pageBody(p, f) {
     <div class="glossary">${GLOSSARY.map(g => `<div class="term"><b>${esc(g.zh)} <span class="en">${esc(g.en)}</span></b>${g.alias ? `<span class="muted small">${esc(g.alias)}</span>` : ''}<span class="small">${esc(g.def)}</span></div>`).join('')}</div>`;
 }
 
+// A fun format's page (#formats/<id>): prev / next walk the formats.
+function formatPageHtml(i) {
+  const prev = FORMATS[i - 1], next = FORMATS[i + 1];
+  const step = (q, label, cls) => q
+    ? `<a class="pager-link ${cls}" href="#formats/${q.id}"><span class="muted small">${esc(label)}</span><b>${esc(q.name)}</b></a>`
+    : '<span></span>';
+  return `${formatCardHtml(FORMATS[i])}
+    <nav class="pager">${step(prev, RULE_PAGE.prev, 'prev')}${step(next, RULE_PAGE.next, 'next')}</nav>`;
+}
+const formatIndex = key => (key.startsWith('formats/') ? FORMATS.findIndex(f => `formats/${f.id}` === key) : -1);
+
 // Prev / next walk the pages of the current filter; a page reached from a
 // shared link outside the filter walks the full list instead.
 function pageHtml(p, f) {
@@ -187,8 +199,6 @@ function swipeToClose(drawer) {
   drawer.addEventListener('click', e => { if (performance.now() < swallowUntil) { e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 }
 
-// Renders the index (sub = '') or one page (sub = page id). An unknown id is
-// a bad link, not a bad state, so it falls back to the index.
 // The edge tab opens the drawer on a tap, or when dragged right past 24px.
 function dragToOpen(tab, open) {
   let x0 = null;
@@ -219,8 +229,9 @@ function drawerHtml() {
   </dialog>`;
 }
 
-// Renders the index (sub = '') or one page (sub = page id). An unknown id is
-// a bad link, not a bad state, so it falls back to the index.
+// Renders the index (sub = ''), one page (sub = page id) or one fun format
+// (sub = 'formats/<id>'). An unknown id is a bad link, not a bad state, so it
+// falls back to the index.
 export function mountRules(root) {
   // A sticky bar on top of every rules page holds the 雙打｜單打 and
   // 側出計分｜每球得分 switches and share. The contents drawer opens from a small tab on the left edge (tap it or drag
@@ -231,7 +242,7 @@ export function mountRules(root) {
   const filtersEl = root.querySelector('.bar-filters');
   const hintEl = root.querySelector('.filter-hint');
   const shareSlot = root.querySelector('.bar-share');
-  shareSlot.addEventListener('click', e => { if (e.target.closest('.share-btn')) sharePage(PAGES.find(q => q.id === current)?.title ?? RULES_INDEX.title); });
+  shareSlot.addEventListener('click', e => { if (e.target.closest('.share-btn')) sharePage(PAGES.find(q => q.id === current)?.title ?? FORMATS[formatIndex(current)]?.name ?? RULES_INDEX.title); });
   const pageEl = root.querySelector('.rules-page');
   const drawer = root.querySelector('.drawer');
   const drawerNav = drawer.querySelector('.drawer-body');
@@ -244,13 +255,15 @@ export function mountRules(root) {
   let current = null;
   const render = () => {
     const p = PAGES.find(q => q.id === current);
-    pageEl.innerHTML = p ? pageHtml(p, filter) : indexHtml(filter);
+    const fi = formatIndex(current);
+    pageEl.innerHTML = p ? pageHtml(p, filter) : fi >= 0 ? formatPageHtml(fi) : indexHtml(filter);
     filtersEl.innerHTML = barFilterHtml(filter);
-    shareSlot.innerHTML = p ? shareButtonHtml() : '';
+    shareSlot.innerHTML = p || fi >= 0 ? shareButtonHtml() : '';
     drawerNav.innerHTML = drawerNavHtml(filter);
     for (const a of drawerNav.querySelectorAll('a[data-id]')) {
       if (a.dataset.id === current) a.setAttribute('aria-current', 'page');
     }
+    if (fi >= 0) wireFormat(pageEl, FORMATS[fi]);
     if (p?.kind === 'rule') {
       const wrap = pageEl.querySelector('.scene-wrap');
       if (wrap) wireScene(wrap, p.item.scenes);
@@ -293,7 +306,7 @@ export function mountRules(root) {
   return {
     show(sub) {
       if (MOVED[sub]) { history.replaceState(null, '', `#rules/${MOVED[sub]}`); sub = MOVED[sub]; }
-      const key = PAGES.some(p => p.id === sub) ? sub : '';
+      const key = PAGES.some(p => p.id === sub) || formatIndex(sub) >= 0 ? sub : '';
       if (drawer.open) drawer.close();
       if (key === current) return;
       current = key;
