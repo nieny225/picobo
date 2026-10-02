@@ -22,6 +22,20 @@ function defaultChoice() {
   return { play: 'doubles', scoring: 'sideout' };
 }
 
+// The last game's settings (mode, target, win by), so a game sent over
+// from 抽籤 can start straight away.
+const SETTINGS_KEY = 'picobo.scoreSettings';
+function loadSettings() {
+  try {
+    const v = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+    if (v && MODES.includes(v.mode) && Number.isInteger(v.target) && Number.isInteger(v.winBy)) return v;
+  } catch { /* storage unavailable or corrupt */ }
+  return null;
+}
+function saveSettings(v) {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(v)); } catch { /* storage unavailable */ }
+}
+
 function load() {
   try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch { return null; }
 }
@@ -231,6 +245,7 @@ export function mountScoreboard(root, { toDraw } = {}) {
         mode, target: Number(form.target.value), winBy: Number(form.winby.value),
         teams: { A: names('A'), B: names('B') }, firstServer: form.first.value, decidingGame: form.deciding.checked,
       });
+      saveSettings({ mode, target: state.target, winBy: state.winBy });
       // Which 抽籤 game this is, so the result can go back there.
       if (prefill?.from) state.from = prefill.from;
       save(state); renderPlay();
@@ -304,7 +319,14 @@ export function mountScoreboard(root, { toDraw } = {}) {
       }
       state = null; save(null);
       prefill = { A: link.teams[0], B: link.teams[1], first: link.first, from: link };
-      renderSetup(); syncPlaying();
+      // Played here before: same settings, start scoring now (重新設定 changes
+      // them). A 抽籤 game is always doubles. First time: the setup screen.
+      const last = loadSettings();
+      if (!last) { renderSetup(); syncPlaying(); return true; }
+      const mode = last.mode === 'fun' ? 'fun' : last.mode.replace(/-singles$/, '-doubles');
+      state = createMatch({ mode, target: last.target, winBy: last.winBy, teams: { A: link.teams[0], B: link.teams[1] }, firstServer: link.first });
+      state.from = link;
+      save(state); renderPlay();
       return true;
     },
     // A match handed over from another phone. Throws on anything that is not one.

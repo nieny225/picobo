@@ -359,7 +359,9 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   it ends, 「回抽籤，記錄 … 贏」 calls `draw.reportWin`, which finds the same
   game with `courtOfGame` (same court, same two teams) and marks the winner.
   If the court changed meanwhile it only says so. app.js wires the two views;
-  same phone only (a hand-over drops `from`).
+  same phone only (a hand-over drops `from`). After the first game the
+  scoreboard keeps its settings (`picobo.scoreSettings`: mode, target, win
+  by), so a game from 抽籤 starts scoring right away; 重新設定 changes them.
 - 抽籤 starts with an empty roster (no example names: they were real
   friends' names). The last roster stays on the phone. An old saved example
   list, or a session drawn from it, is dropped on load. Copy examples use
