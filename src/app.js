@@ -46,6 +46,7 @@ const rules = mountRules(document.getElementById('view-rules'));
 const scoreboard = mountScoreboard(document.getElementById('view-score'), {
   toDraw(link, winnerIndex) {
     toast(draw.reportWin(link, winnerIndex) ? DRAW_SCORE.recorded.replace('{court}', link.court) : DRAW_SCORE.gone);
+    backToCourt = link.court;
     location.hash = '#draw';
   },
 });
@@ -58,8 +59,14 @@ mountVenues(document.getElementById('view-venues'));
 const signup = mountSignup(document.getElementById('view-signup'));
 document.getElementById('footer').textContent = `正統規則依據 ${RULEBOOK}。趣味玩法各球場做法不同，開打前先講好。`;
 
+// Coming back to 抽籤 from the scoreboard lands on the courts (the one just
+// scored, after 回抽籤), not the roster at the top.
+let lastRoute = null, backToCourt = null;
+
 function show() {
   const { route, sub } = parseHash();
+  const fromScore = lastRoute === 'score';
+  lastRoute = route;
   // Fun formats (#formats/<id>) are pages of the rules view.
   const view = route === 'formats' ? 'rules' : route;
   for (const r of ROUTES) if (r !== 'formats') document.getElementById(`view-${r}`).hidden = r !== view;
@@ -81,8 +88,11 @@ function show() {
     if (!scoreboard.preset(query.get('play'), query.get('scoring'))) toast(SCORE_SETUP.busy);
     history.replaceState(null, '', '#score');
   }
-  window.scrollTo({ top: 0 });
   topbar.show();
+  const court = backToCourt;
+  backToCourt = null;
+  if (route === 'draw' && fromScore && draw.revealGames(court)) return;
+  window.scrollTo({ top: 0 });
 }
 
 // Opening a hand-over link: load the state into the matching tool (asking

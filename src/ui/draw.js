@@ -197,7 +197,7 @@ export function mountDraw(root, { toScore } = {}) {
     if (!play) { out.innerHTML = ''; return; }
     const ranked = Object.entries(play.stats).sort((a, b) => b[1].won - a[1].won || a[1].played - b[1].played);
     out.innerHTML = `${fullBtnHtml()}<div class="matches">${play.courts.map((c, ci) => c.teams.length === 2 ? `
-      <div class="koc-court"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span>${mix && c.mixed === false ? `<span class="waiting">${esc(X.notMixed)}</span>` : ''}${scoreBtnHtml(ci, c.court)}</div>
+      <div class="koc-court" data-court="${c.court}"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span>${mix && c.mixed === false ? `<span class="waiting">${esc(X.notMixed)}</span>` : ''}${scoreBtnHtml(ci, c.court)}</div>
       <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.first === ti, true)}<button class="btn" data-court="${ci}" data-win="${ti}">${esc(OPEN_PLAY.won)}</button></div>`).join('')}</div></div>`
       : `<div class="koc-court"><span class="muted">${esc(OPEN_PLAY.idle.replace('{court}', c.court))}</span></div>`).join('')}</div>
       <p class="small" style="margin-top:10px"><b>${esc(OPEN_PLAY.queue)}</b>${esc(OPEN_PLAY.queueHint)}</p>
@@ -237,7 +237,7 @@ export function mountDraw(root, { toScore } = {}) {
   const renderKoc = out => {
     if (!koc) { out.innerHTML = ''; return; }
     out.innerHTML = `${fullBtnHtml()}<div class="matches">${koc.courts.map((c, ci) => c.teams.length === 2 ? `
-      <div class="koc-court"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span><span class="streak">留場隊已連贏 ${c.streak} 場</span>${scoreBtnHtml(ci, c.court)}</div>
+      <div class="koc-court" data-court="${c.court}"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span><span class="streak">留場隊已連贏 ${c.streak} 場</span>${scoreBtnHtml(ci, c.court)}</div>
       <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.streak === 0 ? ti === 0 : ti === 1, true)}<button class="btn" data-court="${ci}" data-win="${ti}">這隊贏</button></div>`).join('')}</div></div>`
       : `<div class="koc-court"><span class="muted">${c.court} 號場：人不夠，先休息</span></div>`).join('')}</div>
       <p class="small" style="margin-top:10px"><b>排隊中</b>（前兩位下一場上）</p><div class="queue">${koc.queue.map(n => nameHtml(n, true)).join('') || '<span class="muted">沒有人在排隊</span>'}</div>
@@ -348,6 +348,15 @@ export function mountDraw(root, { toScore } = {}) {
 
   return {
     hasState: () => roster.names.length > 0 || !!play || !!koc,
+    // Scroll to the games: that court's box when given, else the top of the
+    // courts. False when no session is on screen.
+    revealGames(court) {
+      const out = root.querySelector('#out');
+      if (!out?.querySelector('.koc-court')) return false;
+      const box = court == null ? null : [...out.querySelectorAll('.koc-court')].find(el => el.dataset.court === String(court));
+      (box ?? out).scrollIntoView({ block: 'start' });
+      return true;
+    },
     // The scoreboard finished a game started from here: mark the winner on
     // that court (0 or 1) if the same game is still on it. False otherwise.
     reportWin(link, winnerIndex) {

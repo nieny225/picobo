@@ -525,6 +525,7 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .waiting { color: var(--muted); font-size: 0.9rem; }
 .round { display: grid; gap: 8px; }
 .round h3 { display: flex; justify-content: space-between; align-items: baseline; }
+.koc-court, #view-draw #out { scroll-margin-top: calc(var(--topbar-h, 0px) + 12px); }
 .koc-court { display: grid; gap: 8px; padding: 12px; background: var(--surface-2); border: 2px solid var(--ink); border-radius: var(--radius); }
 /* Each game is a little court seen from above: one team per half, the net
    down the middle, kitchens either side of it, a thin team-color stripe by
