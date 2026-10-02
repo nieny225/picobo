@@ -2,7 +2,7 @@
 // Network first, so every visit online gets the latest files; the cache is the
 // fallback when the network is gone or too slow. Every file the page needs is
 // listed in FILES (tests/sw.test.js checks the list against src/ and styles/).
-const CACHE = 'picobo-v2';
+const CACHE = 'picobo-v3';
 const FILES = [
   './',
   'index.html',
@@ -17,20 +17,24 @@ const FILES = [
   'src/court.js',
   'src/draw.js',
   'src/handoff.js',
+  'src/meetup.js',
   'src/scoring.js',
   'src/tournament.js',
   'src/data/event.js',
   'src/data/formats.js',
   'src/data/glossary.js',
   'src/data/home.js',
+  'src/data/meetup.js',
   'src/data/nav.js',
   'src/data/rules.js',
+  'src/data/venues.js',
   'src/ui/draw.js',
   'src/ui/event.js',
   'src/ui/formats.js',
   'src/ui/handoff.js',
   'src/ui/home.js',
   'src/ui/install.js',
+  'src/ui/meetup.js',
   'src/ui/rules.js',
   'src/ui/scenes.js',
   'src/ui/scoreboard.js',
@@ -38,6 +42,7 @@ const FILES = [
   'src/ui/theme.js',
   'src/ui/topbar.js',
   'src/ui/tournament.js',
+  'src/ui/venues.js',
 ];
 // On a weak court signal, give up on the network after this long and use the cache.
 const TIMEOUT_MS = 3000;

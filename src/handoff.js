@@ -3,7 +3,7 @@
 // in browsers and in node (for tests). Format: one letter, then base64url.
 //   z  deflate-raw compressed JSON (CompressionStream, where available)
 //   j  plain JSON
-const KINDS = ['score', 'draw', 'tourney'];
+const KINDS = ['score', 'draw', 'tourney', 'meetup'];
 
 function toBase64Url(bytes) {
   let bin = '';

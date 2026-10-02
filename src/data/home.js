@@ -23,5 +23,7 @@ export const HOME = {
     { route: 'rules', title: '學規則', en: 'Rules', desc: '看球場圖一步一步弄懂發球、廚房、計分，還有趣味玩法。' },
     { route: 'score', title: '計分板', en: 'Scoreboard', desc: '誰發球、站哪邊，按一下就算好。' },
     { route: 'draw', title: '抽籤輪轉', en: 'Draw', desc: '分組、輪轉賽、國王球場，人多也不亂。' },
+    { route: 'meetup', title: '揪團', en: 'Find Players', desc: '填時間地點缺幾人，一張卡丟到群組。' },
+    { route: 'venues', title: '找場地', en: 'Courts', desc: '哪裡能打、怎麼預約、怎麼去。' },
   ],
 };

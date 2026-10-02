@@ -528,6 +528,16 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top: 12px; }
 
 
+/* 揪團卡 and the courts list. */
+.meetup-when { font-size: 1.35rem; font-weight: 700; background: var(--mark); color: var(--mark-fg); justify-self: start; padding: 0 8px; border: 2px solid var(--ink); border-radius: var(--radius-sm); }
+.meetup-card h3 { font-size: 1.4rem; }
+.meetup-need { background: var(--ink); color: var(--bg); }
+.meetup-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.meetup-actions .btn { display: inline-flex; align-items: center; text-decoration: none; }
+.venue .event-facts div { grid-template-columns: 5em 1fr; }
+a.btn-block { display: flex; align-items: center; justify-content: center; text-decoration: none; }
+textarea.input { font-family: inherit; line-height: 1.5; resize: vertical; }
+
 /* Pico Bowl: home card and tournament page. */
 .event-card {
   display: grid; gap: 4px; margin: 0 6px 18px 0; padding: 16px; text-decoration: none;

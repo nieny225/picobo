@@ -41,8 +41,8 @@ static site later. There is no backend and no build step.
 ```
 index.html              the page; hash-routed tabs: #home (default) #rules #score #draw,
                         sub-pages #rules/<id> and #formats/<id> (fun formats sit
-                        under the rules tab), #picobowl (tournament page, under
-                        home); tabs in the header on desktop, in a bottom bar on
+                        under the rules tab), #picobowl (tournament page), #meetup
+                        (揪團卡) and #venues (場地名錄), all three under home; tabs in the header on desktop, in a bottom bar on
                         phones (< 768px)
 styles/main.css         design tokens on :root, dark mode, mobile-first
 manifest.webmanifest    installable web app (name, icons, standalone)
@@ -56,6 +56,7 @@ src/scoring.js          pure scoring state machines (no DOM)
 src/draw.js             pure draw / round-robin / king-of-court logic (no DOM)
 src/tournament.js       pure Pico Bowl logic: pools, court queue, standings, playoffs (no DOM)
 src/handoff.js          pack / unpack a tool's state into a hand-over link (#score?s=…)
+src/meetup.js           pure 揪團卡 logic: check the form, chat summary line, .ics, map / LINE / WhatsApp links
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes
 src/ui/formats.js       one fun format card; shown inside the rules view (bar, drawer)
@@ -69,6 +70,8 @@ src/ui/theme.js         light/dark toggle in the top bar (light unless dark is c
 src/ui/install.js       top-bar install button (prompt or steps), an invite/share icon once installed; registers the service worker
 src/ui/event.js         Pico Bowl tournament page + its home-page card
 src/ui/tournament.js    organizer screen at #picobowl/manage (local to one phone)
+src/ui/meetup.js        揪團: form, card preview, shared card (#meetup?s=…, shown only, never loaded)
+src/ui/venues.js        場地名錄 grouped by city; 在這裡揪團 → #meetup?venue=<id>
 src/data/rules.js       rule copy + court scene definitions
 src/data/formats.js     fun formats + court scenes, grouped by purpose: 人多場地少 (國王球場, 輪轉賽, 快打短局),
                         人數湊不齊 (3 人制, 半場單打), 想練技術 (廚房戰, 截擊大戰, 第三拍挑戰), 想玩熱鬧 (接力團體賽, 繞場, 蘇格蘭雙打)
@@ -76,6 +79,8 @@ src/data/glossary.js    中英術語對照 + 常見誤解
 src/data/home.js        首頁 slogan 與入口文字
 src/data/nav.js         目錄、上一條／下一條、玩法頁的介面文字
 src/data/event.js       Pico Bowl 比賽資訊（open: false 時首頁卡片顯示 Coming soon）
+src/data/meetup.js      揪團卡的介面文字
+src/data/venues.js      場地名錄（只放場地方或熟識球友提供的資料，不自己猜）
 tests/*.test.js         node:test for the pure modules
 ```
 
