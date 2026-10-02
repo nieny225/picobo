@@ -1,4 +1,4 @@
-import { SECTIONS, COMPARE, COUNTERPARTS } from '../data/rules.js';
+import { SECTIONS, COMPARE } from '../data/rules.js';
 import { FORMATS } from '../data/formats.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
 import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER, FILTER, FORMATS_PAGE } from '../data/nav.js';
@@ -49,7 +49,10 @@ const PAGES = [
 ];
 
 // Pages that were removed or merged: old links land on their replacement.
-const MOVED = { singles: 'scoring-singles' };
+const MOVED = {
+  singles: 'points-singles', scoring: 'points', 'scoring-singles': 'points-singles',
+  'rally-basics': 'rally-positions', 'rally-singles': 'rally-positions-singles',
+};
 
 // Which combination of play (doubles / singles) and scoring (side-out /
 // rally) the reader cares about. Remembered per device.
@@ -98,6 +101,7 @@ function indexHtml(f) {
   const groups = SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => `
     <section class="rule-group" id="rules-${sec.id}" data-title="${esc(sec.title)}">
       <h3>${esc(sec.title)}${enTag(sec.en)}${sec.subtitle ? ` <span class="muted small">${esc(sec.subtitle)}</span>` : ''}</h3>
+      ${sec.note ? `<p class="small section-note">${esc(sec.note)}</p>` : ''}
       <div class="rule-list">${sectionPages(sec, f).map(p => link(p, f)).join('')}</div>
     </section>`).join('');
   return `
@@ -150,8 +154,13 @@ function pageHtml(p, f) {
   const step = (q, label, cls) => q
     ? `<a class="pager-link ${cls}" href="#rules/${q.id}"><span class="muted small">${esc(label)}</span><b>${esc(q.title)}</b></a>`
     : '<span></span>';
+  // Scoring steps end with a link that opens the scoreboard in the same mode.
+  const tryScore = p.item?.step
+    ? `<a class="btn btn-block try-score" href="#score?play=${p.item.play}&scoring=${p.sec.scoring}">${esc(RULE_PAGE.tryScore)}</a>`
+    : '';
   return `
     ${pageBody(p, f)}
+    ${tryScore}
     <nav class="pager">${step(prev, RULE_PAGE.prev, 'prev')}${step(next, RULE_PAGE.next, 'next')}</nav>`;
 }
 
@@ -278,14 +287,18 @@ export function mountRules(root) {
     saveFilter(filter);
     const p = PAGES.find(q => q.id === current);
     if (p && !pageShown(p, filter)) {
-      // The same rule's other play version first, silently; else its counterpart.
+      // The same rule's other play version, or the same scoring step under
+      // the other scoring (else that section's first page), takes over
+      // silently; anything else goes back to the index.
       const twin = PAGES.find(q => q.id === (p.id.endsWith(SINGLES) ? p.id.slice(0, -SINGLES.length) : p.id + SINGLES));
-      if (twin && pageShown(twin, filter)) { location.hash = `#rules/${twin.id}`; return; }
-      const to = COUNTERPARTS[p.id]?.[`${filter.play}:${filter.scoring}`];
-      const combo = `${optionById('play', filter.play).label}・${optionById('scoring', filter.scoring).label}`;
-      if (to) toast(esc(FILTER.jumped.replace('{title}', PAGES.find(q => q.id === to).title)));
-      else toast(esc(FILTER.backToIndex.replace('{combo}', combo)));
-      location.hash = to ? `#rules/${to}` : '#rules';
+      const step = p.item.step && PAGES.find(q => q.item?.step === p.item.step && pageShown(q, filter));
+      const firstStep = p.sec.scoring && PAGES.find(q => q.kind === 'rule' && q.sec.scoring && pageShown(q, filter));
+      const to = (twin && pageShown(twin, filter) && twin) || step || firstStep;
+      if (!to) {
+        const combo = `${optionById('play', filter.play).label}・${optionById('scoring', filter.scoring).label}`;
+        toast(esc(FILTER.backToIndex.replace('{combo}', combo)));
+      }
+      location.hash = to ? `#rules/${to.id}` : '#rules';
       return;
     }
     render();

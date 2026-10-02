@@ -41,7 +41,8 @@ export const PICOBOWL = {
     '準決賽、決賽：一局打到 21 分，要贏 2 分。',
   ],
   rulesLinks: [
-    { href: '#rules/rally-basics', label: '每球得分：計分與站位' },
+    { href: '#rules/rally-points', label: '每球得分：怎麼得分' },
+    { href: '#rules/rally-positions', label: '每球得分：誰發球、站哪裡' },
     { href: '#rules/kitchen', label: '廚房規則' },
     { href: '#rules/two-bounce', label: '雙彈跳' },
   ],

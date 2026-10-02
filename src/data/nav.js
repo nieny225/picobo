@@ -15,8 +15,7 @@ export const FILTER = {
   showing: '目前顯示：',
   // 頂部切換列第一次出現時的提示泡泡（看過一次就不再出現）。
   hint: '點這裡切換單打／雙打、計分方式',
-  // 切換後這條不適用：跳到對應的那一條，或回目錄。
-  jumped: '已切到「{title}」',
+  // 切換後這條不適用、也沒有對應的那一條：回目錄。
   backToIndex: '這條不適用{combo}，已回到目錄',
 };
 
@@ -29,6 +28,8 @@ export const SCORE_SETUP = {
   playing: '{play}・{scoring}・打到 {target} 分',
   // 重新設定前的確認（已經打了至少一球、比賽還沒結束時才問）。
   resetConfirm: { title: '重新設定這場比賽？', body: '目前的比分和發球紀錄會清掉，回到設定畫面。', yes: '重新設定', no: '繼續比賽' },
+  // 從規則頁「到計分板試打」過來，但計分板上還有比賽沒打完。
+  busy: '計分板上有比賽還沒打完，先打完或重新設定再換模式。',
   fullscreen: '全螢幕',
   exitFullscreen: '離開全螢幕',
   // 下一球贏了就結束這局時，大比分下面的小標。
@@ -113,6 +114,8 @@ export const DRAWER = {
 export const RULE_PAGE = {
   prev: '上一條',
   next: '下一條',
+  // 計分三步驟每頁最下面：用同樣的打法和計分方式打開計分板。
+  tryScore: '到計分板試打',
 };
 
 // 目錄裡不屬於單一規則的頁面。

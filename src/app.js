@@ -9,7 +9,7 @@ import { registerServiceWorker, mountInstallButton } from './ui/install.js';
 import { decodeHandoff } from './handoff.js';
 import { routeOf } from './ui/handoff.js';
 import { toast } from './ui/share.js';
-import { HANDOFF } from './data/nav.js';
+import { HANDOFF, SCORE_SETUP } from './data/nav.js';
 import { RULEBOOK } from './data/rules.js';
 
 const ROUTES = ['home', 'rules', 'formats', 'score', 'draw', 'picobowl'];
@@ -56,6 +56,12 @@ function show() {
   if (route === 'rules') rules.show(sub);
   if (route === 'formats') rules.show(`formats/${sub}`);
   if (route === 'picobowl') event.show(sub);
+  // #score?play=…&scoring=… from a rule page: preset the mode, then drop the query.
+  const query = new URLSearchParams(location.hash.split('?')[1] ?? '');
+  if (route === 'score' && query.has('play')) {
+    if (!scoreboard.preset(query.get('play'), query.get('scoring'))) toast(SCORE_SETUP.busy);
+    history.replaceState(null, '', '#score');
+  }
   window.scrollTo({ top: 0 });
   topbar.show();
 }

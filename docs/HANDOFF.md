@@ -155,10 +155,10 @@ The rules tab was one 16,800 px page on a phone. Now:
   floating button that overlapped content once the bottom nav existed.
 - The top bar hides while scrolling down and comes back on any scroll up
   (`src/ui/topbar.js`); the rules bar then moves up to the top.
-- 玩法 (#formats) mirrors rules: an index grouped by type and one page per
-  format (#formats/<id>) with court scenes (queue / resting players drawn
+- 玩法: one page per format (#formats/<id>), rendered inside the rules view
+  (same bar and drawer; listed in the rules index), with court scenes (queue / resting players drawn
   dimmed in the court's right margin), marked 各球場做法不同.
-- Rules are grouped 球場與線 / 共通規則 / 側出計分 / 每球得分 / 更多. Two
+- Rules are grouped 球場與線 / 側出計分 / 每球得分 / 共通規則 / 更多 (the filter shows one scoring section). Two
   toggles at the top of #rules (雙打｜單打, 側出計分｜每球得分) filter the
   index, the drawer and prev/next; the choice is kept in localStorage
   (`picobo.rulesFilter`). Data: section `scoring` and rule `play` fields.
@@ -243,13 +243,19 @@ The rules tab was one 16,800 px page on a phone. Now:
   雙打｜單打 and 側出計分｜每球得分 switches and share (the old location line
   and the filter block on the index are gone). First visit shows a hint
   bubble once (`picobo.filterHintSeen`). Switching on a rule that does not apply to the new combination
-  jumps via `COUNTERPARTS` in `src/data/rules.js`, else back to the index,
-  with a toast either way.
+  jumps to its singles/doubles twin or the same scoring step, else back to
+  the index with a toast.
+- Scoring sections share one skeleton (user's pick, option A): rule `step`
+  points 怎麼得分 → calling 怎麼喊分 → positions 誰發球、站哪裡, then the
+  side-out vs rally table (rally adds 職業賽與凍結 before it). Each step page
+  ends with 到計分板試打 → `#score?play=…&scoring=…`, which presets the
+  scoreboard setup (toast if a match is in progress). Old ids (scoring,
+  rally-basics, rally-singles, scoring-singles) redirect via MOVED.
 - Rules with singles fields (singlesScenes / singlesSummary / singlesDetail)
   are split into two pages in `src/ui/rules.js`: doubles `#rules/<id>`,
   singles `#rules/<id>-singles`. Switching play jumps to the twin silently.
   Opening a rule outside the current filter (a shared link) switches the
-  bar to match. Old `#rules/singles` lands on `scoring-singles`.
+  bar to match. Old `#rules/singles` lands on `points-singles`.
 - Fun formats: 11 in five groups (see CLAUDE.md). Added 2026-10-02 at the
   user's pick: 接力團體賽, 繞場, 蘇格蘭雙打, 截擊大戰, 第三拍挑戰. Not added:
   上下河 (Up and Down the River), 雙球大亂鬥, 非慣用手, 精彩球加分. Off-court

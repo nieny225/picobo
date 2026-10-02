@@ -211,6 +211,9 @@ button { cursor: pointer; }
   color: var(--fg); font-weight: 900; text-decoration: none;
 }
 .back::before { content: "‹"; font-family: var(--font-num); font-size: 1.4rem; line-height: 1; }
+.section-note { margin: -4px 0 2px; color: var(--muted); }
+.try-score { margin-top: 4px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+.seg button { line-height: 1.15; }
 .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-right: 4px; }
 .pager-link {
   display: grid; gap: 0; align-content: center; min-height: 64px; padding: 8px 12px; min-width: 0;

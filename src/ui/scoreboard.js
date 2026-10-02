@@ -34,7 +34,7 @@ function setupHtml(prefill) {
     : defaultChoice();
   const seg = (k, label, options) => `<div class="seg-row"><span class="seg-label">${esc(label)}</span>
     <div class="seg" role="group" aria-label="${esc(label)}">${options.map(o =>
-      `<button type="button" data-k="${k}" data-v="${o.id}" aria-pressed="${choice[k] === o.id}"${o.en ? ` aria-label="${esc(o.label)}" title="${esc(o.label)}"` : ''}>${esc(o.en ?? o.label)}</button>`).join('')}</div></div>`;
+      `<button type="button" data-k="${k}" data-v="${o.id}" aria-pressed="${choice[k] === o.id}">${esc(o.label)}${o.en ? `<span class="seg-en" aria-hidden="true">${esc(o.en)}</span>` : ''}</button>`).join('')}</div></div>`;
   const modes = `<div class="filters">${seg('play', FILTER.play.label, FILTER.play.options)}${seg('scoring', FILTER.scoring.label, SCORING_OPTIONS)}
     <p class="small mode-hint" id="mode-hint"></p></div>
     <input type="hidden" name="mode" value="${modeOf(choice.play, choice.scoring)}">`;
@@ -292,6 +292,13 @@ export function mountScoreboard(root) {
 
   return {
     hasState: () => !!state,
+    // From a rule page's 到計分板試打: pick that mode on the setup screen.
+    // A match in progress stays; returns false so the caller can say why.
+    preset(play, scoring) {
+      if (state) return false;
+      for (const [k, v] of [['play', play], ['scoring', scoring]]) root.querySelector(`#setup [data-k="${k}"][data-v="${v}"]`)?.click();
+      return true;
+    },
     // A match handed over from another phone. Throws on anything that is not one.
     receive(data) {
       if (!MODES.includes(data?.mode) || !data.scores || !data.teams?.A || !Array.isArray(data.history)) throw new Error('scoreboard: not a match');

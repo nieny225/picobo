@@ -26,6 +26,8 @@ const four = (serving = {}) => [A1(serving.A1), A2(serving.A2), B1(serving.B1), 
 
 // 章節：scoring 標出只適用哪一種計分（沒寫就是都適用）；規則的 play 標出
 // 只適用雙打或單打（沒寫就是都適用）。規則頁上方的切換鈕靠這兩個欄位篩選。
+// 兩個計分章節用同一套步驟（step）：points 怎麼得分、calling 怎麼喊分、
+// positions 誰發球站哪裡。切換計分方式時跳到另一章的同一步；note 顯示在目錄的章節標題下。
 export const SECTIONS = [
   {
     id: 'court',
@@ -70,6 +72,217 @@ export const SECTIONS = [
           { caption: '發球時碰到廚房線就是失誤，球必須落在廚房線之後。', highlight: ['kitchenLine:far', 'nvz:far'], players: [A1({ depth: 'behind', serving: true })], ball: { path: ['near:right:behind', 'far:right:kitchenLine'], bounces: [1] } },
           { caption: '發球落在中線上算界內，邊線、底線也一樣。', highlight: ['serviceBox:far:right', 'centerline:far'], players: [A1({ depth: 'behind', serving: true })], ball: { path: ['near:right:behind', 'far:center:mid'], bounces: [1] } },
         ],
+      },
+    ],
+  },
+  {
+    id: 'sideout',
+    title: '側出計分',
+    en: 'Side-out Scoring',
+    subtitle: 'USA Pickleball 正式比賽',
+    note: '最重要也最難的一段。先在上面選好單打／雙打，再照順序看：怎麼得分、怎麼喊分、誰發球站哪裡。',
+    scoring: 'sideout',
+    intro: '正式比賽和大多數球場用的計分。只有發球方能得分。',
+    items: [
+      {
+        id: 'points',
+        step: 'points',
+        title: '怎麼得分',
+        en: 'Scoring',
+        summary: '只有發球方能得分。打到 11 分、要贏 2 分。發球方輸球不扣分，換搭檔發；兩個人都輸了才換對方發（side-out）。',
+        detail: [
+          '發球方贏這一球得 1 分，同一個人繼續發。',
+          '發球方輸了不扣分：第一發球員輸了換第二發球員發，第二發球員也輸了就換對方發球，叫 side-out。',
+          '開局例外：第一局第一個發球的隊伍只有一個人可以發，輸了就直接換對方。',
+          '接球方贏球不得分，只是離拿回發球權近一步。',
+          '正式比賽通常打三局兩勝，每局 11 分；也有 15 分或 21 分的賽制。',
+        ],
+        scenes: [
+          { caption: '甲隊發球、贏了這一球：得 1 分，同一個人繼續發。', players: [A1({ pos: 'left', depth: 'behind', serving: true }), A2({ pos: 'right' }), B1(), B2()] },
+          { caption: '甲1 輸了這一球：不扣分，換搭檔甲2 發。', players: [A1({ pos: 'left' }), A2({ pos: 'right', depth: 'behind', serving: true }), B1(), B2()] },
+          { caption: '甲2 也輸了：side-out，換乙隊發球。乙隊這時候贏球才開始得分。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1({ depth: 'behind', serving: true }), B2()] },
+        ],
+        singlesSummary: '只有發球方能得分。打到 11 分、要贏 2 分。發球方輸球不扣分，直接換對方發（side-out）。',
+        singlesDetail: [
+          '發球方贏這一球得 1 分，繼續發。',
+          '發球方輸了不扣分，直接換對方發。單打沒有第二發球員。',
+          '每次發球只有一次機會，沒有網球那種第二發。發球失誤就算輸這一球。',
+          '正式比賽通常打三局兩勝，每局 11 分；也有 15 分或 21 分的賽制。',
+        ],
+        singlesScenes: [
+          { caption: '甲發球、贏了這一球：得 1 分，繼續發。', players: [S({ pos: 'left', ...srv }), R({ pos: 'left' })] },
+          { caption: '甲輸了這一球：不扣分，直接換乙發（side-out）。', players: [S(), R(srv)] },
+        ],
+      },
+      {
+        id: 'calling',
+        step: 'calling',
+        title: '怎麼喊分',
+        en: 'Calling the Score',
+        summary: '雙打喊三個數字：「發球方分數、接球方分數、第幾發球員」。發球前喊。',
+        detail: [
+          '第一個數字是發球方，第二個是接球方，第三個是 1 或 2：這一輪的第一還是第二發球員。',
+          '開局喊「0-0-2」：第一局第一個發球的隊伍只有一個人可以發，所以直接從第二發球員算起。',
+          '例：「5-3-1」＝發球方 5 分、接球方 3 分、第一發球員在發。',
+        ],
+        scenes: [
+          { caption: '開局甲隊發球，喊「0-0-2」。', players: four({ A1: { depth: 'behind', serving: true } }) },
+          { caption: '甲隊贏了這一球，變 1 分，喊「1-0-2」。', players: [A1({ pos: 'left', depth: 'behind', serving: true }), A2({ pos: 'right' }), B1(), B2()] },
+          { caption: '甲隊輸了這一球。因為是第二發球員，換乙隊發，乙隊先喊自己的分數：「0-1-1」。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1({ depth: 'behind', serving: true }), B2()] },
+        ],
+        singlesSummary: '單打喊兩個數字：「發球方分數、接球方分數」。發球前喊。',
+        singlesDetail: [
+          '先喊發球方自己的分數，再喊對方的。單打沒有第幾發球員。',
+          '例：「3-5」＝發球方 3 分、接球方 5 分。',
+        ],
+        singlesScenes: [
+          { caption: '開局甲發球，喊「0-0」。', players: [S(srv), R()] },
+          { caption: '甲贏這球變 1 分，喊「1-0」。', players: [S({ pos: 'left', ...srv }), R({ pos: 'left' })] },
+          { caption: '換乙發球，乙先喊自己的分數：「0-1」。', players: [S(), R(srv)] },
+        ],
+      },
+      {
+        id: 'positions',
+        step: 'positions',
+        title: '誰發球、站哪裡',
+        en: 'Serving & Positions',
+        summary: '拿回發球權時，站在右邊的人先發。得分才換位，接球的隊伍不動。',
+        detail: [
+          '每次 side-out 的第一球都從右邊發，由當時站右邊的人發，這個人就是這一輪的第一發球員（4.B.6）。沒有固定的第一發球員。',
+          '發球方贏一球，發球員跟搭檔換邊，同一個人繼續發。發球方輸一球，換搭檔發，從他站的位置發。第二發球員也輸了就 side-out。',
+          '接球的隊伍永遠不動。所以「誰站右邊」只跟分數有關：開局站右邊的人，你們偶數分時他在右邊，奇數分時他在左邊。',
+          '口訣：拿回發球權，看分數確認站位，右邊的人開球。',
+        ],
+        scenes: [
+          { caption: '開局：甲1 站右邊發球，喊「0-0-2」。', players: four({ A1: { depth: 'behind', serving: true } }) },
+          { caption: '甲隊得 1 分：甲1 和甲2 換邊，甲1 從左邊繼續發，喊「1-0-2」。', players: [A1({ pos: 'left', depth: 'behind', serving: true }), A2({ pos: 'right' }), B1(), B2()] },
+          { caption: '甲隊失分，side-out。乙隊 0 分，乙1 站右邊先發，喊「0-1-1」。甲隊維持原位不動。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1({ depth: 'behind', serving: true }), B2()] },
+          { caption: '乙1 失分：換乙2 發，從他站的左邊發，喊「0-1-2」。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1(), B2({ depth: 'behind', serving: true })] },
+          { caption: '乙2 也失分，side-out 回甲隊。甲隊 1 分（奇數），甲1 在左邊，所以站右邊的甲2 先發，喊「1-0-1」。', players: [A1({ pos: 'left' }), A2({ pos: 'right', depth: 'behind', serving: true }), B1(), B2()] },
+          { caption: '甲2 得分變 2 分（偶數）：兩人換邊，甲1 回到右邊。開局站右的甲1，偶數分永遠在右邊。', players: [A1({ pos: 'right' }), A2({ pos: 'left', depth: 'behind', serving: true }), B1(), B2()] },
+        ],
+        singlesSummary: '看發球員自己的分數：偶數從右邊發、奇數從左邊發。接球的人站對角。',
+        singlesDetail: [
+          '發球員得分就換到另一邊繼續發。',
+          '換對方發球時，對方照他自己的分數決定從哪一邊發。',
+          '接球的人永遠站發球員的對角。',
+        ],
+        singlesScenes: [
+          { caption: '開局甲 0 分（偶數），從右邊發，乙站對角接。', players: [S(srv), R()] },
+          { caption: '甲得分變 1 分（奇數），換到左邊發，乙也換到對角。', players: [S({ pos: 'left', ...srv }), R({ pos: 'left' })] },
+          { caption: '換乙發球。乙 0 分（偶數），從右邊發。', players: [S(), R(srv)] },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'rally',
+    title: '每球得分',
+    en: 'Rally Scoring',
+    subtitle: '2026 暫行規則',
+    note: '最重要也最難的一段。先在上面選好單打／雙打，再照順序看：怎麼得分、怎麼喊分、誰發球站哪裡。',
+    scoring: 'rally',
+    intro: '每一球都有人得分，一局比較快結束，很多球場的社交球用這個。USA Pickleball 2025 年起把它列為暫行規則（provisional），2026 年繼續沿用。',
+    items: [
+      {
+        id: 'rally-points',
+        step: 'points',
+        title: '怎麼得分',
+        en: 'Scoring',
+        summary: '每一球結束都有一隊得 1 分，誰贏這球誰發下一球。沒有第二發球員。',
+        detail: [
+          '打到 11、15 或 21 分，要贏 2 分。社交球最常用 15 或 21。',
+          '發球方贏球：得 1 分，同一個人繼續發。',
+          '接球方贏球：得 1 分並拿到發球權。',
+          '2026 年起接球方也可以拿下最後一分，不用先拿回發球權。',
+        ],
+        scenes: [
+          { caption: '甲隊發球、贏了這一球：得 1 分，甲1 繼續發。', players: [A1({ pos: 'left', depth: 'behind', serving: true }), A2({ pos: 'right' }), B1(), B2()] },
+          { caption: '乙隊贏下一球：乙隊也得 1 分，並拿到發球權。1-1。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1({ pos: 'left' }), B2({ pos: 'right', depth: 'behind', serving: true })] },
+        ],
+        singlesSummary: '每一球結束都有人得 1 分，誰贏這球誰發下一球。',
+        singlesDetail: [
+          '打到 11、15 或 21 分，要贏 2 分。打到幾分開打前講好。',
+          '發球方贏球：得 1 分，繼續發。',
+          '接球方贏球：得 1 分並拿到發球權。',
+          '2026 年起接球方也可以拿下最後一分，不用先拿回發球權。',
+        ],
+        singlesScenes: [
+          { caption: '甲發球、贏了這一球：得 1 分，繼續發。', players: [A1({ label: '甲', pos: 'left', depth: 'behind', serving: true }), B1({ label: '乙', pos: 'left' })] },
+          { caption: '乙贏下一球：乙也得 1 分，並拿到發球權。1-1。', players: [A1({ label: '甲', pos: 'left' }), B1({ label: '乙', pos: 'left', depth: 'behind', serving: true })] },
+        ],
+      },
+      {
+        id: 'rally-calling',
+        step: 'calling',
+        title: '怎麼喊分',
+        en: 'Calling the Score',
+        summary: '只喊兩個數字：「發球方分數、接球方分數」（14.A.3）。雙打也不喊第幾發球員。',
+        detail: [
+          '開局喊「0-0」。',
+          '例：「7-5」＝發球方 7 分、接球方 5 分。',
+          '跟側出計分最大的差別：雙打沒有第三個數字，因為沒有第二發球員。',
+        ],
+        scenes: [
+          { caption: '開局甲1 發球，喊「0-0」。', players: four({ A1: { depth: 'behind', serving: true } }) },
+          { caption: '乙隊贏球拿到發球權，乙2 發球，乙隊先喊自己的分數：「1-0」。', players: [A1(), A2(), B1({ pos: 'left' }), B2({ pos: 'right', depth: 'behind', serving: true })] },
+        ],
+        singlesSummary: '只喊兩個數字：「發球方分數、接球方分數」（14.A.3）。',
+        singlesDetail: [
+          '開局喊「0-0」。',
+          '例：「7-5」＝發球方 7 分、接球方 5 分。',
+        ],
+        singlesScenes: [
+          { caption: '開局甲發球，喊「0-0」。', players: [A1({ label: '甲', depth: 'behind', serving: true }), B1({ label: '乙' })] },
+          { caption: '乙贏球拿到發球權。1 分是奇數，乙從左邊發，先喊自己的分數：「1-0」。', players: [A1({ label: '甲', pos: 'left' }), B1({ label: '乙', pos: 'left', depth: 'behind', serving: true })] },
+        ],
+      },
+      {
+        id: 'rally-positions',
+        step: 'positions',
+        title: '誰發球、站哪裡',
+        en: 'Serving & Positions',
+        summary: '兩隊都照自己的分數站：開局站右邊的人，偶數分在右、奇數分在左。換發時由站右邊的人發。',
+        detail: [
+          '發球方贏球：發球員跟搭檔換邊，同一個人繼續發。',
+          '接球方贏球：得 1 分並拿到發球權。兩人先照新分數站好，再由站右邊的人發球（14.A.4）。換發之後的第一球一定從右邊發。',
+          '輸球的那隊不動。',
+          '口訣：站位看分數，誰發看換發。',
+          '常見誤會：拿到發球權時不換位、直接由站左邊的人發。USA Pickleball 的寫法是先換位，換發後的第一球一律從右邊發。各球場做法不同的話，開打前講好。',
+        ],
+        scenes: [
+          { caption: '甲隊 0 分，甲1 從右邊發，喊「0-0」。', players: four({ A1: { depth: 'behind', serving: true } }) },
+          { caption: '甲隊贏球：1-0，甲1 和甲2 換邊，甲1 繼續發。', players: [A1({ pos: 'left', depth: 'behind', serving: true }), A2({ pos: 'right' }), B1(), B2()] },
+          { caption: '乙隊贏球：得 1 分並拿到發球權。1 分是奇數，乙1 和乙2 先換邊，再由站右邊的乙2 發，喊「1-1」。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1({ pos: 'left' }), B2({ pos: 'right', depth: 'behind', serving: true })] },
+          { caption: '甲隊再贏：2 分是偶數，甲1 回到右邊，由他發，喊「2-1」。乙隊輸球不動。', players: [A1({ depth: 'behind', serving: true }), A2(), B1({ pos: 'left' }), B2({ pos: 'right' })] },
+        ],
+        singlesSummary: '發球員看自己的分數站：偶數從右邊發、奇數從左邊發。接球的人站對角。',
+        singlesDetail: [
+          '站位跟側出計分的單打一樣，看發球員自己的分數：偶數右邊、奇數左邊。',
+          '發球方贏球：換到另一邊繼續發。',
+          '接球方贏球：拿到發球權，照自己的新分數決定從哪一邊發。',
+        ],
+        singlesScenes: [
+          { caption: '開局 0-0：甲從右邊發，乙站對角接。', players: [A1({ label: '甲', depth: 'behind', serving: true }), B1({ label: '乙' })], ball: { path: ['near:right:behind', 'far:right:mid'], bounces: [1] } },
+          { caption: '甲贏球：1-0，甲換到左邊繼續發，乙也換到對角接。', players: [A1({ label: '甲', pos: 'left', depth: 'behind', serving: true }), B1({ label: '乙', pos: 'left' })], ball: { path: ['near:left:behind', 'far:left:mid'], bounces: [1] } },
+          { caption: '乙贏球：乙得 1 分並拿到發球權。1 分是奇數，乙從左邊發，喊「1-1」。', players: [A1({ label: '甲', pos: 'left' }), B1({ label: '乙', pos: 'left', depth: 'behind', serving: true })], ball: { path: ['far:left:behind', 'near:left:mid'], bounces: [1] } },
+        ],
+      },
+      {
+        id: 'rally-pro',
+        title: '職業賽與凍結',
+        en: 'Pro Play (MLP)',
+        summary: '職業聯盟 MLP 2023 到 2025 年用每球得分加「凍結」：快贏的那隊只有自己發球時才能得分。2026 年雙打改回側出計分。',
+        collapsed: true,
+        detail: [
+          '凍結是什麼：分數到某個關卡之後，這一隊只有在自己發球時贏球才得分。對方發球時就算你贏了那一球，也只是拿回發球權、不加分，跟側出計分一樣。',
+          'MLP 雙打打到 21 分：先到 20 分的隊伍凍結；另一隊追到 18 分時也凍結。',
+          '例子：甲 20、乙 15，甲已經凍結。乙發球、甲贏了這一球：甲不加分，只換甲發球。甲發球再贏一球：21 分，比賽結束。',
+          '為什麼要凍結：不讓接球的一方靠一球就結束比賽，最後幾分會更有拉鋸。這是 MLP 的規則，USA Pickleball 的每球得分沒有凍結。',
+          '2026 年 MLP 雙打改回側出計分 11 分制，每球得分只留在單打決勝的 DreamBreaker（打到 21 分，贏 2 分，沒有凍結）。',
+          '所以現在會看到的「每球得分」，就是上面 USA Pickleball 的暫行版本，沒有凍結規則。',
+        ],
+        scenes: [],
       },
     ],
   },
@@ -199,133 +412,6 @@ export const SECTIONS = [
       },
     ],
   },
-  {
-    id: 'sideout',
-    title: '側出計分',
-    en: 'Side-out Scoring',
-    subtitle: 'USA Pickleball 正式比賽',
-    scoring: 'sideout',
-    intro: '正式比賽和大多數球場用的計分。只有發球方能得分。',
-    items: [
-      {
-        id: 'scoring',
-        title: '計分與喊分',
-        en: 'Scoring',
-        summary: '只有發球方能得分。打到 11 分、要贏 2 分。雙打喊三個數字：「發球方分數、接球方分數、第幾發球員」。',
-        detail: [
-          '開局喊「0-0-2」：第一局第一個發球的隊伍只有一個人可以發，所以直接從第二發球員開始。',
-          '發球方贏了這一球得 1 分，同一個人繼續發。發球方輸了不扣分，換搭檔發；兩個人都輸了才換對方發。',
-          '正式比賽通常打三局兩勝，每局 11 分；也有 15 分或 21 分的賽制。',
-        ],
-        singlesSummary: '只有發球方能得分。打到 11 分、要贏 2 分。單打喊兩個數字：「發球方分數、接球方分數」。',
-        singlesDetail: [
-          '發球方贏了這一球得 1 分，繼續發。發球方輸了不扣分，直接換對方發（side-out），單打沒有第二發球員。',
-          '每次發球只有一次機會，沒有網球那種第二發。發球失誤就算輸這一球，單打直接換對方發。',
-          '發球位置看發球員自己的分數：偶數從右邊發、奇數從左邊發。接球的人站對角。',
-          '正式比賽通常打三局兩勝，每局 11 分；也有 15 分或 21 分的賽制。',
-        ],
-        singlesScenes: [
-          { caption: '開局甲發球，喊「0-0」。單打只喊兩個數字。', players: [S(srv), R()] },
-          { caption: '甲贏這球變 1 分。1 是奇數，甲換到左邊發，喊「1-0」。', players: [S({ pos: 'left', ...srv }), R({ pos: 'left' })] },
-          { caption: '甲輸了這一球。單打沒有第二發球員，直接換乙發。乙 0 分從右邊發，喊「0-1」。', players: [S(), R(srv)] },
-        ],
-        scenes: [
-          { caption: '開局甲隊發球，喊「0-0-2」。', players: four({ A1: { depth: 'behind', serving: true } }) },
-          { caption: '甲隊贏了這一球，變 1 分，喊「1-0-2」。發球員和搭檔換位置，同一個人繼續發。', players: [A1({ pos: 'left', depth: 'behind', serving: true }), A2({ pos: 'right' }), B1(), B2()] },
-          { caption: '甲隊輸了這一球。因為是第二發球員，換乙隊發球，喊「0-1-1」。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1({ depth: 'behind', serving: true }), B2()] },
-        ],
-      },
-      {
-        id: 'positions',
-        play: 'doubles',
-        title: '發球順序與站位',
-        en: 'Serving Order & Positions',
-        summary: '拿回發球權時，站在右邊的人先發。得分才換位，接球的隊伍不動。',
-        detail: [
-          '每次 side-out 的第一球都從右邊發，由當時站右邊的人發，這個人就是這一輪的第一發球員（4.B.6）。沒有固定的第一發球員。',
-          '發球方贏一球，發球員跟搭檔換邊，同一個人繼續發。發球方輸一球，換搭檔發，從他站的位置發。第二發球員也輸了就 side-out。',
-          '接球的隊伍永遠不動。所以「誰站右邊」只跟分數有關：開局站右邊的人，你們偶數分時他在右邊，奇數分時他在左邊。',
-          '口訣：拿回發球權，看分數確認站位，右邊的人開球。',
-        ],
-        scenes: [
-          { caption: '開局：甲1 站右邊發球，喊「0-0-2」。', players: four({ A1: { depth: 'behind', serving: true } }) },
-          { caption: '甲隊得 1 分：甲1 和甲2 換邊，甲1 從左邊繼續發，喊「1-0-2」。', players: [A1({ pos: 'left', depth: 'behind', serving: true }), A2({ pos: 'right' }), B1(), B2()] },
-          { caption: '甲隊失分，side-out。乙隊 0 分，乙1 站右邊先發，喊「0-1-1」。甲隊維持原位不動。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1({ depth: 'behind', serving: true }), B2()] },
-          { caption: '乙1 失分：換乙2 發，從他站的左邊發，喊「0-1-2」。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1(), B2({ depth: 'behind', serving: true })] },
-          { caption: '乙2 也失分，side-out 回甲隊。甲隊 1 分（奇數），甲1 在左邊，所以站右邊的甲2 先發，喊「1-0-1」。', players: [A1({ pos: 'left' }), A2({ pos: 'right', depth: 'behind', serving: true }), B1(), B2()] },
-          { caption: '甲2 得分變 2 分（偶數）：兩人換邊，甲1 回到右邊。開局站右的甲1，偶數分永遠在右邊。', players: [A1({ pos: 'right' }), A2({ pos: 'left', depth: 'behind', serving: true }), B1(), B2()] },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'rally',
-    title: '每球得分',
-    en: 'Rally Scoring',
-    subtitle: '2026 暫行規則',
-    scoring: 'rally',
-    intro: '每一球都有人得分，一局比較快結束，很多球場的社交球用這個。USA Pickleball 2025 年起把它列為暫行規則（provisional），2026 年繼續沿用。',
-    items: [
-      {
-        id: 'rally-basics',
-        play: 'doubles',
-        title: '計分與站位',
-        en: 'Scoring & Positions',
-        summary: '每一球結束都有一隊得 1 分，誰贏這球誰發下一球。沒有第二發球員。',
-        detail: [
-          '打到 11、15 或 21 分，要贏 2 分。社交球最常用 15 或 21。',
-          '發球方贏球：得 1 分，發球員跟搭檔換邊，同一個人繼續發。',
-          '接球方贏球：得 1 分並拿到發球權。兩人先照新分數站好，再由站右邊的人發球（14.A.4）。換發之後的第一球一定從右邊發。',
-          '照分數站位：開局站右邊的人，己方偶數分時在右邊、奇數分時在左邊。輸球的那隊不動。',
-          '口訣：站位看分數，誰發看換發。兩隊隨時照自己的分數站（開局站右邊的人，偶數在右、奇數在左）；換發時由站右邊的人發；同一個人連續得分就每分換邊繼續發。',
-          '常見誤會：拿到發球權時不換位、直接由站左邊的人發。USA Pickleball 的寫法是先換位，換發後的第一球一律從右邊發。各球場做法不同的話，開打前講好。',
-          '2026 年起接球方也可以拿下最後一分，不用先拿回發球權。',
-          '喊分只喊兩個數字：「我方分數、對方分數」。',
-        ],
-        scenes: [
-          { caption: '甲隊 0 分，甲1 從右邊發，喊「0-0」。', players: four({ A1: { depth: 'behind', serving: true } }) },
-          { caption: '甲隊贏球：1-0，甲1 和甲2 換邊，甲1 繼續發。', players: [A1({ pos: 'left', depth: 'behind', serving: true }), A2({ pos: 'right' }), B1(), B2()] },
-          { caption: '乙隊贏球：得 1 分並拿到發球權。1 分是奇數，乙1 和乙2 先換邊，再由站右邊的乙2 發，喊「1-1」。', players: [A1({ pos: 'left' }), A2({ pos: 'right' }), B1({ pos: 'left' }), B2({ pos: 'right', depth: 'behind', serving: true })] },
-          { caption: '甲隊再贏：2 分是偶數，甲1 回到右邊，由他發，喊「2-1」。乙隊輸球不動。', players: [A1({ depth: 'behind', serving: true }), A2(), B1({ pos: 'left' }), B2({ pos: 'right' })] },
-        ],
-      },
-      {
-        id: 'rally-singles',
-        play: 'singles',
-        title: '計分與站位',
-        en: 'Scoring & Positions',
-        summary: '每一球都有人得分。發球員看自己的分數站：偶數從右邊發、奇數從左邊發。',
-        detail: [
-          '站位跟側出計分的單打一樣，看發球員自己的分數：偶數右邊、奇數左邊。接球的人站對角。',
-          '發球方贏球：得 1 分，換到另一邊繼續發。',
-          '接球方贏球：得 1 分並拿到發球權，照自己的新分數決定從哪一邊發。',
-          '要贏 2 分。打到幾分開打前講好，常見 15 或 21 分。',
-          '喊分喊兩個數字：「發球方分數、接球方分數」（14.A.3）。',
-        ],
-        scenes: [
-          { caption: '開局 0-0：甲從右邊發，乙站對角接。', players: [A1({ label: '甲', depth: 'behind', serving: true }), B1({ label: '乙' })], ball: { path: ['near:right:behind', 'far:right:mid'], bounces: [1] } },
-          { caption: '甲贏球：1-0，甲換到左邊繼續發，乙也換到對角接。', players: [A1({ label: '甲', pos: 'left', depth: 'behind', serving: true }), B1({ label: '乙', pos: 'left' })], ball: { path: ['near:left:behind', 'far:left:mid'], bounces: [1] } },
-          { caption: '乙贏球：乙得 1 分並拿到發球權。1 分是奇數，乙從左邊發，喊「1-1」。', players: [A1({ label: '甲', pos: 'left' }), B1({ label: '乙', pos: 'left', depth: 'behind', serving: true })], ball: { path: ['far:left:behind', 'near:left:mid'], bounces: [1] } },
-        ],
-      },
-      {
-        id: 'rally-pro',
-        title: '職業賽與凍結',
-        en: 'Pro Play (MLP)',
-        summary: '職業聯盟 MLP 2023 到 2025 年用每球得分加「凍結」：快贏的那隊只有自己發球時才能得分。2026 年雙打改回側出計分。',
-        collapsed: true,
-        detail: [
-          '凍結是什麼：分數到某個關卡之後，這一隊只有在自己發球時贏球才得分。對方發球時就算你贏了那一球，也只是拿回發球權、不加分，跟側出計分一樣。',
-          'MLP 雙打打到 21 分：先到 20 分的隊伍凍結；另一隊追到 18 分時也凍結。',
-          '例子：甲 20、乙 15，甲已經凍結。乙發球、甲贏了這一球：甲不加分，只換甲發球。甲發球再贏一球：21 分，比賽結束。',
-          '為什麼要凍結：不讓接球的一方靠一球就結束比賽，最後幾分會更有拉鋸。這是 MLP 的規則，USA Pickleball 的每球得分沒有凍結。',
-          '2026 年 MLP 雙打改回側出計分 11 分制，每球得分只留在單打決勝的 DreamBreaker（打到 21 分，贏 2 分，沒有凍結）。',
-          '所以現在會看到的「每球得分」，就是上面 USA Pickleball 的暫行版本，沒有凍結規則。',
-        ],
-        scenes: [],
-      },
-    ],
-  },
 ];
 
 export const COMPARE = {
@@ -340,15 +426,4 @@ export const COMPARE = {
     ['最後一分', '要在自己發球時拿到', '接球方也可以直接拿下'],
     ['一局多久', '約 15 到 25 分鐘', '約 10 到 15 分鐘'],
   ],
-};
-
-// 在單條規則頁切換「打法 × 計分」時，這條不適用新組合就跳到對應的那一條。
-// key 是新的組合「打法:計分」；沒寫到的組合就回目錄總覽。
-export const COUNTERPARTS = {
-  positions: { 'singles:sideout': 'scoring-singles', 'doubles:rally': 'rally-basics', 'singles:rally': 'rally-singles' },
-  scoring: { 'doubles:rally': 'rally-basics', 'singles:rally': 'rally-singles' },
-  'scoring-singles': { 'doubles:rally': 'rally-basics', 'singles:rally': 'rally-singles' },
-  'rally-basics': { 'singles:rally': 'rally-singles', 'doubles:sideout': 'scoring', 'singles:sideout': 'scoring-singles' },
-  'rally-singles': { 'doubles:rally': 'rally-basics', 'doubles:sideout': 'scoring', 'singles:sideout': 'scoring-singles' },
-  'rally-pro': { 'doubles:sideout': 'scoring', 'singles:sideout': 'scoring-singles' },
 };
