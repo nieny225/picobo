@@ -46,9 +46,9 @@ export const SCORE_SETUP = {
 
 // 分享比分／戰績成圖片（IG 限動、貼文）。照片只在手機上畫，不上傳。{n} 換成數字。
 export const SCORE_SHARE = {
-  open: '分享比分',
-  openStats: '分享今天戰績',
-  title: '分享成圖片',
+  open: '分享到 IG',
+  openStats: '今天戰績分享到 IG',
+  title: '分享到 IG',
   tabs: { image: '圖片', sticker: '貼紙' },
   formats: { story: '限動 9:16', post: '貼文 4:5' },
   addPhoto: '加照片',
@@ -59,7 +59,7 @@ export const SCORE_SHARE = {
   copySticker: '複製貼紙',
   saveSticker: '存貼紙',
   close: '關閉',
-  hint: '按「分享」選 Instagram，就能發限動或貼文。照片只用在這支手機上，不會上傳。',
+  hint: '按「分享」選 Instagram，就能發限動或貼文（也可以選 LINE、WhatsApp）。照片只用在這支手機上，不會上傳。',
   stickerHint: '複製後到 IG 限動，在照片上長按選「貼上」，貼紙可以拖、縮放、轉。貼不上的話，改按「存貼紙」，再從相簿加進限動。',
   saved: '圖片存好了',
   copied: '貼紙複製好了，到 IG 限動貼上',
