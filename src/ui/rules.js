@@ -265,7 +265,9 @@ export function mountRules(root) {
     const p = PAGES.find(q => q.id === current);
     const fi = formatIndex(current);
     pageEl.innerHTML = p ? pageHtml(p, filter) : fi >= 0 ? formatPageHtml(fi) : indexHtml(filter);
-    filtersEl.innerHTML = barFilterHtml(filter);
+    // Fun formats are not filtered by play or scoring: their bar holds only share.
+    filtersEl.innerHTML = fi >= 0 ? '' : barFilterHtml(filter);
+    if (fi >= 0) hintEl.hidden = true;
     shareSlot.innerHTML = p || fi >= 0 ? shareButtonHtml() : '';
     drawerNav.innerHTML = drawerNavHtml(filter);
     for (const a of drawerNav.querySelectorAll('a[data-id]')) {
