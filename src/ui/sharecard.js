@@ -72,15 +72,17 @@ function brandTag(ctx) {
   ctx.fillStyle = C.white; ctx.fillText(T.brandZh, 66 + w + 72, 158);
 }
 
-// A small "picobo." block, right-aligned at (x, y).
+// A small yellow block with the site address, right-aligned at (x, y), so
+// whoever sees the picture knows where to find it. Returns its width.
 function brandSmall(ctx, xRight, y, size = 48) {
   ctx.font = `700 ${size}px ${NUM}`;
-  const w = ctx.measureText(T.brand).width + size * 0.6;
+  const w = ctx.measureText(T.url).width + size * 0.6;
   const h = size * 1.4;
   ctx.fillStyle = C.mark; ctx.fillRect(xRight - w, y - h / 2, w, h);
   ctx.lineWidth = 6; ctx.strokeStyle = C.ink; ctx.strokeRect(xRight - w, y - h / 2, w, h);
   ctx.fillStyle = C.ink; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  ctx.fillText(T.brand, xRight - w / 2, y + 2);
+  ctx.fillText(T.url, xRight - w / 2, y + 2);
+  return w;
 }
 
 // The score band along the bottom (B1). Names sit beside the score when they
@@ -119,9 +121,9 @@ function scoreBand(ctx, h, card) {
     }
   }
   // Meta line and the small brand block.
+  const bw = brandSmall(ctx, x + w - 48, y + bh - 96, 52);
   ctx.textAlign = 'left'; ctx.fillStyle = C.muted;
-  fitText(ctx, card.meta, x + 48, y + bh - 96, w - 420, 44, 700, CJK);
-  brandSmall(ctx, x + w - 48, y + bh - 96, 60);
+  fitText(ctx, card.meta, x + 48, y + bh - 96, w - 96 - bw - 30, 44, 700, CJK);
 }
 
 // 戰績 rows inside a box: rank badge, name, played, won.
@@ -147,32 +149,31 @@ function statsRows(ctx, card, x, y, w, rowH) {
   }
 }
 
-// 戰績 without a photo: the whole card in cream (E).
+// 戰績 without a photo: the whole card in cream (E). No title: the table
+// says what it is.
 function statsPlain(ctx, h, card) {
   ctx.fillStyle = C.bg; ctx.fillRect(0, 0, W, h);
-  ctx.fillStyle = C.ink; ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
-  ctx.font = `700 40px ${NUM}`; ctx.fillText(T.sport, 78, 150);
-  ctx.textAlign = 'right'; ctx.fillText(card.meta, W - 78, 150);
-  ctx.textAlign = 'left'; ctx.font = `900 96px ${CJK}`; ctx.fillText(card.title, 78, 300);
-  const rowH = h > 1500 ? 132 : 100;
-  statsRows(ctx, card, 78, 360, W - 156, rowH);
-  ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillStyle = C.ink; ctx.font = `900 44px ${CJK}`;
-  ctx.fillText(T.thanks, 78, h - 120);
-  brandSmall(ctx, W - 78, h - 120, 72);
+  brandTag(ctx);
+  ctx.fillStyle = C.ink; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  ctx.font = `900 52px ${CJK}`; ctx.fillText(card.meta, 78, 360);
+  const rowH = h > 1500 ? 140 : 104;
+  statsRows(ctx, card, 78, 420, W - 156, rowH);
+  brandSmall(ctx, W - 78, h - 120, 64);
 }
 
-// 戰績 over a photo: brand tag on top, the ranking on a cream panel below.
+// 戰績 over a photo: brand tag on top, the ranking on a cream panel below
+// with the date and the site address in its top row.
 function statsOnPhoto(ctx, h, card) {
   brandTag(ctx);
   const rowH = h > 1500 ? 102 : 78;
   const rows = card.rows.length + (card.rest ? 1 : 0);
-  const ph = 170 + rows * rowH + 30;
+  const ph = 140 + rows * rowH + 30;
   const x = 42, w = W - 84, y = h - ph - 54;
   box(ctx, x, y, w, ph, { fill: C.bg });
+  const bw = brandSmall(ctx, x + w - 48, y + 78, 44);
   ctx.fillStyle = C.ink; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-  ctx.font = `900 72px ${CJK}`; ctx.fillText(card.title, x + 48, y + 90);
-  ctx.textAlign = 'right'; ctx.fillStyle = C.muted; ctx.font = `700 40px ${CJK}`; ctx.fillText(card.meta, x + w - 48, y + 92);
-  statsRows(ctx, card, x + 30, y + 170, w - 60, rowH);
+  fitText(ctx, card.meta, x + 48, y + 80, w - 96 - bw - 30, 48, 900, CJK);
+  statsRows(ctx, card, x + 30, y + 140, w - 60, rowH);
 }
 
 // The whole picture for `kind` at `format`, onto `canvas`.
@@ -209,9 +210,9 @@ function drawSticker(canvas, card) {
   ctx.textAlign = 'center'; ctx.fillStyle = C.white;
   fitText(ctx, card.teams[1].join('・'), 12 + w / 2, 410, w - 120, 52, 700, CJK);
   ctx.font = `700 44px ${NUM}`;
-  const bw = ctx.measureText(T.brand).width + 40;
+  const bw = ctx.measureText(T.url).width + 40;
   ctx.fillStyle = C.mark; rect(ctx, 12 + w / 2 - bw / 2, 470, bw, 64, 12); ctx.fill();
-  ctx.fillStyle = C.ink; ctx.fillText(T.brand, 12 + w / 2, 504);
+  ctx.fillStyle = C.ink; ctx.fillText(T.url, 12 + w / 2, 504);
 }
 
 // The icon for sharing to IG: a plain camera (not Instagram's own mark),

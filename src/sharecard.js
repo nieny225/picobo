@@ -31,7 +31,6 @@ export function statsCard(stats, date, labels, limit = 5) {
   if (ranked.length === 0) throw new Error('sharecard: no games yet');
   const total = Object.keys(stats).length;
   return {
-    title: labels.statsTitle,
     meta: [dateText(date), fill(labels.people, { n: total })].join('・'),
     rows: ranked.slice(0, limit).map(([name, r], i) => ({ rank: i + 1, name, played: r.played, won: r.won })),
     rest: total - Math.min(limit, ranked.length) > 0 ? fill(labels.rest, { n: total - Math.min(limit, ranked.length) }) : '',
