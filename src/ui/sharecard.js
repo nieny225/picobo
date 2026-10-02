@@ -201,35 +201,31 @@ function drawCard(canvas, kind, card, format, photo) {
   scoreBand(ctx, h, card);
 }
 
-// The score as a sticker on a transparent background (C).
+// The score as a sticker on a transparent background (C): each team's
+// names over its own score, left and right, so it is clear whose is whose.
 function drawSticker(canvas, card) {
-  const w = 900, h = 560;
-  canvas.width = w + 24; canvas.height = h + 24;
+  const w = 900, h = 580, pad = 12;
+  canvas.width = w + pad * 2; canvas.height = h + pad * 2;
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = C.ink; rect(ctx, 12, 12, w, h, 72); ctx.fill();
-  ctx.lineWidth = 14; ctx.strokeStyle = C.mark; rect(ctx, 12, 12, w, h, 72); ctx.stroke();
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = C.white;
-  fitText(ctx, card.teams[0].join('・'), 12 + w / 2, 100, w - 120, 52, 700, CJK);
-  ctx.font = `700 190px ${NUM}`;
-  const [a, b] = card.scores.map(String);
-  const dash = ' – ';
-  const wa = ctx.measureText(a).width, wd = ctx.measureText(dash).width, wb = ctx.measureText(b).width;
-  let sx = 12 + w / 2 - (wa + wd + wb) / 2;
-  ctx.textAlign = 'left';
-  ctx.fillStyle = card.winner === 0 ? C.mark : C.white; ctx.fillText(a, sx, 262); sx += wa;
-  ctx.fillStyle = C.white; ctx.fillText(dash, sx, 262); sx += wd;
-  ctx.fillStyle = card.winner === 1 ? C.mark : C.white; ctx.fillText(b, sx, 262);
-  ctx.textAlign = 'center'; ctx.fillStyle = C.white;
-  fitText(ctx, card.teams[1].join('・'), 12 + w / 2, 410, w - 120, 52, 700, CJK);
+  ctx.fillStyle = C.ink; rect(ctx, pad, pad, w, h, 72); ctx.fill();
+  ctx.lineWidth = 14; ctx.strokeStyle = C.mark; rect(ctx, pad, pad, w, h, 72); ctx.stroke();
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const cols = [pad + w * 0.27, pad + w * 0.73];
+  card.teams.forEach((names, t) => {
+    ctx.fillStyle = C.white;
+    names.forEach((n, j) => fitText(ctx, n, cols[t], 92 + j * 62, w * 0.42, 52, 700, CJK));
+    ctx.font = `700 190px ${NUM}`;
+    ctx.fillStyle = card.winner === t ? C.mark : C.white;
+    ctx.fillText(String(card.scores[t]), cols[t], 330);
+  });
+  ctx.fillStyle = C.white; ctx.font = `700 120px ${NUM}`; ctx.fillText('–', pad + w / 2, 325);
   ctx.font = `700 44px ${NUM}`;
   const bw = ctx.measureText(T.url).width + 40;
-  ctx.fillStyle = C.mark; rect(ctx, 12 + w / 2 - bw / 2, 470, bw, 64, 12); ctx.fill();
-  ctx.fillStyle = C.ink; ctx.fillText(T.url, 12 + w / 2, 504);
+  ctx.fillStyle = C.mark; rect(ctx, pad + w / 2 - bw / 2, 482, bw, 64, 12); ctx.fill();
+  ctx.fillStyle = C.ink; ctx.fillText(T.url, pad + w / 2, 516);
 }
 
-// The icon for sharing to IG: a plain camera (not Instagram's own mark),
-// distinct from the three-dot icon that shares a link.
 // A photo for the album button.
 const ALBUM_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>';
 
