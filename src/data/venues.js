@@ -22,6 +22,9 @@ const ACTIVESG_FEE = '公民／PR 約 S$3.50–9.50／小時（室內較便宜�
 const ACTIVESG_NOTE = '每次 1 小時、每天最多 2 個時段；尖峰時段 14 天前抽籤，其他時段 12 天前中午開放。';
 const CC_NOTE = '社區中心羽球場兼用，網子通常要自備；部分要整個場館一起訂。';
 const FREE_NOTE = '組屋區公共球場，不用預約，網子通常要自備。';
+const SCHOOL_NOTE = '學校禮堂（ActiveSG 開放給大眾），多半是晚上和週末，熱門時段要抽籤。';
+const CHECK = '資料只有單一或非官方來源，出發前先確認。';
+const school = (id, name, city, address) => ({ id, name, city, address, setting: 'indoor', fee: ACTIVESG_FEE, booking: [ACTIVESG], note: SCHOOL_NOTE, source: 'activesg.gov.sg pickleball venue list; moe.edu.sg school contact' });
 
 export const VENUES = [
   // ===== 中區 =====
@@ -42,6 +45,22 @@ export const VENUES = [
   { id: 'toa-payoh-east-cc', name: 'Toa Payoh East CC', city: '中區', address: '160 Lorong 6 Toa Payoh, Singapore 319380', setting: 'indoor', fee: '約 S$4–10／小時', booking: [ONEPA], note: CC_NOTE, source: 'onePA FAQ; picklesg.com 2026-02' },
   { id: 'toa-payoh-west-cc', name: 'Toa Payoh West CC', city: '中區', address: '200 Lorong 2 Toa Payoh, Singapore 319642', setting: 'indoor', fee: '約 S$4–10／小時', booking: [ONEPA], note: CC_NOTE, source: 'onePA FAQ; picklesg.com 2026-02' },
 
+  { id: 'balmoral-novotel', name: 'Balmoral Pickleball Club（Novotel Stevens）', city: '中區', address: '32 Stevens Road #02-01, Singapore 258892', setting: 'outdoor', courts: 4, fee: '平日中午 S$12／小時起，晚上和週末 S$32（場地方 2026-04 價目；飯店網頁價格較高）', hours: '每天 7:00–22:00', booking: [{ type: 'url', value: 'https://playtomic.io/tenant/313718e6-7231-4414-99ae-bcf99f41d5ea', label: 'Playtomic 預約' }, { type: 'whatsapp', value: '6589021223' }], note: '從 Novotel Singapore on Stevens 進去，搭電梯到 2 樓。可租球拍和球。', source: 'balmoralpickleballclub.com (rates after 13 Apr 2026); novotel-singapore-stevens.com' },
+  { id: 'mbp-suntec', name: 'MBP Sports @ Suntec City', city: '中區', address: '3 Temasek Blvd #04-01, Suntec City, Singapore 038983', fee: '離峰 S$32／小時，尖峰 S$44', booking: [{ type: 'url', value: 'https://mbpsports.com/locations', label: 'MBP Sports 預約' }, { type: 'phone', value: '+65 9644 7739' }], note: '從 Lobby M／M2b 上 4 樓。MBP 的匹克球主場，有淋浴間。', source: 'mbpsports.com/locations; mbpsports.com/pricing' },
+  { id: 'mbp-marina-square', name: 'MBP Sports @ Marina Square', city: '中區', address: '6 Raffles Blvd #04-105, Marina Square, Singapore 039594', setting: 'outdoor', fee: '離峰 S$32／小時，尖峰 S$44', booking: [{ type: 'url', value: 'https://mbpsports.com/locations', label: 'MBP Sports 預約' }, { type: 'phone', value: '+65 9644 7739' }], note: '4 樓頂樓，網球、padel、匹克球共用；沒有淋浴間。', source: 'mbpsports.com/locations; mbpsports.com/pricing' },
+  { id: 'new-bahru', name: 'Pickleball @ New Bahru', city: '中區', address: '46 Kim Yam Road, Singapore 239351', setting: 'indoor', courts: 2, fee: '離峰 S$38／小時，尖峰 S$48', booking: [{ type: 'url', value: 'https://app.acuityscheduling.com/schedule.php?owner=33373361' }], note: '學校區 2 樓禮堂，冷氣室內；2 週前開放預約。', source: 'Acuity booking page; newbahru.com/visit; Instagram' },
+  { id: 'src-franklin', name: 'SRC Franklin Pickleball Academy', city: '中區', address: 'SRC @ Ayer Rajah, Ayer Rajah Crescent (one-north)', courts: 9, booking: [{ type: 'url', value: 'https://src.franklinpickleball.com.sg/book/FranklinPickleballSingapore' }, { type: 'phone', value: '+65 9672 4205' }], note: '要先免費註冊才能預約；Grab 總部對面。2026 年 2 月開幕。', source: 'src.franklinpickleball.com.sg' },
+  { id: 'astrium-csc', name: 'Chinese Swimming Club — The Astrium', city: '中區', address: '21 Amber Road, Singapore 439870', setting: 'indoor', fee: '離峰 S$27.25／小時，尖峰 S$38.15（含稅）', hours: '每天 8:00–22:00', booking: [{ type: 'url', value: 'https://csc.iontone.com', label: '會員預約' }, { type: 'phone', value: '6885 0677' }], note: '會員制俱樂部，Astrium 2 樓 Stellar Grand，LED 地板室內場。', source: 'chineseswimmingclub.org.sg (Stellar Grand)' },
+  { id: 'spgg', name: 'SP Graduates’ Guild', city: '中區', address: '1010 Dover Road, Singapore 139658', setting: 'outdoor', courts: 3, fee: 'S$10.90／小時（優惠價），訪客每人 S$5.45', hours: '每天 8:00–21:00', booking: [{ type: 'url', value: 'https://www.spgg.org.sg/appointment/14', label: '會員預約' }, { type: 'phone', value: '6796 9988' }], note: '會員制，7 天前開放預約。', source: 'spgg.org.sg/pickleball-courts' },
+  { id: 'buona-vista-cc', name: 'Buona Vista CC', city: '中區', address: '36 Holland Drive #01-01, Singapore 270036', setting: 'indoor', fee: '約 S$4–10／小時', booking: [ONEPA, { type: 'phone', value: '6778 5163' }], note: CC_NOTE, source: 'onePA FAQ; onePA CC page' },
+  { id: 'thomson-cc', name: 'Thomson CC', city: '中區', address: '194 Upper Thomson Road, Singapore 574339', setting: 'indoor', courts: 3, fee: '離峰 S$6，尖峰 S$8', booking: [ONEPA, { type: 'phone', value: '6251 6344' }], note: '專用匹克球場，onePA 線上預約。', source: 'onePA ThomsonCC_PICKLEBALL; Thomson CC Facebook' },
+  { id: 'marymount-cc', name: 'Marymount CC', city: '中區', address: '191 Sin Ming Avenue #01-01, Singapore 575738', setting: 'indoor', courts: 2, fee: '離峰 S$6，尖峰 S$8', booking: [ONEPA, { type: 'phone', value: '6451 5955' }], note: '專用匹克球場，onePA 線上預約。', source: 'onePA MarymountCC_PICKLEBALL; Marymount CC Facebook' },
+  { id: 'bishan-cc', name: 'Bishan CC', city: '中區', address: '51 Bishan Street 13, Singapore 579799', setting: 'indoor', courts: 2, fee: '約 S$4–10／小時', booking: [ONEPA, { type: 'phone', value: '6259 4720' }], note: '社區會堂 1、2 號場羽球和匹克球共用。', source: 'Bishan CC Facebook (Dec 2025)' },
+  { id: 'toa-payoh-south-cc', name: 'Toa Payoh South CC', city: '中區', address: '1999 Lorong 8 Toa Payoh, Singapore 319258', setting: 'indoor', booking: [ONEPA, { type: 'phone', value: '6259 6602' }], note: `${CC_NOTE}${CHECK}`, source: 'picklesg.com; YouTube (not on onePA list)' },
+  school('school-chij-st-theresas', "CHIJ St. Theresa's Convent", '中區', '160 Lower Delta Road, Singapore 099138'),
+  school('school-gan-eng-seng', 'Gan Eng Seng School', '中區', '1 Henderson Road, Singapore 159561'),
+  school('school-nanyang-pri', 'Nanyang Primary School', '中區', "52 King's Road, Singapore 268097"),
+  school('school-new-town-pri', 'New Town Primary School', '中區', '300 Tanglin Halt Road, Singapore 148812'),
   // ===== 東區 =====
   { id: 'sports-arina-expo', name: 'The Sports Arina（Expo）', city: '東區', address: '9 Somapah Road, Hall 7 Singapore Expo, Singapore 487370', setting: 'indoor', courts: 12, fee: '平日 S$30–45／小時，週末 S$40–45', hours: '每天 7:00–23:00', booking: [{ type: 'url', value: 'https://playtomic.com/clubs/sph?sport=PICKLEBALL', label: 'Playtomic 預約' }, { type: 'phone', value: '+65 9299 1795' }], note: '冷氣室內場。', source: 'TheSmartLocal; SassyMama' },
   { id: 'play-pickle-st-patricks', name: "Play! Pickle @ St Patrick's School", city: '東區', address: '490 East Coast Road, Singapore 429058', setting: 'sheltered', courts: 3, fee: 'S$40／小時', hours: '週五 18:30–21:30；週六日 8:00–20:00', booking: [PLAY_PICKLE], note: '2026 年 10 月新開。', source: 'playpickle.sg/court-booking' },
@@ -52,6 +71,13 @@ export const VENUES = [
   { id: 'bedok-north', name: 'ActiveSG Sport Park @ Bedok North', city: '東區', address: '3 Bedok North Street 2, Singapore 469643', setting: 'outdoor', fee: ACTIVESG_FEE, hours: '每天 7:00–22:00', booking: [ACTIVESG, { type: 'phone', value: '6443 5511' }], note: ACTIVESG_NOTE, source: 'activesg.gov.sg' },
   { id: 'bedok-south-14', name: 'Blk 14 Bedok South', city: '東區', address: '14 Bedok South Avenue 2, Singapore 460014', setting: 'outdoor', courts: 1, fee: '免費', note: FREE_NOTE, source: 'TheSmartLocal; SassyMama' },
 
+  { id: 'performance-pickleball-beach-club', name: 'Performance Pickleball（Changi Beach Club）', city: '東區', address: '350 Cranwell Road, Singapore 509864', courts: 5, fee: '離峰 S$32／小時，尖峰 S$40', hours: '週一至四 9:00–24:00，週五至日 8:00–24:00', booking: [{ type: 'url', value: 'https://book.performancepickleball.org/book/performancepickleball' }, { type: 'whatsapp', value: '6588912037' }], note: 'Changi Beach Club 裡，軟墊球場，會錄影；每天 9:00 開放新時段。', source: 'performancepickleball.org (beachclub, court-booking)' },
+  { id: 'bedok-stadium', name: 'Bedok Stadium', city: '東區', address: '1 Bedok North Street 2, Singapore 469642', fee: ACTIVESG_FEE, booking: [ACTIVESG], note: ACTIVESG_NOTE, source: 'activesg.gov.sg pickleball venue list' },
+  school('school-changkat-pri', 'Changkat Primary School', '東區', '11 Simei Street 3, Singapore 529896'),
+  school('school-damai-sec', 'Damai Secondary School', '東區', '4800 Bedok Reservoir Road, Singapore 479229'),
+  school('school-junyuan-pri', 'Junyuan Primary School', '東區', '2 Tampines Street 91, Singapore 528906'),
+  school('school-loyang-view-sec', 'Loyang View Secondary School', '東區', '12 Pasir Ris Street 11, Singapore 519073'),
+  school('school-pasir-ris-pri', 'Pasir Ris Primary School', '東區', '5 Pasir Ris Street 21, Singapore 518968'),
   // ===== 西區 =====
   { id: 'jurong-play-grounds', name: 'Jurong Play Grounds', city: '西區', address: '2 Jurong Gateway Road, Singapore 608512', setting: 'outdoor', courts: 7, fee: '平日白天 S$12–18／小時，尖峰 S$32', booking: [{ type: 'url', value: 'https://app.smashing.sg/' }, { type: 'phone', value: '+65 6275 3155' }], note: '部分有遮陰；同一處另有 Straits Pickle Club 的 3 面場。', source: 'TheSmartLocal; SassyMama' },
   { id: 'straits-pickle-club', name: 'Straits Pickle Club', city: '西區', address: '2 Jurong Gateway Road, Singapore 608512', setting: 'outdoor', courts: 3, fee: '約 S$18–32／小時', booking: [{ type: 'url', value: 'https://straitspickleclub.com/court-booking' }], note: '在 Jurong Play Grounds 裡，有遮陰。', source: 'TheSmartLocal; SassyMama; straitspickleclub.com' },
@@ -65,22 +91,35 @@ export const VENUES = [
   { id: 'jurong-west-523', name: 'Jurong West Blk 523 一帶', city: '西區', address: '523 Jurong West Street 52, Singapore 640523', setting: 'outdoor', courts: 2, fee: '免費', note: FREE_NOTE, source: 'TheSmartLocal; SassyMama' },
   { id: 'segar-467', name: 'Blk 467 Segar Road', city: '西區', address: '467 Segar Road, Singapore 670467', setting: 'outdoor', fee: '免費', note: FREE_NOTE, source: 'TheSmartLocal; SassyMama' },
 
+  { id: 'ark-sports-village', name: 'ARK Sports Village', city: '西區', address: '20A Segar Road, Singapore 679350', setting: 'sheltered', courts: 5, fee: 'S$20／小時起', hours: '每天 8:00–22:00', booking: [{ type: 'url', value: 'https://theark.sg/pickleball' }, { type: 'phone', value: '9185 2555' }], note: 'Bukit Panjang 高架橋下，有遮蔽。', source: 'theark.sg/pickleball; TheSmartLocal (hours)' },
+  { id: 'nanyang-cc', name: 'Nanyang CC', city: '西區', address: '60 Jurong West Street 91, Singapore 649040', setting: 'indoor', courts: 3, booking: [ONEPA, { type: 'phone', value: '6791 0395' }], note: `${CC_NOTE}${CHECK}`, source: 'Pickleheads (not on onePA list)' },
+  school('school-dunearn-sec', 'Dunearn Secondary School', '西區', '21 Bukit Batok West Avenue 2, Singapore 659204'),
+  school('school-greenridge-pri', 'Greenridge Primary School', '西區', '11 Jelapang Road, Singapore 677744'),
+  school('school-hillgrove-sec', 'Hillgrove Secondary School', '西區', '10 Bukit Batok Street 52, Singapore 659250'),
+  school('school-rulang-pri', 'Rulang Primary School', '西區', '6 Jurong West Street 52, Singapore 649295'),
+  school('school-xingnan-pri', 'Xingnan Primary School', '西區', '5 Jurong West Street 91, Singapore 649036'),
   // ===== 北區 =====
   { id: 'bukit-canberra', name: 'Bukit Canberra Sport Hall', city: '北區', address: '21 Canberra Link, Singapore 756973', setting: 'indoor', courts: 2, fee: ACTIVESG_FEE, hours: '每天 7:00–22:00', booking: [ACTIVESG, { type: 'phone', value: '6374 5342' }], note: ACTIVESG_NOTE, source: 'activesg.gov.sg; TheSmartLocal' },
   { id: 'yishun-sport-hall', name: 'Yishun Sport Hall', city: '北區', address: '101 Yishun Avenue 1, Singapore 769130', setting: 'indoor', fee: ACTIVESG_FEE, hours: '每天 7:00–22:00', booking: [ACTIVESG, { type: 'phone', value: '6756 7416' }], note: ACTIVESG_NOTE, source: 'activesg.gov.sg' },
   { id: 'hometeamns-khatib', name: 'HomeTeamNS Khatib', city: '北區', address: '2 Yishun Walk, Singapore 767944', setting: 'outdoor', courts: 2, fee: '一般 S$23–28／小時，會員 S$15–20', booking: [{ type: 'phone', value: '+65 6708 6670' }], note: '4 樓頂樓球場。', source: 'TheSmartLocal' },
   { id: 'safra-yishun', name: 'SAFRA Yishun', city: '北區', address: '60 Yishun Avenue 4, Singapore 769027', setting: 'outdoor', courts: 1, fee: '會員 S$3.30–6.60／小時，訪客 S$5.10–10.20', booking: [{ type: 'url', value: 'https://www.safra.sg/amenities-offerings/tennis-pickleball-courts' }], source: 'TheSmartLocal' },
 
+  school('school-chongfu', 'Chongfu School', '北區', '170 Yishun Avenue 6, Singapore 768959'),
+  school('school-wellington-pri', 'Wellington Primary School', '北區', '10 Wellington Circle, Singapore 757702'),
   // ===== 東北區 =====
   { id: 'play-pickle-serangoon', name: 'Play! Pickle Serangoon', city: '東北區', address: '756 Upper Serangoon Road #04-27, Singapore 534626', setting: 'indoor', courts: 5, fee: '平日白天 S$38／小時，晚上和週末 S$48（單打小場較便宜）', hours: '每天 7:00–24:00', booking: [PLAY_PICKLE], note: '冷氣室內，4 面標準場加 1 面單打場；15 天前開放預約。', source: 'playpickle.sg/court-booking' },
   { id: 'play-pickle-punggol', name: 'Play! Pickle Punggol', city: '東北區', address: '10 Tebing Lane, Singapore 828836', setting: ['sheltered', 'outdoor'], courts: 8, fee: '有頂棚場 S$20–35／小時，戶外 S$10–28', hours: '每天 7:00–24:00', booking: [PLAY_PICKLE, { type: 'phone', value: '8228 4334' }], note: '6 面有頂棚標準場、1 面單打場、1 面戶外場。', source: 'playpickle.sg/court-booking; TheSmartLocal' },
   { id: 'sports-arina-jalan-kayu', name: 'The Sports Arina @ Jalan Kayu', city: '東北區', address: '20A Fernvale Rd, Singapore 799951', courts: 10, fee: '非會員 S$25–35／小時', hours: '每天 8:00–22:00', booking: [{ type: 'url', value: 'https://playtomic.com/clubs/tsa-jalan-kayu?sport=PICKLEBALL', label: 'Playtomic 預約' }, { type: 'phone', value: '+65 8088 1795' }], note: 'Thanggam 輕軌站附近，2026 年 4 月開幕。', source: 'TheSmartLocal' },
-  { id: 'performance-pickleball-punggol', name: 'Performance Pickleball Punggol', city: '東北區', address: '11 Northshore Drive #01-23, Singapore 828670', setting: 'sheltered', courts: 2, fee: '約 S$32–40／小時', booking: [{ type: 'url', value: 'https://app.courtreserve.com/', label: 'CourtReserve 預約' }], note: '每天 9:00 開放 14 天後的時段。', source: 'TheSmartLocal; SassyMama' },
+  { id: 'performance-pickleball-punggol', name: 'Performance Pickleball（Boathouse）', city: '東北區', address: '11 Northshore Drive #01-23, Singapore 828670', setting: 'sheltered', courts: 2, fee: '離峰 S$32／小時，尖峰 S$40', hours: '週一至四 9:00–24:00，週五至日 8:00–24:00', booking: [{ type: 'url', value: 'https://book.performancepickleball.org/book/performancepickleball' }, { type: 'whatsapp', value: '6588912037' }], note: 'Boathouse，室內有遮蔽；每天 9:00 開放新時段。', source: 'performancepickleball.org; TheSmartLocal' },
   { id: 'sengkang-outdoor', name: 'Sengkang Outdoor Pickleball Courts', city: '東北區', address: '57 Anchorvale Road, Singapore 544964', setting: 'outdoor', courts: 3, fee: ACTIVESG_FEE, hours: '每天 7:00–22:00', booking: [ACTIVESG, { type: 'phone', value: '6315 3574' }], note: ACTIVESG_NOTE, source: 'activesg.gov.sg' },
   { id: 'hougang-sport-hall', name: 'Hougang Sport Hall', city: '東北區', address: '93 Hougang Avenue 4, Singapore 538832', setting: 'indoor', fee: ACTIVESG_FEE, hours: '每天 7:00–22:00', booking: [ACTIVESG, { type: 'phone', value: '6315 8671' }], note: ACTIVESG_NOTE, source: 'activesg.gov.sg' },
   { id: 'hwi-yoh-cc', name: 'Hwi Yoh CC', city: '東北區', address: '535 Serangoon North Ave 4 #01-179, Singapore 550535', setting: 'indoor', fee: '約 S$4–10／小時', booking: [ONEPA, { type: 'phone', value: '6484 0338' }], note: CC_NOTE, source: 'onePA FAQ; picklesg.com 2026-02' },
   { id: 'kebun-baru-cc', name: 'Kebun Baru CC', city: '東北區', address: '216 Ang Mo Kio Avenue 4, Singapore 569897', setting: 'indoor', fee: '約 S$4–10／小時', booking: [ONEPA, { type: 'phone', value: '6457 7379' }], note: `要整個場館一起訂。${CC_NOTE}`, source: 'onePA FAQ; picklesg.com 2026-02' },
   { id: 'serangoon-north-546', name: 'Blk 546 Serangoon North', city: '東北區', address: '546 Serangoon North Ave 3, Singapore 550546', setting: 'sheltered', courts: 1, fee: '免費', note: FREE_NOTE, source: 'TheSmartLocal; SassyMama' },
+  { id: 'yio-chu-kang-tennis', name: 'Yio Chu Kang Tennis Centre', city: '東北區', address: '200 Ang Mo Kio Avenue 9, Singapore 569770', setting: 'outdoor', fee: ACTIVESG_FEE, hours: '每天 7:00–22:00', booking: [ACTIVESG, { type: 'phone', value: '6482 4980' }], note: `據說只有 9A 小場畫了匹克球線，用 ActiveSG 訂網球小場。${CHECK}`, source: 'activesgcircle.gov.sg; Facebook; Pickleheads (not on ActiveSG pickleball list)' },
+  school('school-anderson-sec', 'Anderson Secondary School', '東北區', '10 Ang Mo Kio Street 53, Singapore 569206'),
+  school('school-horizon-pri', 'Horizon Primary School', '東北區', '61 Edgedale Plains, Singapore 828819'),
+  school('school-yangzheng-pri', 'Yangzheng Primary School', '東北區', '15 Serangoon Avenue 3, Singapore 556108'),
 ];
 
 export const VENUES_PAGE = {

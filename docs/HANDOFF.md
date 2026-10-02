@@ -268,13 +268,10 @@ The rules tab was one 16,800 px page on a phone. Now:
   (handoff kind `meetup`) with a one-line summary for the chat. Hidden for now (`MEETUP.open: false`: no home card, no 在這裡揪團 on courts) — the user prefers a copy-paste sign-up message after booking (接龍 list), under discussion; #meetup still works by URL. Opening it
   only shows the card (map, .ics calendar file, contact, 我也來揪一團); it
   never replaces anything. Last form saved as `picobo.meetup`. #venues reads
-  `src/data/venues.js`: 48 Singapore courts (ARK Pickle Cuppage added on request) (the app's first audience is
+  `src/data/venues.js`: 84 Singapore courts (all found venues, on request: commercial clubs, ActiveSG incl. 19 school halls, onePA CCs, members' clubs, free HDB courts) (the app's first audience is
   Taiwanese players in Singapore), grouped 中區／東區／西區／北區／東北區, Pickle &
   Bones @ TRIFECTA (the user's regular court) first. Sources: venue sites,
-  ActiveSG, onePA, TheSmartLocal (2026-06), SassyMama (2026-09); left out:
-  Performance Pickleball's second site, New Bahru, the Astrium, ActiveSG
-  school halls (no addresses), Buona Vista / Thomson / Marymount CC (no
-  address). Prices change; the page says so. A sticky bar filters by search (name or address), region and kind (不怕下雨 = indoor, sheltered or both; 免費); region and kind are kept as `picobo.venueFilter`. A heart top right on each court saves it as a favourite (`picobo.favVenues`, this phone only); kind ♥ 最愛 lists them. Not built yet, needs a backend: accounts, live sign-up
+  ActiveSG, onePA, TheSmartLocal (2026-06), SassyMama (2026-09); entries with only one or unofficial source say so in their note (資料只有單一或非官方來源). Not listed: Braddell Heights CC (no address found). Prices change; the page says so. A sticky bar filters by search (name or address), region and kind (不怕下雨 = indoor, sheltered or both; 免費); region and kind are kept as `picobo.venueFilter`. A heart top right on each court saves it as a favourite (`picobo.favVenues`, this phone only); kind ♥ 最愛 lists them. Not built yet, needs a backend: accounts, live sign-up
   counts, a public list, booking and payment.
 - 報名訊息 (#signup, under the 約球 tab; user's pick over 揪團卡): after
   booking, the host gets the plain-text 接龍 list groups already paste in
