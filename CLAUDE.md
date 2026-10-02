@@ -101,6 +101,13 @@ tests/*.test.js         node:test for the pure modules
 - CSS: colors and spacing are custom properties on `:root`, redefined for
   dark mode. Tap targets are at least 44px. No horizontal page scroll at
   360px width. Prefer `scroll-snap` carousels for step-by-step rule scenes.
+- Page order on the rules tab has one source: `toc(f)` in `src/ui/rules.js`
+  (SECTIONS order, the side-out vs rally table after the shown scoring
+  section, fun formats by purpose group, then 更多). The index, the drawer and
+  上一條／下一條 all read it; never order pages inside one view. When you add,
+  move or rename a rule or format, check all four filter combinations
+  (雙打／單打 × 側出計分／每球得分): index, drawer and the prev / next chain must
+  list the same pages in the same order.
 - Fail loud: throw on impossible state (unknown mode, negative score, unknown
   team) rather than silently falling back.
 - Keep files small and flat. Surgical changes over rewrites.

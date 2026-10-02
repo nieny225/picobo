@@ -89,7 +89,29 @@ const FORMAT_LINKS = FORMATS.map(f => ({ href: `#formats/${f.id}`, id: `formats/
 // Grouped by purpose (人多場地少, 想練技術, …), in data order.
 const FORMAT_GROUPS = [...new Set(FORMATS.map(f => f.group))].map(g => [g, FORMAT_LINKS.filter(p => p.group === g)]);
 
-const link = (p, f) => `<a class="rule-link" href="${p.href ?? `#rules/${p.id}`}">
+// The table of contents for a filter: the one source of page order. The
+// index, the drawer and prev / next all read it, so they cannot disagree.
+// Each group has lists of [subheading or null, pages].
+function toc(f) {
+  return [
+    ...SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => ({ sec, title: sec.title, en: sec.en, lists: [[null, sectionPages(sec, f)]] })),
+    { id: 'formats', title: FORMATS_PAGE.title, en: FORMATS_PAGE.en, note: FORMATS_PAGE.note, lists: FORMAT_GROUPS },
+    { title: RULES_INDEX.more, en: RULES_INDEX.moreEn, lists: [[null, MORE]] },
+  ];
+}
+const tocPages = f => toc(f).flatMap(g => g.lists.flatMap(([, pages]) => pages));
+const hrefOf = p => p.href ?? `#rules/${p.id}`;
+
+// Prev / next for any page in the reading order of the filter.
+function pagerHtml(id, f) {
+  const list = tocPages(f), i = list.findIndex(q => q.id === id);
+  const step = (q, label, cls) => q
+    ? `<a class="pager-link ${cls}" href="${hrefOf(q)}"><span class="muted small">${esc(label)}</span><b>${esc(q.title)}</b></a>`
+    : '<span></span>';
+  return `<nav class="pager">${step(list[i - 1], RULE_PAGE.prev, 'prev')}${step(list[i + 1], RULE_PAGE.next, 'next')}</nav>`;
+}
+
+const link = p => `<a class="rule-link" href="${hrefOf(p)}">
   <span class="rule-link-text"><b>${esc(p.title)}${enTag(p.en)}</b><span class="rule-link-sum">${esc(p.summary)}</span></span></a>`;
 
 // The two switches in the sticky bar: 雙打｜單打 and 側出計分｜每球得分 (English in small type).
@@ -100,22 +122,15 @@ function barFilterHtml(f) {
 }
 
 function indexHtml(f) {
-  const groups = SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => `
-    <section class="rule-group" id="rules-${sec.id}" data-title="${esc(sec.title)}">
-      <h3>${esc(sec.title)}${enTag(sec.en)}${sec.subtitle ? ` <span class="muted small">${esc(sec.subtitle)}</span>` : ''}</h3>
-      ${sec.note ? `<p class="small section-note">${esc(sec.note)}</p>` : ''}
-      <div class="rule-list">${sectionPages(sec, f).map(p => link(p, f)).join('')}</div>
+  const groups = toc(f).map(g => `
+    <section class="rule-group"${g.sec || g.id ? ` id="rules-${g.sec?.id ?? g.id}"` : ''} data-title="${esc(g.title)}">
+      <h3>${esc(g.title)}${enTag(g.en)}${g.sec?.subtitle ? ` <span class="muted small">${esc(g.sec.subtitle)}</span>` : ''}</h3>
+      ${g.sec?.note ? `<p class="small section-note">${esc(g.sec.note)}</p>` : ''}${g.note ? `<p class="muted small">${esc(g.note)}</p>` : ''}
+      ${g.lists.map(([sub, pages]) => `${sub ? `<h4 class="format-group">${esc(sub)}</h4>` : ''}<div class="rule-list">${pages.map(link).join('')}</div>`).join('')}
     </section>`).join('');
   return `
     <div class="section-head"><h2>${esc(RULES_INDEX.title)}</h2><p class="intro">${esc(RULES_INDEX.intro)}</p></div>
-    ${groups}
-    <section class="rule-group" id="rules-formats" data-title="${esc(FORMATS_PAGE.title)}"><h3>${esc(FORMATS_PAGE.title)}${enTag(FORMATS_PAGE.en)}</h3>
-      <p class="muted small">${esc(FORMATS_PAGE.note)}</p>
-      ${FORMAT_GROUPS.map(([g, list]) => `<h4 class="format-group">${esc(g)}</h4><div class="rule-list">${list.map(p => link(p)).join('')}</div>`).join('')}
-    </section>
-    <section class="rule-group" data-title="${esc(RULES_INDEX.more)}"><h3>${esc(RULES_INDEX.more)}${enTag(RULES_INDEX.moreEn)}</h3>
-      <div class="rule-list">${MORE.map(p => link(p)).join('')}</div>
-    </section>`;
+    ${groups}`;
 }
 
 // "適用：雙打｜側出計分" under a rule's title.
@@ -144,26 +159,13 @@ function formatBarHtml(i) {
     `<button type="button" data-format-group="${esc(g)}" aria-pressed="${FORMATS[i].group === g}" aria-label="${esc(g)}">${esc(short[g] ?? g)}</button>`).join('')}</div>`;
 }
 
-// A fun format's page (#formats/<id>): prev / next walk the formats.
-function formatPageHtml(i) {
-  const prev = FORMATS[i - 1], next = FORMATS[i + 1];
-  const step = (q, label, cls) => q
-    ? `<a class="pager-link ${cls}" href="#formats/${q.id}"><span class="muted small">${esc(label)}</span><b>${esc(q.name)}</b></a>`
-    : '<span></span>';
-  return `${formatCardHtml(FORMATS[i])}
-    <nav class="pager">${step(prev, RULE_PAGE.prev, 'prev')}${step(next, RULE_PAGE.next, 'next')}</nav>`;
-}
+// A fun format's page (#formats/<id>).
+const formatPageHtml = (i, f) => `${formatCardHtml(FORMATS[i])}${pagerHtml(`formats/${FORMATS[i].id}`, f)}`;
 const formatIndex = key => (key.startsWith('formats/') ? FORMATS.findIndex(f => `formats/${f.id}` === key) : -1);
 
-// Prev / next walk the pages of the current filter; a page reached from a
-// shared link outside the filter walks the full list instead.
+// A rule (or compare / FAQ / glossary) page. Opening a rule switches the
+// filter to match it (see show), so it is always in the filter's order.
 function pageHtml(p, f) {
-  let list = PAGES.filter(q => pageShown(q, f));
-  if (!list.includes(p)) list = PAGES;
-  const i = list.indexOf(p), prev = list[i - 1], next = list[i + 1];
-  const step = (q, label, cls) => q
-    ? `<a class="pager-link ${cls}" href="#rules/${q.id}"><span class="muted small">${esc(label)}</span><b>${esc(q.title)}</b></a>`
-    : '<span></span>';
   // Scoring steps end with a link that opens the scoreboard in the same mode.
   const tryScore = p.item?.step
     ? `<a class="btn btn-block try-score" href="#score?play=${p.item.play}&scoring=${p.sec.scoring}">${esc(RULE_PAGE.tryScore)}</a>`
@@ -171,7 +173,7 @@ function pageHtml(p, f) {
   return `
     ${pageBody(p, f)}
     ${tryScore}
-    <nav class="pager">${step(prev, RULE_PAGE.prev, 'prev')}${step(next, RULE_PAGE.next, 'next')}</nav>`;
+    ${pagerHtml(p.id, f)}`;
 }
 
 // Swipe left to dismiss: the drawer follows the finger and closes once it
@@ -231,14 +233,11 @@ function dragToOpen(tab, open) {
 // Left drawer listing every page, reachable from any rules page. It is a
 // modal <dialog>, so focus, Esc and the backdrop come from the browser.
 function drawerNavHtml(f) {
-  const item = p => `<li><a href="${p.href ?? `#rules/${p.id}`}" data-id="${p.id}">${esc(p.title)}${enTag(p.en)}</a></li>`;
-  const group = (title, en, pages) => `<h3>${esc(title)}${enTag(en)}</h3><ul>${pages.map(item).join('')}</ul>`;
+  const item = p => `<li><a href="${hrefOf(p)}" data-id="${p.id}">${esc(p.title)}${enTag(p.en)}</a></li>`;
   return `<p class="drawer-note">${esc(FILTER.showing)}<b>${optionHtml(optionById('play', f.play))}・${optionHtml(optionById('scoring', f.scoring))}</b></p>
     <a class="drawer-home" href="#rules" data-id="">${esc(DRAWER.home)}</a>
-    ${SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => group(sec.title, sec.en, sectionPages(sec, f))).join('')}
-    <h3>${esc(FORMATS_PAGE.title)}${enTag(FORMATS_PAGE.en)}</h3>
-    ${FORMAT_GROUPS.map(([g, list]) => `<h4>${esc(g)}</h4><ul>${list.map(item).join('')}</ul>`).join('')}
-    ${group(RULES_INDEX.more, RULES_INDEX.moreEn, MORE)}`;
+    ${toc(f).map(g => `<h3>${esc(g.title)}${enTag(g.en)}</h3>
+      ${g.lists.map(([sub, pages]) => `${sub ? `<h4>${esc(sub)}</h4>` : ''}<ul>${pages.map(item).join('')}</ul>`).join('')}`).join('')}`;
 }
 
 function drawerHtml() {
@@ -275,7 +274,7 @@ export function mountRules(root) {
   const render = () => {
     const p = PAGES.find(q => q.id === current);
     const fi = formatIndex(current);
-    pageEl.innerHTML = p ? pageHtml(p, filter) : fi >= 0 ? formatPageHtml(fi) : indexHtml(filter);
+    pageEl.innerHTML = p ? pageHtml(p, filter) : fi >= 0 ? formatPageHtml(fi, filter) : indexHtml(filter);
     // Fun formats are not filtered by play or scoring: their bar picks a purpose group.
     filtersEl.innerHTML = fi >= 0 ? formatBarHtml(fi) : barFilterHtml(filter);
     if (fi >= 0) hintEl.hidden = true;

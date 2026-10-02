@@ -256,6 +256,11 @@ The rules tab was one 16,800 px page on a phone. Now:
   singles `#rules/<id>-singles`. Switching play jumps to the twin silently.
   Opening a rule outside the current filter (a shared link) switches the
   bar to match. Old `#rules/singles` lands on `points-singles`.
+- Rules page order comes from `toc(f)` in `src/ui/rules.js`; index, drawer
+  and prev / next (rules and fun formats alike, one chain) all read it. The
+  check used after changes: for each of the four filter combinations, the
+  index links, the drawer links, and walking 下一條 and 上一條 end to end
+  must give the same list (Playwright, 25 pages per combination today).
 - Share is an icon only (no 分享 text), top right on every tool: the rules
   bar, the 計分 and 抽籤 headings, Pico Bowl and its organizer screen. During
   a game it sits in the board's top-right corner (hand-over link); full
