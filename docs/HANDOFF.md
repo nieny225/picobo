@@ -378,6 +378,9 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   title (the table says it); cream card with the logo on top without
   a photo, ranking panel over the photo with one. Every image carries
   picobo.net (score band, 戰績, sticker).
+  The score band / 戰績 panel has 小／中／大 (scale 0.55 / 0.75 / 1; a photo
+  makes it 小 until the player picks) and can be dragged on the preview;
+  it stays inside the picture and below the brand tag when it fits.
   Games also have a 貼紙 tab: transparent PNG, 複製貼紙 (ClipboardItem) or
   存貼紙. Not yet tried on a real phone with Instagram.
 

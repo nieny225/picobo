@@ -573,6 +573,9 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .share-preview { display: block; width: auto; max-width: 100%; max-height: 48dvh; margin: 0 auto; border: 2px solid var(--ink); border-radius: 6px; background: var(--surface-2); }
 .share-preview.is-sticker { background: repeating-conic-gradient(#ccc 0 25%, #fff 0 50%) 0 0 / 20px 20px; }
 .share-photo .share-nophoto { flex: none; width: 48px; padding: 0; font-size: 1.4rem; }
+.share-size { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.share-size .seg { flex: none; }
+.share-preview.is-movable { touch-action: none; cursor: grab; }
 .share-actions .btn { flex: 1; }
 .share-hint { margin: 0; }
 .stats-title { margin: 14px 0 6px; font-size: 1rem; }

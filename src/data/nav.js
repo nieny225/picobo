@@ -56,6 +56,9 @@ export const SCORE_SHARE = {
   takePhoto: '拍照',
   pickPhoto: '選照片',
   removePhoto: '拿掉照片',
+  // 比分條／戰績表的大小，和拖曳的提示。
+  sizes: { s: '小', m: '中', l: '大' },
+  dragHint: '在預覽上拖動可以移動位置',
   share: '分享',
   save: '存圖',
   copySticker: '複製貼紙',

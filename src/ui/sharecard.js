@@ -174,14 +174,10 @@ function statsPlain(ctx, h, card) {
   brandSmall(ctx, W - 78, h - 120, 64);
 }
 
-// 戰績 over a photo: brand tag on top, the ranking on a cream panel below
-// with the date and the site address in its top row. A long list grows the
-// panel up to about two thirds of the picture.
-function statsOnPhoto(ctx, h, card) {
-  brandTag(ctx);
-  const x = 42, w = W - 84;
-  const size = gridSize(card.rows.length, h * 0.66 - 180, h > 1500 ? 102 : 78);
-  const ph = 140 + size.height + 36, y = h - ph - 54;
+// 戰績 over a photo: the ranking on a cream panel, with the date and the
+// site address in its top row. A long list grows the panel up to about two
+// thirds of the picture (before the 小／中／大 size).
+function statsPanel(ctx, card, x, y, w, ph, size) {
   box(ctx, x, y, w, ph, { fill: C.bg });
   const bw = brandSmall(ctx, x + w - 48, y + 78, 44);
   ctx.fillStyle = C.ink; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
@@ -189,16 +185,48 @@ function statsOnPhoto(ctx, h, card) {
   statsGrid(ctx, card.rows, x + 30, y + 140, w - 60, size);
 }
 
-// The whole picture for `kind` at `format`, onto `canvas`.
-function drawCard(canvas, kind, card, format, photo) {
+// The part laid over the photo (the score band, or the 戰績 panel): its box
+// at full size, shadow included, and how to draw it there.
+function overlayOf(kind, h, card) {
+  const x = 42, w = W - 84;
+  if (kind === 'score') {
+    const bh = 552, y = h - bh - 54;
+    return { x, y, w: w + 18, h: bh + 18, draw: ctx => scoreBand(ctx, h, card) };
+  }
+  const size = gridSize(card.rows.length, h * 0.66 - 180, h > 1500 ? 102 : 78);
+  const ph = 140 + size.height + 36, y = h - ph - 54;
+  return { x, y, w: w + 18, h: ph + 18, draw: ctx => statsPanel(ctx, card, x, y, w, ph, size) };
+}
+
+// 小／中／大, and where the player dragged it (centre as a fraction of the
+// picture; none yet = along the bottom). Kept inside the picture.
+const SCALES = { s: 0.55, m: 0.75, l: 1 };
+const BRAND_BOTTOM = 300; // the brand tag ends here (with its shadow)
+function placeOverlay(ctx, h, o, layout) {
+  const k = SCALES[layout.size];
+  const ow = o.w * k, oh = o.h * k;
+  const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+  const cx = clamp(layout.fx == null ? W / 2 : layout.fx * W, ow / 2, W - ow / 2);
+  // Below the brand tag when it fits there, so the logo always shows.
+  const top = oh <= h - BRAND_BOTTOM ? BRAND_BOTTOM : 0;
+  const cy = clamp(layout.fy == null ? h - 36 - oh / 2 : layout.fy * h, top + oh / 2, h - oh / 2);
+  ctx.save();
+  ctx.translate(cx, cy); ctx.scale(k, k); ctx.translate(-(o.x + o.w / 2), -(o.y + o.h / 2));
+  o.draw(ctx);
+  ctx.restore();
+  return { cx, cy };
+}
+
+// The whole picture for `kind` at `format`, onto `canvas`. Returns where the
+// movable part sits (null when there is none: 戰績 without a photo).
+function drawCard(canvas, kind, card, format, photo, layout) {
   const h = SIZES[format];
   canvas.width = W; canvas.height = h;
   const ctx = canvas.getContext('2d');
-  if (kind === 'stats' && !photo) { statsPlain(ctx, h, card); return; }
+  if (kind === 'stats' && !photo) { statsPlain(ctx, h, card); return null; }
   background(ctx, h, photo);
-  if (kind === 'stats') { statsOnPhoto(ctx, h, card); return; }
   brandTag(ctx);
-  scoreBand(ctx, h, card);
+  return placeOverlay(ctx, h, overlayOf(kind, h, card), layout);
 }
 
 // The score as a sticker on a transparent background (C): each team's
@@ -246,6 +274,10 @@ function download(blob, name) {
 export async function openShareSheet(kind, data) {
   const card = kind === 'score' ? scoreCard(data, today(), T) : statsCard(data, today(), T);
   let format = 'story', mode = 'image', photo = null, photoUrl = '';
+  // Size and position of the score band / 戰績 panel. Until the player picks
+  // a size, a photo makes it 小 so the photo shows.
+  const layout = { size: 'l', fx: null, fy: null };
+  let sizeChosen = false, placed = null;
   const seg = (k, options, cur) => `<div class="seg" role="group">${options.map(([id, label]) =>
     `<button type="button" data-${k}="${id}" aria-pressed="${cur === id}">${esc(label)}</button>`).join('')}</div>`;
   const dlg = document.createElement('dialog');
@@ -254,6 +286,7 @@ export async function openShareSheet(kind, data) {
     ${kind === 'score' ? seg('mode', [['image', T.tabs.image], ['sticker', T.tabs.sticker]], mode) : ''}
     <div class="share-format">${seg('format', [['story', T.formats.story], ['post', T.formats.post]], format)}</div>
     <div class="share-photo"><label class="btn icon-btn">${CAMERA_ICON}<input type="file" accept="image/*" capture="environment" hidden><span>${esc(T.takePhoto)}</span></label><label class="btn icon-btn">${ALBUM_ICON}<input type="file" accept="image/*" hidden><span>${esc(T.pickPhoto)}</span></label><button type="button" class="btn btn-ghost share-nophoto" data-nophoto aria-label="${esc(T.removePhoto)}" title="${esc(T.removePhoto)}" hidden>×</button></div>
+    <div class="share-size">${seg('size', [['s', T.sizes.s], ['m', T.sizes.m], ['l', T.sizes.l]], layout.size)}<span class="muted small">${esc(T.dragHint)}</span></div>
     <canvas class="share-preview" role="img" aria-label="${esc(T.preview)}"></canvas>
     <div class="toolbar share-actions"></div>
     <p class="muted small share-hint"></p>`;
@@ -268,7 +301,11 @@ export async function openShareSheet(kind, data) {
     dlg.querySelector('.share-photo').hidden = sticker;
     dlg.querySelector('[data-nophoto]').hidden = !photo;
     canvas.classList.toggle('is-sticker', sticker);
-    if (sticker) drawSticker(canvas, card); else drawCard(canvas, kind, card, format, photo);
+    const movable = !sticker && !(kind === 'stats' && !photo);
+    dlg.querySelector('.share-size').hidden = !movable;
+    canvas.classList.toggle('is-movable', movable);
+    for (const b of dlg.querySelectorAll('[data-size]')) b.setAttribute('aria-pressed', String(b.dataset.size === layout.size));
+    if (sticker) { drawSticker(canvas, card); placed = null; } else placed = drawCard(canvas, kind, card, format, photo, layout);
     actions.innerHTML = sticker
       ? `<button type="button" class="btn btn-primary" data-act="copy">${esc(T.copySticker)}</button><button type="button" class="btn" data-act="save">${esc(T.saveSticker)}</button>`
       : `<button type="button" class="btn btn-primary" data-act="share">${esc(T.share)}</button><button type="button" class="btn" data-act="save">${esc(T.save)}</button>`;
@@ -282,7 +319,8 @@ export async function openShareSheet(kind, data) {
     if (!t) return;
     if (t.dataset.mode) { mode = t.dataset.mode; for (const b of dlg.querySelectorAll('[data-mode]')) b.setAttribute('aria-pressed', String(b === t)); render(); }
     if (t.dataset.format) { format = t.dataset.format; for (const b of dlg.querySelectorAll('[data-format]')) b.setAttribute('aria-pressed', String(b === t)); render(); }
-    if (t.dataset.nophoto !== undefined) { photo = null; render(); }
+    if (t.dataset.size) { layout.size = t.dataset.size; sizeChosen = true; render(); }
+    if (t.dataset.nophoto !== undefined) { photo = null; if (!sizeChosen) layout.size = 'l'; render(); }
     const act = t.dataset.act;
     if (act === 'share') {
       const blob = await toBlob(canvas);
@@ -309,9 +347,29 @@ export async function openShareSheet(kind, data) {
       await img.decode();
       if (photoUrl) URL.revokeObjectURL(photoUrl);
       photo = img; photoUrl = url;
+      if (!sizeChosen) layout.size = 's';
       render();
     } catch { URL.revokeObjectURL(url); toast(esc(T.photoFailed)); }
   });
+  // Drag on the preview to move the score band / 戰績 panel.
+  let drag = null, frame = 0;
+  const point = e => { const r = canvas.getBoundingClientRect(); return { x: (e.clientX - r.left) * canvas.width / r.width, y: (e.clientY - r.top) * canvas.height / r.height }; };
+  canvas.addEventListener('pointerdown', e => {
+    if (!placed || !canvas.classList.contains('is-movable')) return;
+    drag = { start: point(e), cx: placed.cx, cy: placed.cy };
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const p = point(e);
+    layout.fx = (drag.cx + p.x - drag.start.x) / canvas.width;
+    layout.fy = (drag.cy + p.y - drag.start.y) / canvas.height;
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(render);
+  });
+  const endDrag = () => { drag = null; };
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
   dlg.addEventListener('cancel', e => { e.preventDefault(); close(); });
   document.body.append(dlg);
   dlg.showModal();
