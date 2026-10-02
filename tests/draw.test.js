@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay } from '../src/draw.js';
+import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers } from '../src/draw.js';
 
 function seeded(seed) {
   let s = seed >>> 0;
@@ -112,4 +112,34 @@ test('open play: join fills an idle court; leave takes effect after the game', (
   s = joinOpenPlay(s, gone, seeded(5));
   assert.equal(s.queue[s.queue.length - 1], gone, 'can come back, counts kept');
   assert.deepEqual(s.stats[gone], { played: 1, won: 1 });
+});
+
+test('swapping players by hand: court and queue, any direction', () => {
+  const base = { courts: [{ court: 1, teams: [['A', 'B'], ['C', 'D']], first: 0 }, { court: 2, teams: [['E', 'F'], ['G', 'H']], first: 1 }], queue: ['I', 'J', 'K'], stats: {}, leaving: [] };
+  let s = swapPlayers(base, 'B', 'J');
+  assert.deepEqual(s.courts[0].teams, [['A', 'J'], ['C', 'D']]);
+  assert.deepEqual(s.queue, ['I', 'B', 'K']);
+  assert.deepEqual(base.courts[0].teams[0], ['A', 'B'], 'never mutates');
+  s = swapPlayers(base, 'K', 'I');
+  assert.deepEqual(s.queue, ['K', 'J', 'I']);
+  s = swapPlayers(base, 'A', 'H');
+  assert.deepEqual(s.courts.map(c => c.teams), [[['H', 'B'], ['C', 'D']], [['E', 'F'], ['G', 'A']]]);
+  s = swapPlayers(base, 'A', 'C');
+  assert.deepEqual(s.courts[0].teams, [['C', 'B'], ['A', 'D']]);
+  assert.throws(() => swapPlayers(base, 'A', 'B'), /partners/);
+  assert.throws(() => swapPlayers(base, 'A', 'A'), /two players/);
+  assert.throws(() => swapPlayers(base, 'A', 'Z'), /Z is not playing/);
+});
+
+test('a leaving player swapped off court leaves now; king of the court swaps too', () => {
+  const base = { courts: [{ court: 1, teams: [['A', 'B'], ['C', 'D']], first: 0 }], queue: ['E', 'F'], stats: {}, leaving: ['B'] };
+  const s = swapPlayers(base, 'B', 'E');
+  assert.deepEqual(s.courts[0].teams[0], ['A', 'E']);
+  assert.deepEqual(s.queue, ['F']);
+  assert.deepEqual(s.leaving, []);
+  let k = createKingOfCourt(names(6), 1, seeded(5));
+  const [x] = k.courts[0].teams[0], [y] = k.queue;
+  k = swapPlayers(k, x, y);
+  assert.ok(k.courts[0].teams[0].includes(y) && k.queue.includes(x));
+  assert.equal('leaving' in k, false);
 });

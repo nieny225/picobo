@@ -291,6 +291,12 @@ The rules tab was one 16,800 px page on a phone. Now:
   notes; a line with a date like 9/5 starts a session. One session goes
   straight in; several ask which. Names join the roster (or replace the
   example list) and join a running open-play queue.
+- 抽籤分組 and 國王球場: every name on court or in the queue is a button;
+  tapping it opens a sheet of who to trade places with (queue first, then
+  each court; not themself or their partner). `swapPlayers` (src/draw.js)
+  swaps any two positions, keeps counts, refuses partners, and drops a
+  leaving player who is swapped into the queue. Tested: court↔queue,
+  queue↔queue, court↔court, cancel, a game finished after swaps.
 - Share is an icon only (no 分享 text), top right on every tool: the rules
   bar, the 計分 and 抽籤 headings, Pico Bowl and its organizer screen. During
   a game it sits in the board's top-right corner (hand-over link); full

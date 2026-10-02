@@ -164,6 +164,31 @@ export function leaveOpenPlay(state, name) {
   return { ...state, queue: state.queue.filter(n => n !== name), leaving: onCourt ? [...state.leaving, name] : state.leaving };
 }
 
+// Swap two players wherever they stand: on a court (either team, any court)
+// or in the queue. Used when people trade places by hand ("you go in for
+// me"). Counts don't change. Partners on the same team can't swap (nothing
+// would change). In open play, someone who was leaving after this game and
+// is swapped into the queue simply leaves now.
+export function swapPlayers(state, a, b) {
+  if (a === b) throw new Error('draw: swap needs two players');
+  const courts = state.courts.map(c => ({ ...c, teams: c.teams.map(t => t.slice()) }));
+  let queue = state.queue.slice();
+  const find = name => {
+    for (const c of courts) for (const t of c.teams) { const i = t.indexOf(name); if (i >= 0) return { list: t, i }; }
+    const i = queue.indexOf(name);
+    if (i >= 0) return { list: queue, i };
+    throw new Error(`draw: ${name} is not playing`);
+  };
+  const pa = find(a), pb = find(b);
+  if (pa.list === pb.list && pa.list !== queue) throw new Error('draw: partners cannot swap');
+  pa.list[pa.i] = b;
+  pb.list[pb.i] = a;
+  if (!state.leaving) return { ...state, courts, queue };
+  const gone = state.leaving.filter(n => queue.includes(n));
+  queue = queue.filter(n => !gone.includes(n));
+  return { ...state, courts, queue, leaving: state.leaving.filter(n => !gone.includes(n)) };
+}
+
 function assertNames(names, min) {
   if (!Array.isArray(names) || names.length < min) throw new Error(`draw: need at least ${min} players`);
   if (new Set(names).size !== names.length) throw new Error('draw: duplicate player names');

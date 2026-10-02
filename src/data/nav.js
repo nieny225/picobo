@@ -69,6 +69,18 @@ export const DRAW_PASTE = {
   added: '已加入 {n} 人',
 };
 
+// 抽籤分組和國王球場：點人名跟別人交換位置（場上或排隊）。
+export const DRAW_SWAP = {
+  hint: '點名字可以跟別人交換位置。',
+  title: '{name} 要跟誰交換？',
+  note: '兩個人互換位置，戰績不變。',
+  queue: '排隊中',
+  court: '{court} 號場',
+  cancel: '取消',
+  none: '目前沒有可以交換的人。',
+  done: '{a} 和 {b} 換好了',
+};
+
 // 抽籤分組（排隊輪流上場）。{court} 換成場地編號。
 export const OPEN_PLAY = {
   start: '開始抽籤',
