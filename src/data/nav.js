@@ -95,6 +95,8 @@ export const DRAW_SWAP = {
 // 抽籤分組的混雙：開了才在名字前顯示性別，點一下換（未標 → ♂ → ♀）。
 export const DRAW_MIX = {
   toggle: '混雙',
+  // 勾選框旁的小註解。
+  note: '勾選後在名單點「?」標性別',
   hint: '點 ? 標性別（♂、♀），沒標的人誰都能配。',
   symbols: { '': '?', m: '♂\uFE0E', f: '♀\uFE0E' },
   labels: { '': '未標性別', m: '男', f: '女' },

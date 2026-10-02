@@ -189,7 +189,7 @@ export function mountDraw(root, { toScore } = {}) {
 
   const drawBody = () => `<div class="card draw-card"><div class="draw-controls">
     <div class="row"><div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="${play ? play.courts.length : 1}"></div><div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${esc(play ? OPEN_PLAY.redraw : OPEN_PLAY.start)}</button></div></div>
-    <label class="mix-toggle"><input type="checkbox" id="mix"${mix ? ' checked' : ''}> ${esc(X.toggle)}</label>
+    <label class="mix-toggle"><input type="checkbox" id="mix"${mix ? ' checked' : ''}> ${esc(X.toggle)}<span class="muted small mix-note">${esc(X.note)}</span></label>
     <p class="muted small">${esc(OPEN_PLAY.hint)}</p></div>
     <div id="out"></div></div>`;
 

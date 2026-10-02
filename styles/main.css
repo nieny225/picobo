@@ -508,8 +508,9 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .name-chip .chip-sex[data-g="f"] { color: var(--female); }
 .name-chip .chip-sex[data-g="none"] { color: var(--muted); font-size: 1rem; }
 .name-chip .chip-sex + .chip-name { padding-left: 2px; }
-.mix-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; }
+.mix-toggle { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; }
 .mix-toggle input { width: 20px; height: 20px; margin: 0; }
+.mix-note { font-weight: 500; }
 .rename-form { display: grid; gap: 12px; }
 .subtabs { display: flex; gap: 6px; border-bottom: var(--bw) solid var(--ink); }
 .subtab { border: 0; background: transparent; padding: 10px 12px; min-height: 44px; color: var(--muted); font-weight: 700; border-radius: 6px 6px 0 0; }
