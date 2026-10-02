@@ -53,8 +53,8 @@ export const SCORE_SHARE = {
   title: '分享到 IG',
   tabs: { image: '圖片', sticker: '貼紙' },
   formats: { story: '限動 9:16', post: '貼文 4:5' },
-  addPhoto: '加照片',
-  changePhoto: '換照片',
+  takePhoto: '拍照',
+  pickPhoto: '選照片',
   removePhoto: '拿掉照片',
   share: '分享',
   save: '存圖',
@@ -77,7 +77,6 @@ export const SCORE_SHARE = {
   people: '{n} 人',
   play: { doubles: '雙打', singles: '單打' },
   scoring: { sideout: '側出計分', rally: '每球得分', fun: '快打' },
-  target: '打到 {n} 分',
   file: 'picobo',
 };
 

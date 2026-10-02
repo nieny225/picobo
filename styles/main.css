@@ -569,9 +569,10 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .share-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .share-sheet-head .btn { min-height: 44px; padding: 4px 12px; }
 .share-photo { display: flex; gap: 8px; flex-wrap: wrap; }
-.share-photo .btn { flex: 1; text-align: center; cursor: pointer; display: grid; place-items: center; }
+.share-photo .btn { flex: 1; text-align: center; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; }
 .share-preview { display: block; width: auto; max-width: 100%; max-height: 48dvh; margin: 0 auto; border: 2px solid var(--ink); border-radius: 6px; background: var(--surface-2); }
 .share-preview.is-sticker { background: repeating-conic-gradient(#ccc 0 25%, #fff 0 50%) 0 0 / 20px 20px; }
+.share-photo .share-nophoto { flex: none; width: 48px; padding: 0; font-size: 1.4rem; }
 .share-actions .btn { flex: 1; }
 .share-hint { margin: 0; }
 .stats-title { margin: 14px 0 6px; font-size: 1rem; }

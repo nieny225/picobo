@@ -11,10 +11,10 @@ test('a finished game: teams, score, winner and the meta line', () => {
   assert.deepEqual(c.teams, [['Amy', 'Ben'], ['Chris', 'Dan']]);
   assert.deepEqual(c.scores, [1, 3]);
   assert.equal(c.winner, 1);
-  assert.equal(c.meta, '10/2 (Fri)・雙打・每球得分・打到 3 分');
+  assert.equal(c.meta, '10/2 (Fri)・雙打・每球得分');
   const s = scoreCard(createMatch({ mode: 'sideout-singles', teams: { A: ['Amy'], B: ['Ben'] } }), '2026-10-03', SCORE_SHARE);
   assert.equal(s.winner, null);
-  assert.equal(s.meta, '10/3 (Sat)・單打・側出計分・打到 11 分');
+  assert.equal(s.meta, '10/3 (Sat)・單打・側出計分');
   assert.throws(() => scoreCard(null, '2026-10-02', SCORE_SHARE), /not a match/);
 });
 

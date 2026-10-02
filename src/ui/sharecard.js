@@ -230,6 +230,9 @@ function drawSticker(canvas, card) {
 
 // The icon for sharing to IG: a plain camera (not Instagram's own mark),
 // distinct from the three-dot icon that shares a link.
+// A photo for the album button.
+const ALBUM_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>';
+
 export const CAMERA_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 
 const toBlob = canvas => new Promise((resolve, reject) => canvas.toBlob(b => (b ? resolve(b) : reject(new Error('sharecard: no image'))), 'image/png'));
@@ -254,7 +257,7 @@ export async function openShareSheet(kind, data) {
   dlg.innerHTML = `<div class="share-sheet-head"><b>${esc(T.title)}</b><button type="button" class="btn btn-ghost" data-close>${esc(T.close)}</button></div>
     ${kind === 'score' ? seg('mode', [['image', T.tabs.image], ['sticker', T.tabs.sticker]], mode) : ''}
     <div class="share-format">${seg('format', [['story', T.formats.story], ['post', T.formats.post]], format)}</div>
-    <div class="share-photo"><label class="btn"><input type="file" accept="image/*" hidden><span data-photo-label>${esc(T.addPhoto)}</span></label><button type="button" class="btn btn-ghost" data-nophoto hidden>${esc(T.removePhoto)}</button></div>
+    <div class="share-photo"><label class="btn icon-btn">${CAMERA_ICON}<input type="file" accept="image/*" capture="environment" hidden><span>${esc(T.takePhoto)}</span></label><label class="btn icon-btn">${ALBUM_ICON}<input type="file" accept="image/*" hidden><span>${esc(T.pickPhoto)}</span></label><button type="button" class="btn btn-ghost share-nophoto" data-nophoto aria-label="${esc(T.removePhoto)}" title="${esc(T.removePhoto)}" hidden>×</button></div>
     <canvas class="share-preview" role="img" aria-label="${esc(T.preview)}"></canvas>
     <div class="toolbar share-actions"></div>
     <p class="muted small share-hint"></p>`;
@@ -267,7 +270,6 @@ export async function openShareSheet(kind, data) {
     const sticker = mode === 'sticker';
     dlg.querySelector('.share-format').hidden = sticker;
     dlg.querySelector('.share-photo').hidden = sticker;
-    dlg.querySelector('[data-photo-label]').textContent = photo ? T.changePhoto : T.addPhoto;
     dlg.querySelector('[data-nophoto]').hidden = !photo;
     canvas.classList.toggle('is-sticker', sticker);
     if (sticker) drawSticker(canvas, card); else drawCard(canvas, kind, card, format, photo);
@@ -299,7 +301,8 @@ export async function openShareSheet(kind, data) {
       try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': toBlob(canvas) })]); toast(esc(T.copied)); } catch { toast(esc(T.copyFailed)); }
     }
   });
-  dlg.querySelector('input[type=file]').addEventListener('change', async e => {
+  // Take a photo now (the camera opens) or pick one from the album.
+  for (const input of dlg.querySelectorAll('input[type=file]')) input.addEventListener('change', async e => {
     const f = e.target.files?.[0];
     e.target.value = '';
     if (!f) return;

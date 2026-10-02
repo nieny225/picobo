@@ -7,7 +7,7 @@ const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 
 // A finished match from src/scoring.js: both teams' names, the scores, which
 // side won (0 = 甲, 1 = 乙) and one meta line, e.g.
-// "10/2 (Thu)・雙打・側出計分・打到 11 分".
+// "10/2 (Thu)・雙打・側出計分".
 export function scoreCard(match, date, labels) {
   if (!match?.teams?.A || !match?.teams?.B || !match.scores) throw new Error('sharecard: not a match');
   const doubles = match.teams.A.names.length > 1;
@@ -18,7 +18,7 @@ export function scoreCard(match, date, labels) {
     teams: [match.teams.A.names.slice(), match.teams.B.names.slice()],
     scores: [match.scores.A, match.scores.B],
     winner,
-    meta: [dateText(date), labels.play[doubles ? 'doubles' : 'singles'], labels.scoring[scoring], fill(labels.target, { n: match.target })].join('・'),
+    meta: [dateText(date), labels.play[doubles ? 'doubles' : 'singles'], labels.scoring[scoring]].join('・'),
   };
 }
 
