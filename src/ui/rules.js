@@ -72,6 +72,13 @@ const optionById = (k, id) => FILTER[k].options.find(o => o.id === id);
 const sectionShown = (sec, f) => !sec.scoring || sec.scoring === f.scoring;
 const pageShown = (p, f) => p.kind !== 'rule' || (sectionShown(p.sec, f) && (!p.item.play || p.item.play === f.play));
 
+// The side-out vs rally table closes whichever scoring section is shown.
+const sectionPages = (sec, f) => [
+  ...PAGES.filter(p => p.sec === sec && pageShown(p, f)),
+  ...(sec.scoring ? PAGES.filter(p => p.kind === 'compare') : []),
+];
+const MORE = PAGES.filter(p => !p.sec && p.kind !== 'compare');
+
 // Fun formats have their own pages (#formats/<id>) but are listed here, under
 // the rules tab, whatever the filter.
 const FORMAT_LINKS = FORMATS.map(f => ({ href: `#formats/${f.id}`, id: `formats/${f.id}`, title: f.name, en: f.en, summary: f.tagline }));
@@ -91,7 +98,7 @@ function indexHtml(f) {
   const groups = SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => `
     <section class="rule-group" id="rules-${sec.id}" data-title="${esc(sec.title)}">
       <h3>${esc(sec.title)}${enTag(sec.en)}${sec.subtitle ? ` <span class="muted small">${esc(sec.subtitle)}</span>` : ''}</h3>
-      <div class="rule-list">${PAGES.filter(p => p.sec === sec && pageShown(p, f)).map(p => link(p, f)).join('')}</div>
+      <div class="rule-list">${sectionPages(sec, f).map(p => link(p, f)).join('')}</div>
     </section>`).join('');
   return `
     <div class="section-head"><h2>${esc(RULES_INDEX.title)}</h2><p class="intro">${esc(RULES_INDEX.intro)}</p></div>
@@ -101,7 +108,7 @@ function indexHtml(f) {
       <div class="rule-list">${FORMAT_LINKS.map(p => link(p)).join('')}</div>
     </section>
     <section class="rule-group" data-title="${esc(RULES_INDEX.more)}"><h3>${esc(RULES_INDEX.more)}${enTag(RULES_INDEX.moreEn)}</h3>
-      <div class="rule-list">${PAGES.filter(p => !p.sec).map(p => link(p)).join('')}</div>
+      <div class="rule-list">${MORE.map(p => link(p)).join('')}</div>
     </section>`;
 }
 
@@ -200,9 +207,9 @@ function drawerNavHtml(f) {
     <ul>${pages.map(p => `<li><a href="${p.href ?? `#rules/${p.id}`}" data-id="${p.id}">${esc(p.title)}${enTag(p.en)}</a></li>`).join('')}</ul>`;
   return `<p class="drawer-note">${esc(FILTER.showing)}<b>${optionHtml(optionById('play', f.play))}・${optionHtml(optionById('scoring', f.scoring))}</b></p>
     <a class="drawer-home" href="#rules" data-id="">${esc(DRAWER.home)}</a>
-    ${SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => group(sec.title, sec.en, PAGES.filter(p => p.sec === sec && pageShown(p, f)))).join('')}
+    ${SECTIONS.filter(sec => sectionShown(sec, f)).map(sec => group(sec.title, sec.en, sectionPages(sec, f))).join('')}
     ${group(FORMATS_PAGE.title, FORMATS_PAGE.en, FORMAT_LINKS)}
-    ${group(RULES_INDEX.more, RULES_INDEX.moreEn, PAGES.filter(p => !p.sec))}`;
+    ${group(RULES_INDEX.more, RULES_INDEX.moreEn, MORE)}`;
 }
 
 function drawerHtml() {
