@@ -545,7 +545,6 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .stats th, .stats td { text-align: left; padding: 6px 8px; border-bottom: 2px solid var(--line-soft); }
 .stats th { color: var(--muted); font-weight: 700; }
 .stats td.num, .stats th:not(:first-child) { text-align: right; width: 3.5em; }
-.example-note { font-size: 0.8rem; color: var(--muted); }
 footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top: 12px; }
 
 

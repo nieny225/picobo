@@ -1,4 +1,4 @@
-import { SCORE_SETUP, DRAW_SAMPLE, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X, DRAW_SCORE as S } from '../data/nav.js';
+import { SCORE_SETUP, DRAW_EMPTY, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X, DRAW_SCORE as S } from '../data/nav.js';
 import { parseSignup } from '../signup.js';
 import { toast } from './share.js';
 import { isFull, toggleFull, onFullChange, fullIcon } from './fullscreen.js';
@@ -8,10 +8,18 @@ import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, fini
 const ROSTER_KEY = 'picobo.roster';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+// A first visit starts with an empty list; after that the last list stays.
+// Old versions started from an example list of real people's names (saved
+// as { sample: true }, or not saved at all): it is dropped, with any session
+// drawn from it.
 function loadRoster() {
-  // A saved sample (an untouched example list) is replaced by the current one.
-  try { const raw = localStorage.getItem(ROSTER_KEY); const r = raw && JSON.parse(raw); if (r && !r.sample) return r; } catch { /* ignore */ }
-  return { names: DRAW_SAMPLE.slice(), sample: true };
+  try {
+    const raw = localStorage.getItem(ROSTER_KEY); const r = raw && JSON.parse(raw);
+    if (r && !r.sample && Array.isArray(r.names)) return r;
+    // No list of its own yet: a saved session can only be from the example.
+    localStorage.removeItem(ROSTER_KEY); localStorage.removeItem('picobo.openplay');
+  } catch { /* ignore */ }
+  return { names: [] };
 }
 function saveRoster(r) {
   try { localStorage.setItem(ROSTER_KEY, JSON.stringify(r)); } catch { /* ignore */ }
@@ -162,8 +170,9 @@ export function mountDraw(root, { toScore } = {}) {
   const html = () => `
     <div class="section-head"><div class="head-row"><h2>抽籤輪轉</h2>${handoffButtonHtml()}</div><p class="intro">先輸入今天的球友，再選要怎麼分。</p></div>
     <div class="card roster-card">
-      <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3>${roster.sample ? '<span class="example-note">範例名單，改成你們的</span>' : ''}</div>
+      <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3></div>
       <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip">${showTags() ? tagHtml(n, i) : ''}<button type="button" class="chip-name" data-rename="${i}">${esc(n)}</button><button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
+      ${roster.names.length ? '' : `<p class="muted small">${esc(DRAW_EMPTY)}</p>`}
       ${roster.names.length ? `<p class="muted small">${esc(showTags() ? `${R.hint}${X.hint}` : R.hint)}</p>` : ''}
       <form class="row" id="add-form"><input class="input" id="add-name" placeholder="輸入名字" maxlength="8" autocomplete="off"><button class="btn" type="submit" style="flex:0 0 auto">加入</button><button class="btn btn-ghost" type="button" id="clear" style="flex:0 0 auto">清空</button></form>
       <details class="paste-list"><summary>${esc(P.open)}</summary>
@@ -282,7 +291,7 @@ export function mountDraw(root, { toScore } = {}) {
       e.preventDefault();
       const v = root.querySelector('#add-name').value.trim();
       if (!v || roster.names.includes(v)) return;
-      roster = { names: [...roster.names, v], sample: false };
+      roster = { names: [...roster.names, v] };
       if (play) setPlay(joinOpenPlay(play, v, Math.random, mixGenders()));
       saveRoster(roster); render();
       root.querySelector('#add-name').focus();
@@ -290,8 +299,8 @@ export function mountDraw(root, { toScore } = {}) {
     // A pasted sign-up list: one session goes straight in; several ask which.
     // The names join today's roster (or replace the example list).
     const addNames = names => {
-      const fresh = names.filter(n => !(roster.sample ? [] : roster.names).includes(n));
-      roster = { names: [...(roster.sample ? [] : roster.names), ...fresh], sample: false };
+      const fresh = names.filter(n => !roster.names.includes(n));
+      roster = { names: [...roster.names, ...fresh] };
       if (play) for (const n of fresh) setPlay(joinOpenPlay(play, n, Math.random, mixGenders()));
       saveRoster(roster); render();
       toast(esc(P.added.replace('{n}', fresh.length)));
@@ -305,7 +314,7 @@ export function mountDraw(root, { toScore } = {}) {
         `<button class="btn" type="button" data-session="${i}">${esc(P.session.replace('{title}', s.title || P.untitled).replace('{n}', s.names.length))}</button>`).join('')}</div>`;
       for (const b of pick.querySelectorAll('[data-session]')) b.addEventListener('click', () => addNames(sessions[Number(b.dataset.session)].names));
     });
-    root.querySelector('#clear').addEventListener('click', () => { roster = { names: [], sample: false }; koc = null; setPlay(null); saveRoster(roster); render(); });
+    root.querySelector('#clear').addEventListener('click', () => { roster = { names: [] }; koc = null; setPlay(null); saveRoster(roster); render(); });
     for (const b of root.querySelectorAll('[data-sex]')) b.addEventListener('click', () => {
       const n = roster.names[Number(b.dataset.sex)];
       const g = NEXT_GENDER[genders[n] ?? ''];
@@ -318,7 +327,7 @@ export function mountDraw(root, { toScore } = {}) {
       const i = Number(b.dataset.rename), old = roster.names[i];
       const name = await askRename(old, v => roster.names.includes(v));
       if (!name) return;
-      roster = { names: roster.names.map((n, j) => (j === i ? name : n)), sample: false };
+      roster = { names: roster.names.map((n, j) => (j === i ? name : n)) };
       if (genders[old]) { genders = { ...genders, [name]: genders[old] }; delete genders[old]; saveGenders(genders); }
       const has = s => s && (s.queue.includes(old) || s.courts.some(c => c.teams.flat().includes(old)) || old in (s.stats ?? {}));
       if (has(play)) setPlay(renamePlayer(play, old, name));
@@ -327,7 +336,7 @@ export function mountDraw(root, { toScore } = {}) {
     });
     for (const b of root.querySelectorAll('[data-remove]')) b.addEventListener('click', () => {
       const gone = roster.names[Number(b.dataset.remove)];
-      roster = { names: roster.names.filter((_, i) => i !== Number(b.dataset.remove)), sample: false };
+      roster = { names: roster.names.filter((_, i) => i !== Number(b.dataset.remove)) };
       if (play) setPlay(leaveOpenPlay(play, gone));
       koc = null; saveRoster(roster); render();
     });
@@ -338,7 +347,7 @@ export function mountDraw(root, { toScore } = {}) {
   render();
 
   return {
-    hasState: () => !roster.sample || !!play || !!koc,
+    hasState: () => roster.names.length > 0 || !!play || !!koc,
     // The scoreboard finished a game started from here: mark the winner on
     // that court (0 or 1) if the same game is still on it. False otherwise.
     reportWin(link, winnerIndex) {

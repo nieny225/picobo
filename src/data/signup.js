@@ -12,7 +12,7 @@ export const SIGNUP = {
     start: '開始',
     end: '結束',
     names: '已經報名（一行一組）',
-    namesHint: '例如：Rose & Max',
+    namesHint: '例如：Amy & Ben',
     cap: '人數上限（選填）',
     blanks: '留幾個空號',
   },

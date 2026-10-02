@@ -360,6 +360,10 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   game with `courtOfGame` (same court, same two teams) and marks the winner.
   If the court changed meanwhile it only says so. app.js wires the two views;
   same phone only (a hand-over drops `from`).
+- 抽籤 starts with an empty roster (no example names: they were real
+  friends' names). The last roster stays on the phone. An old saved example
+  list, or a session drawn from it, is dropped on load. Copy examples use
+  generic names (Amy & Ben, Chris).
 
 ## Known gaps and ideas not yet scheduled
 

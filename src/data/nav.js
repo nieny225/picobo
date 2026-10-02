@@ -54,13 +54,14 @@ export const SHARE = {
 };
 
 // 抽籤頁還沒輸入球友時的範例名單。
-export const DRAW_SAMPLE = ['Bruce', 'Annie', 'Steven', 'Max', 'Rose', 'Henry', 'Lara', 'Casey', 'Frank', 'Erica', 'Matthew', 'Tom', 'GT', 'Mandy', 'John', 'Nick', 'Vivian'];
+// 抽籤：第一次用時名單是空的，這行提示怎麼開始。
+export const DRAW_EMPTY = '還沒有球友。輸入名字，或貼上群組接龍。';
 
 // 抽籤：把群組裡的報名接龍貼進來，讀出名字。{n} 人數，{title} 哪一場。
 export const DRAW_PASTE = {
   open: '貼上群組接龍，自動讀出名字',
-  hint: '把群組裡的接龍整則貼進來，例如「1. Rose & Max」，一組兩人會拆成兩個名字。',
-  placeholder: '9/5 (Sat) 5-7pm\n1. Rose & Max\n2. Henry',
+  hint: '把群組裡的接龍整則貼進來，例如「1. Amy & Ben」，一組兩人會拆成兩個名字。',
+  placeholder: '9/5 (Sat) 5-7pm\n1. Amy & Ben\n2. Chris',
   read: '讀出名字',
   pick: '這則有好幾場，要用哪一場？',
   session: '{title}（{n} 人）',
