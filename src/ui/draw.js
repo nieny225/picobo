@@ -202,9 +202,8 @@ export function mountDraw(root) {
       if (sub === 'draw') {
         if (!guard(4)) return;
         // A redraw reshuffles everyone and keeps the counts.
-        const fresh = createOpenPlay(roster.names, courts());
-        if (play) for (const n of roster.names) if (play.stats[n]) fresh.stats[n] = play.stats[n];
-        setPlay(fresh);
+        // A redraw keeps the counts and puts whoever has played least first.
+        setPlay(createOpenPlay(roster.names, courts(), Math.random, play?.stats ?? {}));
         body.querySelector('#go').textContent = OPEN_PLAY.redraw;
         renderPlay(out);
       } else if (sub === 'rr') {

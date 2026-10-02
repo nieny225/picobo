@@ -159,3 +159,11 @@ test('renaming a player follows them everywhere', () => {
   assert.deepEqual(k.courts[0].teams[1], ['C', 'Dan']);
   assert.equal('stats' in k, false);
 });
+
+test('a redraw keeps counts and puts whoever played least first', () => {
+  const prior = { P1: { played: 3, won: 2 }, P2: { played: 0, won: 0 }, P3: { played: 3, won: 1 }, P4: { played: 1, won: 1 }, P5: { played: 2, won: 0 }, P6: { played: 0, won: 0 } };
+  const s = createOpenPlay(names(6), 1, seeded(11), prior);
+  const order = [...s.courts[0].teams.flat(), ...s.queue];
+  assert.deepEqual(order.map(n => prior[n].played), [0, 0, 1, 2, 3, 3]);
+  assert.deepEqual(s.stats.P1, { played: 3, won: 2 });
+});

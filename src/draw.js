@@ -110,13 +110,16 @@ export function advanceKingOfCourt(state, courtIndex, winnerIndex, maxStreak = 3
 // the queue take the court, front two against next two. The finished four
 // re-queue as winner, loser, winner, loser so partners split up next time.
 // Played/won counts are kept per player. `first` is the team that serves
-// first on each court (coin flip).
-export function createOpenPlay(names, courtCount, rng = Math.random) {
+// first on each court (coin flip). A redraw passes the counts so far: the
+// shuffle then puts whoever has played least at the front (random among
+// equals) and keeps the counts.
+export function createOpenPlay(names, courtCount, rng = Math.random, prior = {}) {
   assertNames(names, 4);
   if (!Number.isInteger(courtCount) || courtCount < 1) throw new Error('draw: courtCount must be >= 1');
-  const queue = shuffle(names, rng);
+  const played = n => prior[n]?.played ?? 0;
+  const queue = shuffle(names, rng).sort((a, b) => played(a) - played(b));
   const stats = {};
-  for (const n of names) stats[n] = { played: 0, won: 0 };
+  for (const n of names) stats[n] = prior[n] ?? { played: 0, won: 0 };
   const courts = [];
   for (let c = 1; c <= courtCount; c++) courts.push(fillCourt(c, queue, rng));
   return { courts, queue, stats, leaving: [] };
