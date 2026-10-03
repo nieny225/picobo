@@ -2,6 +2,8 @@ import { HANDOFF, SHARE } from '../data/nav.js';
 import { encodeHandoff } from '../handoff.js';
 import { esc } from './scenes.js';
 import { sharePage } from './share.js';
+import { todayGamesLink, shareTodayGames } from './record.js';
+import { LINK_ICON } from './me.js';
 
 // Share-the-current-state button for the scoreboard, draw and Pico Bowl
 // organizer. It looks like any share button; tapping it first explains what
@@ -14,7 +16,9 @@ export const handoffButtonHtml = () =>
 
 // The link is built while the sheet is open, so tapping 分享連結 can open the
 // share sheet straight away (browsers only allow it right after a tap).
-export function openHandoff(kind, data) {
+// With { games: true } (抽籤) the sheet offers two links: today's results to
+// the players (戰績連結), or the whole state to the next organizer.
+export function openHandoff(kind, data, { games = false } = {}) {
   const url = encodeHandoff(kind, data).then(code => `${SHARE.url}#${ROUTE[kind]}?s=${code}`);
   let dlg = document.querySelector('.handoff-sheet');
   if (!dlg) {
@@ -23,9 +27,18 @@ export function openHandoff(kind, data) {
     document.body.append(dlg);
     dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
   }
-  const t = HANDOFF.sheet[kind];
-  dlg.innerHTML = `<b>${esc(t.title)}</b><p>${esc(t.body)}</p><p class="muted small">${esc(HANDOFF.note)}</p>
+  const t = HANDOFF.sheet[kind], c = HANDOFF.choose;
+  dlg.innerHTML = games
+    ? `<b>${esc(c.title)}</b>
+      <section class="handoff-choice"><b>${esc(c.games.title)}</b><p>${esc(c.games.body)}</p><button class="btn btn-primary btn-block icon-btn" type="button" data-games>${LINK_ICON}<span>${esc(c.games.go)}</span></button></section>
+      <section class="handoff-choice"><b>${esc(c.handoff.title)}</b><p>${esc(c.handoff.body)}</p><p class="muted small">${esc(HANDOFF.note)}</p><button class="btn btn-block" type="button" data-go>${esc(HANDOFF.go)}</button></section>
+      <div class="toolbar"><button class="btn btn-ghost" type="button" data-cancel>${esc(HANDOFF.cancel)}</button></div>`
+    : `<b>${esc(t.title)}</b><p>${esc(t.body)}</p><p class="muted small">${esc(HANDOFF.note)}</p>
     <div class="toolbar"><button class="btn btn-primary" type="button" data-go>${esc(HANDOFF.go)}</button><button class="btn btn-ghost" type="button" data-cancel>${esc(HANDOFF.cancel)}</button></div>`;
+  if (games) {
+    const link = todayGamesLink();
+    dlg.querySelector('[data-games]').addEventListener('click', () => { dlg.close(); shareTodayGames(link); });
+  }
   dlg.querySelector('[data-cancel]').addEventListener('click', () => dlg.close());
   dlg.querySelector('[data-go]').addEventListener('click', async () => {
     dlg.close();

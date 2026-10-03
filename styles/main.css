@@ -597,7 +597,9 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .stats-title { display: flex; align-items: center; justify-content: space-between; }
 .stats-share { min-height: 40px; display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--ink); background: var(--surface); color: var(--fg); padding: 4px 12px; border-radius: 999px; font: inherit; font-weight: 900; font-size: 0.95rem; }
 .stats-share svg { width: 20px; height: 20px; }
-.stats-btns { display: inline-flex; gap: 8px; }
+.handoff-choice { border-top: 2px solid var(--line-soft); padding-top: 12px; margin-top: 12px; }
+.handoff-choice p { margin: 4px 0 10px; }
+.handoff-sheet .toolbar { margin-top: 14px; }
 .me-pass .btn { margin-top: 8px; }
 /* Share-as-picture sheet (src/ui/sharecard.js): the preview fits the phone. */
 .share-sheet { width: min(420px, calc(100vw - 24px)); max-width: none; max-height: calc(100dvh - 24px); overflow-y: auto; display: grid; gap: 10px; padding: 14px; }

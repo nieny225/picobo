@@ -101,7 +101,7 @@ export function mountMe(root) {
       ${statsHtml(s, range)}
       ${gamesOn(games).length ? `<article class="card me-pass"><p class="muted small">${esc(T.link.hint)}</p><button type="button" class="btn btn-block icon-btn" data-pass>${LINK_ICON}<span>${esc(T.link.button)}</span></button></article>` : ''}
       ${games.length ? `<p class="me-clear"><button type="button" class="me-link" data-clear>${esc(T.clear)}</button></p>` : ''}`;
-    root.querySelector('[data-pass]')?.addEventListener('click', shareTodayGames);
+    root.querySelector('[data-pass]')?.addEventListener('click', () => shareTodayGames());
     root.querySelector('[data-change]').addEventListener('click', () => { picking = true; render(); });
     root.querySelector('[data-report]')?.addEventListener('click', () => openShareSheet('report', { summary: s, name: me.name, range }));
     for (const b of root.querySelectorAll('[data-range]')) b.addEventListener('click', () => { saveRange(b.dataset.range); render(); });

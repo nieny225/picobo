@@ -219,6 +219,13 @@ export const HANDOFF = {
     draw: { title: '分享抽籤', body: '對方打開連結，就會拿到同一份球友名單、排隊順序和戰績，可以直接接著排。適合換人管場。' },
     tourney: { title: '分享主辦進度', body: '對方打開連結，就會拿到所有隊伍、賽程和比分，可以直接接手主辦。' },
   },
+  // 抽籤's share button offers both: today's results to the players, or the
+  // whole draw to the next organizer.
+  choose: {
+    title: '分享',
+    games: { title: '把戰績傳給球友', body: '今天打完的比賽貼到群組，球友點開就會加進自己的「我的戰績」。', go: '傳給球友' },
+    handoff: { title: '交給下一位管場', body: '對方打開連結，就會拿到同一份名單、排隊順序和戰績，可以直接接著排。' },
+  },
   note: '連結是按下去那一刻的狀態，不會自動同步。交給別人之後，這支手機就不要再記了。',
   go: '分享連結',
   cancel: '取消',

@@ -72,7 +72,8 @@ src/ui/scenes.js        court scene carousel shared by rules and formats
 src/ui/scoreboard.js    scoreboard view
 src/ui/draw.js          draw + rotation view
 src/ui/share.js         share button: system share sheet, else copy link (picobo.net URL)
-src/ui/handoff.js       share-state button + explainer sheet: picobo.net/#<tool>?s=<state>; app.js loads it
+src/ui/handoff.js       share-state button + explainer sheet: picobo.net/#<tool>?s=<state>; app.js loads it;
+                        抽籤's sheet also offers 把戰績傳給球友 (the 戰績連結)
 src/ui/fullscreen.js    full screen for one view at a time (scoreboard, draw): real API or in-page fallback
 src/ui/groups.js        常用球團 chips + save/delete sheet (picobo.groups), used by 抽籤 and 報名訊息
 src/ui/record.js        戰績 storage (picobo.games, picobo.me); recordGame / unrecordGame for scoreboard and draw;

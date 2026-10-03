@@ -445,8 +445,10 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   Photo, 限動／貼文, 小中大 and drag work as for the other pictures.
   Phase 1 is done except 固定場次範本 (skipped).
 - 戰績連結 (user, 2026-10-03: "A 先做，B 之後"). Usually someone else keeps
-  score or runs 抽籤, so the games land on their phone. A, built: 「🔗 傳給球友」
-  next to 「📷 IG」 under 抽籤 今天戰績, and 「把今天的比賽傳給球友」 on 我的戰績
+  score or runs 抽籤, so the games land on their phone. A, built: 抽籤's
+  top-right share button opens one sheet with two choices (user: one share
+  button, not two), 「把戰績傳給球友」 first, then 「交給下一位管場」 (the
+  hand-over link); 「把今天的比賽傳給球友」 on 我的戰績
   (covers scoreboard games too), share today's games on this phone as
   `picobo.net/#me?s=…` (handoff kind 'games', packGames in src/record.js).
   Opening it merges them into picobo.games by game id (mergeGames; opening

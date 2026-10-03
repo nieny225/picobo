@@ -41,11 +41,16 @@ export function unrecordGame(id) {
 
 // 戰績連結: today's games on this phone, as a picobo.net/#me?s=… link for
 // the group chat. The link is built first, then shared straight from the tap.
-export async function shareTodayGames() {
+// The link for today's games, or null when there are none. Built ahead of the
+// tap where it can be, since browsers only open the share sheet right after one.
+export async function todayGamesLink() {
   const today = gamesOn(loadGames());
-  if (today.length === 0) { toast(esc(ME.link.none)); return; }
-  const code = await encodeHandoff('games', packGames(today));
-  await sharePage(ME.link.title, `${SHARE.url}#me?s=${code}`, ME.link.text);
+  return today.length ? `${SHARE.url}#me?s=${await encodeHandoff('games', packGames(today))}` : null;
+}
+export async function shareTodayGames(link = todayGamesLink()) {
+  const url = await link;
+  if (!url) { toast(esc(ME.link.none)); return; }
+  await sharePage(ME.link.title, url, ME.link.text);
 }
 
 // A 戰績連結 opened here: add the games this phone does not have yet.
