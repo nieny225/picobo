@@ -109,6 +109,26 @@ export const DRAW_PASTE = {
   added: '已加入 {n} 人',
 };
 
+// 常用球團：存好固定那群人的名單，抽籤和報名訊息一鍵帶入。{name} 球團名稱。
+export const GROUPS = {
+  label: '常用球團',
+  add: '＋ 存成球團',
+  sheetTitle: '存成球團',
+  sheetHint: '把現在的名單存起來，下次一鍵帶入。同名的球團會被更新。',
+  namePlaceholder: '例如：週六 Kallang 團',
+  save: '儲存',
+  cancel: '取消',
+  saved: '「{name}」存好了',
+  manage: '已存的球團',
+  remove: '刪除',
+  removed: '「{name}」刪掉了',
+  emptyName: '請幫球團取個名字。',
+  emptyRoster: '名單是空的，先加幾個球友。',
+  full: '球團最多存 20 個，先刪掉一些。',
+  replace: '換成「{name}」的名單？目前的名單和抽籤進度會清掉。',
+  loaded: '已帶入「{name}」',
+};
+
 // 球友名單：點名字改名（貼上名單讀錯、或想換成大家認得的名字）。
 export const DRAW_RENAME = {
   hint: '點名字可以改名，按 × 移除。',

@@ -1,5 +1,7 @@
-import { SCORE_SETUP, DRAW_EMPTY, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X, DRAW_SCORE as S, SCORE_SHARE } from '../data/nav.js';
+import { SCORE_SETUP, DRAW_EMPTY, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X, DRAW_SCORE as S, SCORE_SHARE, GROUPS as G } from '../data/nav.js';
 import { openShareSheet, CAMERA_ICON } from './sharecard.js';
+import { loadGroups, groupChipsHtml, openGroupSheet } from './groups.js';
+import { groupOf } from '../groups.js';
 import { parseSignup } from '../signup.js';
 import { toast } from './share.js';
 import { isFull, toggleFull, onFullChange, fullIcon } from './fullscreen.js';
@@ -172,6 +174,7 @@ export function mountDraw(root, { toScore } = {}) {
     <div class="section-head"><div class="head-row"><h2>抽籤輪轉</h2>${handoffButtonHtml()}</div><p class="intro">先輸入今天的球友，再選要怎麼分。</p></div>
     <div class="card roster-card">
       <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3></div>
+      ${(() => { const groups = loadGroups(); return groups.length || roster.names.length ? groupChipsHtml(groups, groupOf(groups, roster.names)?.name, roster.names.length > 0) : ''; })()}
       <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip">${showTags() ? tagHtml(n, i) : ''}<button type="button" class="chip-name" data-rename="${i}">${esc(n)}</button><button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
       ${roster.names.length ? '' : `<p class="muted small">${esc(DRAW_EMPTY)}</p>`}
       ${roster.names.length ? `<p class="muted small">${esc(showTags() ? `${R.hint}${X.hint}` : R.hint)}</p>` : ''}
@@ -316,6 +319,15 @@ export function mountDraw(root, { toScore } = {}) {
         `<button class="btn" type="button" data-session="${i}">${esc(P.session.replace('{title}', s.title || P.untitled).replace('{n}', s.names.length))}</button>`).join('')}</div>`;
       for (const b of pick.querySelectorAll('[data-session]')) b.addEventListener('click', () => addNames(sessions[Number(b.dataset.session)].names));
     });
+    // 常用球團: load one (replacing the roster and any draw in progress), or save this roster.
+    for (const b of root.querySelectorAll('[data-group]')) b.addEventListener('click', () => {
+      const g = loadGroups().find(x => x.name === b.dataset.group);
+      if (!g || b.getAttribute('aria-pressed') === 'true') return;
+      if ((roster.names.length || play || koc) && !confirm(G.replace.replace('{name}', g.name))) return;
+      roster = { names: g.names.slice() }; koc = null; setPlay(null); saveRoster(roster); render();
+      toast(esc(G.loaded.replace('{name}', g.name)));
+    });
+    root.querySelector('[data-group-add]')?.addEventListener('click', () => openGroupSheet(roster.names, render));
     root.querySelector('#clear').addEventListener('click', () => { roster = { names: [] }; koc = null; setPlay(null); saveRoster(roster); render(); });
     for (const b of root.querySelectorAll('[data-sex]')) b.addEventListener('click', () => {
       const n = roster.names[Number(b.dataset.sex)];

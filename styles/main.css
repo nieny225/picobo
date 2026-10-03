@@ -521,6 +521,14 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .mix-toggle { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; }
 .mix-toggle input { width: 20px; height: 20px; margin: 0; }
 .mix-note { font-weight: 500; }
+.group-chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; margin: 0 -2px; scrollbar-width: none; }
+.group-chip { flex: none; min-height: 44px; padding: 6px 14px; border: 2px solid var(--ink); border-radius: 999px; background: var(--surface); color: var(--fg); font: inherit; font-weight: 900; white-space: nowrap; }
+.group-chip[aria-pressed="true"] { background: var(--mark); color: var(--mark-fg); }
+.group-chip.group-add { border-style: dashed; color: var(--muted); font-weight: 700; }
+.group-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.group-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 2px solid var(--line-soft); padding: 4px 0; }
+.group-list .btn { min-height: 40px; padding: 4px 12px; }
+.group-sheet .group-manage:empty { display: none; }
 .rename-form { display: grid; gap: 12px; }
 .subtabs { display: flex; gap: 6px; border-bottom: var(--bw) solid var(--ink); }
 .subtab { border: 0; background: transparent; padding: 10px 12px; min-height: 44px; color: var(--muted); font-weight: 700; border-radius: 6px 6px 0 0; }

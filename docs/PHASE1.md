@@ -19,7 +19,7 @@ in its own tested module, no new dependencies.
 3 → 4 → 1 → 2. Groups and templates are small, remove typing every week,
 and give 1 and 2 cleaner names to count. 2 needs 1.
 
-## 3. 常用球團 (groups)
+## 3. 常用球團 (groups) — built 2026-10-03
 
 - Storage `picobo.groups`: `[{ id, name, names: [...], updated }]`, at most 20.
 - 抽籤 roster card: a row of group chips above the names
@@ -80,11 +80,15 @@ and give 1 and 2 cleaner names to count. 2 needs 1.
   date range, picobo.net; the brand tag top left as on the other pictures.
 - Entry: 「📷 IG」 on the 我的戰績 page, sharing whatever range is shown.
 
-## Open questions for the user
+## Decisions (user, 2026-10-03)
 
-1. 我的戰績 lives where: its own page from a home card (recommended), or a
-   section inside 抽籤?
-2. Record 抽籤 games without a score (W/L only)? Recommended yes — most
-   evenings are 抽籤 without the scoreboard.
-3. Show 最難纏的對手? Fun, but some may find it negative.
-4. Order 3 → 4 → 1 → 2 OK?
+1. 我的戰績 is its own page (`#me`). Logins and a real profile will come
+   later, so for now add a personal entry point: a person icon in the top
+   bar (next to share / theme) that opens `#me`. The home card links there
+   too.
+2. Counting 抽籤 games without a score: the user was unsure. Decision for
+   now: record them (most evenings are 抽籤 only) with `source` and
+   `scores: null`, so they can be filtered out later. The page shows how many
+   games came with a score.
+3. Keep 最難纏的對手.
+4. Order 3 → 4 → 1 → 2.

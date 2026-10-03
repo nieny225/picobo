@@ -420,6 +420,12 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   it stays inside the picture and below the brand tag when it fits.
   Games also have a 貼紙 tab: transparent PNG, 複製貼紙 (ClipboardItem) or
   存貼紙. Not yet tried on a real phone with Instagram.
+- 常用球團 (phase 1, feature 3): `picobo.groups`, rules in src/groups.js,
+  UI in src/ui/groups.js. 抽籤 roster card shows 「＋ 存成球團」 (first, so it
+  never scrolls away) and one chip per group; tapping a group replaces the
+  roster (asks first; clears the draw in progress); the chip whose members
+  match the roster is highlighted. The ＋ sheet also lists groups to delete.
+  報名訊息 shows the group chips above 已經報名; a tap fills the names.
 
 ## Known gaps and ideas not yet scheduled
 
