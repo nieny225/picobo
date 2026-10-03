@@ -70,3 +70,22 @@ export function paddleShapesSvg(t, pick = null) {
   });
   return `<svg class="paddle-fig" viewBox="0 0 ${x - gap + base} ${top + SHAPES.elongated.l + 96}" role="img" aria-label="${esc(t.alt)}">${parts.join('')}</svg>`;
 }
+
+// 拍芯: a cut through the paddle, face / core / face, honeycomb next to foam.
+// Drawn to show the idea (cells and foam are not to scale).
+export function paddleCoresSvg(t) {
+  const W = 230, H = 120, face = 12, gap = 60, y = 20;
+  const panel = (x, kind) => {
+    // Cut straight through, honeycomb shows its cell walls standing between the faces.
+    const core = kind === 'honeycomb'
+      ? Array.from({ length: 11 }, (_, i) => `<line class="pd-cell" x1="${x + 15 + i * 20}" y1="${y + face}" x2="${x + 15 + i * 20}" y2="${y + face + H}"/>`).join('')
+      : `<rect class="pd-foam" x="${x}" y="${y + face}" width="${W}" height="${H}"/>` +
+        Array.from({ length: 32 }, (_, i) => `<circle class="pd-bubble" cx="${x + 20 + (i % 8) * 26 + (Math.floor(i / 8) % 2) * 13}" cy="${y + face + 16 + Math.floor(i / 8) * 29}" r="4"/>`).join('');
+    return `<rect class="pd-core" x="${x}" y="${y + face}" width="${W}" height="${H}"/>${core}
+      <rect class="pd-skin" x="${x}" y="${y}" width="${W}" height="${face}"/><rect class="pd-skin" x="${x}" y="${y + face + H}" width="${W}" height="${face}"/>
+      <rect class="pd-cut" x="${x}" y="${y}" width="${W}" height="${H + 2 * face}"/>
+      <text class="pd-name" x="${x + W / 2}" y="${y + H + 2 * face + 40}" text-anchor="middle">${esc(t.names[kind])}</text>`;
+  };
+  return `<svg class="paddle-fig cores" viewBox="0 0 ${2 * W + gap + 20} ${y + H + 2 * face + 56}" role="img" aria-label="${esc(t.alt)}">${panel(10, 'honeycomb')}${panel(10 + W + gap, 'foam')}</svg>`;
+}
+

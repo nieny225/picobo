@@ -118,7 +118,9 @@ export const SECTIONS = [
     // Standards Manual 2.E–2.F；旋轉測試：usapickleball.org 2026-07-08 公告（2026-10-01 起，
     // 新送審 ≤ 2,100 rpm）。選拍建議：pickleballcentral.com/paddle-guide（重量、拍型、握把、
     // 網球／回力球）、paddletek.com（拍芯、桌球）、heliospickleball.com（羽球，品牌部落格）、
-    // thedinkpickleball.com（網球轉換常見錯誤）、pickleheads.com（預算、網球肘）。
+    // thedinkpickleball.com（網球轉換常見錯誤）、pickleheads.com（預算、網球肘）；
+    // 泡棉芯：pickleball.com「Foam Core Paddles Explained」、pickleballeffect.com foam vs polymer、
+    // pickleheads.com foam paddle guide、nexpickleball.com（各家一致的部分才寫）。
     id: 'gear',
     title: '裝備',
     en: 'Equipment',
@@ -189,9 +191,16 @@ export const SECTIONS = [
             '混合型：介於兩者之間。',
             '長型（約 41.9 × 19.1 公分）：伸得最遠、力量和旋轉多，但甜區較小、較高。',
           ] },
-          { name: '拍芯和拍面', items: [
+          { name: '拍芯和拍面', figure: {
+            kind: 'paddleCores',
+            alt: '球拍切面：上下是拍面，中間是拍芯；左邊蜂巢芯，右邊泡棉芯',
+            names: { honeycomb: '蜂巢芯', foam: '泡棉芯' },
+            caption: '球拍切開來看：上下兩片是拍面，中間是拍芯。',
+          }, items: [
             '拍芯薄（約 13 mm）力量大，厚（約 16 mm）控球好、手感軟、比較舒服。',
             '玻璃纖維面彈、有力量；碳纖維面偏控球和旋轉。',
+            '蜂巢芯（polymer honeycomb）：最常見，手感清脆、彈得快。打久了格子會被壓壞，彈性變差就該換拍。',
+            '泡棉芯（foam，如 EPP、EVA）：比較新。普遍說比較耐打、手感紮實、甜區寬容、聲音小；做法差很多，有的力量很大、有的偏控球。比較新，品質差的也可能變軟、出現死點。',
           ] },
           { name: '握把', items: [
             '照身高：157 公分以下約 10.2 公分（4 吋），160–173 公分約 10.8 公分（4¼ 吋），175 公分以上約 11.4 公分（4½ 吋）。',

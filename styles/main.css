@@ -387,6 +387,13 @@ svg.court { width: 100%; height: auto; display: block; overflow: visible; }
 .figure-keys { margin: 0; padding-left: 1.4em; display: grid; gap: 4px; }
 .pd-name { font-size: 26px; font-weight: 900; fill: var(--fg); }
 .pd-shape.dim { opacity: 0.3; }
+.paddle-fig.cores { max-width: 360px; }
+.pd-skin { fill: var(--court); }
+.pd-core { fill: var(--surface); }
+.pd-foam { fill: var(--mark); opacity: 0.55; }
+.pd-bubble { fill: var(--surface); stroke: var(--muted); stroke-width: 2; }
+.pd-cell { fill: none; stroke: var(--muted); stroke-width: 3; }
+.pd-cut { fill: none; stroke: var(--ink); stroke-width: 4; }
 .pd-shape.picked .pd-edge { stroke: var(--mark); stroke-width: 10; }
 /* 怎麼選球拍: sport chips, then the suggestion. */
 .picker { display: grid; gap: 10px; margin: 12px 0; padding: 14px; border: var(--bw) solid var(--ink); border-radius: var(--radius); background: var(--surface-2); }

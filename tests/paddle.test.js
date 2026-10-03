@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { paddleRulesSvg, paddleShapesSvg, PADDLE_SHAPES } from '../src/paddle.js';
+import { paddleRulesSvg, paddleShapesSvg, paddleCoresSvg, PADDLE_SHAPES } from '../src/paddle.js';
 
 const t = { alt: 'a', length: 'L', sum: 'S', tapeEdge: 'E', free: 'F', tapeGrip: 'G', names: { standard: 's', hybrid: 'h', elongated: 'e' }, sizes: { standard: '1', hybrid: '2', elongated: '3' } };
 
@@ -13,4 +13,10 @@ test('paddle drawings: labels from data, picked shapes stand out', () => {
   const one = paddleShapesSvg(t, ['elongated']);
   assert.equal((one.match(/pd-shape dim/g) ?? []).length, 2);
   assert.equal((one.match(/ picked/g) ?? []).length, 1);
+});
+
+test('拍芯 cut: honeycomb and foam, named from data', () => {
+  const c = paddleCoresSvg({ alt: 'a', names: { honeycomb: 'H', foam: 'F' } });
+  assert.ok(c.includes('>H<') && c.includes('>F<'));
+  assert.ok(c.includes('pd-cell') && c.includes('pd-bubble'));
 });

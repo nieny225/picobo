@@ -6,10 +6,10 @@ import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
 import { formatCardHtml, wireFormat } from './formats.js';
 import { shareButtonHtml, sharePage, toast } from './share.js';
 import { setupSvg } from '../court.js';
-import { paddleRulesSvg, paddleShapesSvg } from '../paddle.js';
+import { paddleRulesSvg, paddleShapesSvg, paddleCoresSvg } from '../paddle.js';
 
 // Drawings that are not a court scene (src/paddle.js), by figure kind.
-const FIGURES = { paddleRules: f => paddleRulesSvg(f), paddleShapes: f => paddleShapesSvg(f) };
+const FIGURES = { paddleRules: f => paddleRulesSvg(f), paddleShapes: f => paddleShapesSvg(f), paddleCores: f => paddleCoresSvg(f) };
 const figureHtml = f => (f ? `<figure class="rule-figure">${FIGURES[f.kind](f)}<figcaption class="small">${f.keys ? `<ol class="figure-keys">${f.keys.map(k => `<li>${esc(k)}</li>`).join('')}</ol>` : ''}<span class="muted">${esc(f.caption)}</span></figcaption></figure>` : '');
 
 
@@ -27,7 +27,7 @@ function ruleCard(item, applies = '') {
     : '';
   // Plain bullet groups shown in full (球拍規定, 怎麼選球拍), each with an optional heading.
   const blocks = item.blocks
-    ? `<div class="setup-body">${item.blocks.map(b => `<section class="setup-group">${b.name ? `<h4>${esc(b.name)}</h4>` : ''}<ul>${b.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}</div>`
+    ? `<div class="setup-body">${item.blocks.map(b => `<section class="setup-group">${b.name ? `<h4>${esc(b.name)}</h4>` : ''}${figureHtml(b.figure)}<ul>${b.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}</div>`
     : '';
   return `<article class="card rule" id="rules-${item.id}">
     <div class="card-head"><h3>${esc(item.title)}${enTag(item.en)}</h3></div>
