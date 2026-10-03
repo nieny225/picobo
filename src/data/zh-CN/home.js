@@ -2,7 +2,7 @@
 export const HOME = {
   slogan: ['Pick a day,', 'pick a place,', 'picobo.'],
   entriesLabel: '从这里开始',
-  intro: '你的匹克球伙伴。',
+  intro: '痞克柏，你的匹克球好伙伴。',
   // 顶部栏的“安装”按钮和它弹出的步骤说明。
   install: {
     title: '把痞克柏放到桌面',
