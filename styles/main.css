@@ -756,6 +756,7 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 .venue-shared .btn { flex: none; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
 /* Bar row under the regions: favourites, the 篩選 button (badge = filters on), sort. */
 .venue-tools { display: flex; gap: 8px; align-items: stretch; }
+.venue-tools .input { flex: 1; min-width: 0; }
 .venue-tools .btn { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 4px 12px; }
 .venue-tools .btn svg { width: 20px; height: 20px; }
 .venue-fav { width: 48px; padding: 0 !important; }
@@ -765,7 +766,7 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 /* The 篩選 sheet: one row of toggle chips per group. */
 .venue-sheet h4 { margin: 0 0 8px; font-size: 0.95rem; }
 .venue-sheet section p { margin: 6px 0 0; }
-.venue-sheet .toolbar { display: flex; gap: 8px; margin-top: 4px; }
+.venue-sheet .toolbar { display: flex; gap: 8px; margin: 4px 0 -14px; position: sticky; bottom: -14px; padding: 10px 0 14px; background: var(--surface); border-top: 2px solid var(--line-soft); }
 .venue-sheet .toolbar .btn-primary { flex: 1; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { min-height: 44px; padding: 6px 14px; border: var(--bw) solid var(--ink); border-radius: 999px; background: var(--surface); color: var(--fg); font: inherit; font-weight: 700; }

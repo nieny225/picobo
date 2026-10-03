@@ -151,7 +151,7 @@ export const VENUES_PAGE = {
   booking: { phone: '電話預約', whatsapp: 'WhatsApp 預約', line: 'LINE 預約', url: '線上預約' },
   bookShort: '預約',
   // 頂部：搜尋、區域。區域的短名稱對應上面 city 的值。
-  search: '搜尋場地名稱或地址',
+  search: '搜尋場地或地址',
   regionLabel: '區域',
   regions: [{ id: '', label: '全部' }, { id: '中區', label: '中' }, { id: '東區', label: '東' }, { id: '西區', label: '西' }, { id: '北區', label: '北' }, { id: '東北區', label: '東北' }],
   // 篩選：愛心鈕、篩選鈕（打開面板）、排序。面板裡的選項同一排可以多選（或），不同排要同時符合（且）。

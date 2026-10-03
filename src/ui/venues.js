@@ -99,17 +99,17 @@ const shownOf = f => sortVenues(VENUES.filter(v => matchVenue(v, f, favs)), f.so
 
 const FUNNEL = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>';
 
+// What the badge on 篩選 counts: everything in the sheet, region and sort included.
+const sheetCount = f => activeCount(f) + (f.region ? 1 : 0) + (f.sort !== 'region' ? 1 : 0);
+
+// One row: search, ♥ (used most, so it stays out here) and 篩選; the rest is in the sheet.
 function barHtml(f) {
-  const n = activeCount(f);
+  const n = sheetCount(f);
   return `<div class="venue-bar">
-    <input class="input" type="search" id="venue-q" placeholder="${esc(V.search)}" aria-label="${esc(V.search)}" value="${esc(f.q)}" autocomplete="off">
-    <div class="seg" role="group" aria-label="${esc(V.regionLabel)}">${V.regions.map(o =>
-      `<button type="button" data-region="${esc(o.id)}" aria-pressed="${f.region === o.id}">${esc(o.label)}</button>`).join('')}</div>
     <div class="venue-tools">
+      <input class="input" type="search" id="venue-q" placeholder="${esc(V.search)}" aria-label="${esc(V.search)}" value="${esc(f.q)}" autocomplete="off">
       <button type="button" class="btn venue-fav" data-favonly aria-pressed="${f.fav}" aria-label="${esc(V.favOnly)}" title="${esc(V.favOnly)}">${heart(f.fav)}</button>
       <button type="button" class="btn venue-filter" data-open-filter aria-pressed="${n > 0}">${FUNNEL}<span>${esc(V.filter)}</span>${n ? `<b class="venue-badge">${n}</b>` : ''}</button>
-      <div class="seg" role="group" aria-label="${esc(V.sortLabel)}">${V.sorts.map(o =>
-        `<button type="button" data-sort="${o.id}" aria-pressed="${f.sort === o.id}">${esc(o.label)}</button>`).join('')}</div>
     </div>
   </div>`;
 }
@@ -123,10 +123,12 @@ function openFilter(f, onChange) {
     `<button type="button" class="chip" data-${k}="${o.id}" aria-pressed="${on(o.id)}">${esc(o.label)}</button>`).join('')}</div>`;
   const render = () => {
     dlg.innerHTML = `<div class="share-sheet-head"><b>${esc(V.filterTitle)}</b><button type="button" class="btn btn-ghost" data-close>${esc(SETTINGS.close)}</button></div>
+      <section><h4>${esc(V.regionLabel)}</h4>${chips('regionpick', V.regions, id => f.region === id)}</section>
       <section><h4>${esc(V.priceLabel)}</h4>${chips('price', V.prices, id => f.prices.includes(id))}<p class="muted small">${esc(V.priceHint)}</p></section>
       <section><h4>${esc(V.opLabel)}</h4>${chips('op', V.ops, id => f.ops.includes(id))}<p class="muted small">${esc(V.opHint)}</p></section>
       <section><h4>${esc(V.courtsLabel)}</h4>${chips('courts', V.courtSteps, id => f.minCourts === id)}</section>
       <section><h4>${esc(V.otherLabel)}</h4>${chips('other', V.others, id => f[id])}</section>
+      <section><h4>${esc(V.sortLabel)}</h4>${chips('sort', V.sorts, id => f.sort === id)}</section>
       <div class="toolbar"><button type="button" class="btn btn-ghost" data-clear>${esc(V.clear)}</button>
         <button type="button" class="btn btn-primary" data-close>${esc(fill(V.show, { n: shownOf(f).length }))}</button></div>`;
   };
@@ -136,11 +138,13 @@ function openFilter(f, onChange) {
     if (e.target === dlg || e.target.closest('[data-close]')) { dlg.close(); return; }
     const b = e.target.closest('button');
     if (!b) return;
-    if (b.dataset.price) f.prices = toggle(f.prices, b.dataset.price);
+    if ('regionpick' in b.dataset) f.region = b.dataset.regionpick;
+    else if (b.dataset.sort) f.sort = b.dataset.sort;
+    else if (b.dataset.price) f.prices = toggle(f.prices, b.dataset.price);
     else if (b.dataset.op) f.ops = toggle(f.ops, b.dataset.op);
     else if (b.dataset.courts) { const n = Number(b.dataset.courts); f.minCourts = f.minCourts === n ? 0 : n; }
     else if (b.dataset.other) f[b.dataset.other] = !f[b.dataset.other];
-    else if ('clear' in b.dataset) Object.assign(f, { prices: [], ops: [], dry: false, minCourts: 0 });
+    else if ('clear' in b.dataset) Object.assign(f, { region: '', prices: [], ops: [], dry: false, minCourts: 0, sort: 'region' });
     else return;
     render();
     onChange();
@@ -222,22 +226,18 @@ export function mountVenues(root) {
   const redraw = () => {
     saveFilter(f);
     render();
-    const n = activeCount(f), fb = bar.querySelector('.venue-filter');
+    const n = sheetCount(f), fb = bar.querySelector('.venue-filter');
     fb.setAttribute('aria-pressed', String(n > 0));
     fb.querySelector('.venue-badge')?.remove();
     if (n) fb.insertAdjacentHTML('beforeend', `<b class="venue-badge">${n}</b>`);
     const fav = bar.querySelector('[data-favonly]');
     fav.setAttribute('aria-pressed', String(f.fav));
     fav.innerHTML = heart(f.fav);
-    for (const x of bar.querySelectorAll('[data-region]')) x.setAttribute('aria-pressed', String(x.dataset.region === f.region));
-    for (const x of bar.querySelectorAll('[data-sort]')) x.setAttribute('aria-pressed', String(x.dataset.sort === f.sort));
   };
   bar.addEventListener('click', e => {
     const b = e.target.closest('button');
     if (!b) return;
-    if ('region' in b.dataset) f.region = b.dataset.region;
-    else if (b.dataset.sort) f.sort = b.dataset.sort;
-    else if ('favonly' in b.dataset) f.fav = !f.fav;
+    if ('favonly' in b.dataset) f.fav = !f.fav;
     else if ('openFilter' in b.dataset) { openFilter(f, redraw); return; }
     else return;
     redraw();

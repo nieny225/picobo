@@ -153,7 +153,7 @@ export const VENUES_PAGE = {
   booking: { phone: 'Book by phone', whatsapp: 'Book on WhatsApp', line: 'Book on LINE', url: 'Book online' },
   bookShort: 'Book',
   // Top filters: search, region, type. Region ids match the city values above.
-  search: 'Search by venue name or address',
+  search: 'Search courts',
   regionLabel: 'Region',
   regions: [{ id: '', label: 'All' }, { id: 'Central', label: 'Central' }, { id: 'East', label: 'East' }, { id: 'West', label: 'West' }, { id: 'North', label: 'North' }, { id: 'North-East', label: 'NE' }],
   // Filters: heart toggle, Filter button (opens a sheet), sort.

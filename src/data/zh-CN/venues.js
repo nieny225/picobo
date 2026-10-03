@@ -151,7 +151,7 @@ export const VENUES_PAGE = {
   booking: { phone: '电话预约', whatsapp: 'WhatsApp 预约', line: 'LINE 预约', url: '在线预约' },
   bookShort: '预约',
   // 顶部筛选：搜索、区域、类型。区域的 id 对应上面 city 的值。
-  search: '搜索场地名称或地址',
+  search: '搜索场地或地址',
   regionLabel: '区域',
   regions: [{ id: '', label: '全部' }, { id: '中区', label: '中' }, { id: '东区', label: '东' }, { id: '西区', label: '西' }, { id: '北区', label: '北' }, { id: '东北区', label: '东北' }],
   // 筛选：爱心钮、筛选钮（打开面板）、排序。
