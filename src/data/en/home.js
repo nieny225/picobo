@@ -19,9 +19,9 @@ export const HOME = {
     invite: { aria: 'Invite friends to Picobo', title: 'Picobo', text: 'Picobo: pickleball rules in pictures, a scoreboard and a draw tool for your games.' },
   },
   entries: [
-    { route: 'rules', title: 'Learn the rules', en: '', desc: 'Step-by-step rules in pictures' },
     { route: 'score', title: 'Scoreboard', en: '', desc: 'Who serves, from where, and the score' },
     { route: 'draw', title: 'Draw', en: '', desc: 'Random draw, round robin, king of the court' },
+    { route: 'rules', title: 'Learn the rules', en: '', desc: 'Step-by-step rules in pictures' },
     { route: 'meetup', title: 'Find players', en: '', desc: 'Time, place, players needed. One card for the group chat.' },
     { route: 'venues', title: 'Courts', en: '', desc: 'Where to play and how to book' },
     // Partnership form (Google Form, no owner email shown).

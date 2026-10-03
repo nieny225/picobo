@@ -168,7 +168,7 @@ button { cursor: pointer; }
 
 /* Home */
 /* Plenty of air around the slogan: it carries the page. */
-.home-hero { display: grid; gap: 12px; align-content: center; min-height: clamp(280px, 46vh, 460px); padding: 16px 0 0; }
+.home-hero { display: grid; gap: 12px; align-content: center; min-height: clamp(220px, 32vh, 340px); padding: 16px 0 0; }
 .home-slogan { display: grid; gap: 2px; font-family: var(--font-num); font-weight: 700; font-size: clamp(2.3rem, 11vw, 4rem); line-height: 1.02; letter-spacing: -0.02em; }
 .home-slogan .mark { justify-self: start; background: var(--mark); color: var(--mark-fg); padding: 0 8px; margin-left: 3px; box-shadow: 0 0 0 var(--bw) var(--ink); }
 .home-entries { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; margin-right: 6px; }
@@ -180,8 +180,8 @@ button { cursor: pointer; }
 .home-entry b { font-size: 1.2rem; font-weight: 900; }
 .home-entry span { color: var(--muted); font-size: 0.9rem; }
 /* A card left alone on the last row takes the full width. */
-.home-entry:not(.lead):nth-child(2n):last-child { grid-column: 1 / -1; }
-.home-entry.lead { grid-column: 1 / -1; background: var(--mark); color: var(--mark-fg); }
+.home-entry:nth-child(2n+1):last-child { grid-column: 1 / -1; }
+.home-entry.lead { background: var(--mark); color: var(--mark-fg); }
 .home-entry.lead span { color: var(--mark-fg); }
 .home-partner { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; margin-top: 14px; padding: 12px 16px; min-height: 44px; border: 2px dashed var(--ink); border-radius: var(--radius); color: var(--fg); text-decoration: none; }
 .home-partner b { font-weight: 900; }
@@ -805,7 +805,9 @@ textarea.input { font-family: inherit; line-height: 1.5; resize: vertical; }
 .event-card b { font-family: var(--font-num); font-size: 1.8rem; line-height: 1.1; letter-spacing: -0.01em; }
 .event-card span { font-weight: 700; }
 .event-card-tag { justify-self: start; padding: 1px 10px; border: 2px solid #111111; border-radius: 999px; background: var(--mark); color: var(--mark-fg); font-size: 0.85rem; font-weight: 900; }
-.event-card.is-soon { cursor: default; }
+.event-card.is-soon { cursor: default; margin: 18px 6px 0 0; padding: 10px 16px; grid-template-columns: auto 1fr; align-items: center; gap: 2px 10px; box-shadow: none; }
+.event-card.is-soon b { font-size: 1.2rem; }
+.event-card.is-soon span:last-child { grid-column: 1 / -1; font-size: 0.85rem; font-weight: 500; }
 a.event-card:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--shadow-ink); }
 .event-kicker { font-weight: 900; color: var(--muted); }
 .event-hero { display: grid; gap: 10px; }

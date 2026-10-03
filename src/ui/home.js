@@ -1,13 +1,17 @@
 import { HOME } from '../data/home.js';
 import { esc, enTag } from './scenes.js';
 import { eventCardHtml } from './event.js';
+import { PICOBOWL as EVENT } from '../data/event.js';
 import { MEETUP } from '../data/meetup.js';
 import { homeMeCardHtml } from './me.js';
 
 // Slogan "Pick a day, pick a place, picobo." (set a time, find a court, play).
+// Pico Bowl sits under the tools as a slim strip until registration opens.
 export function mountHome(root) {
   // 揪團 stays reachable by URL but has no entry card until it opens.
-  const [lead, ...rest] = HOME.entries.filter(e => e.route && (e.route !== 'meetup' || MEETUP.open));
+  // The on-court tools (計分板, 抽籤) come first and stand out; the rest follow.
+  const tools = HOME.entries.filter(e => e.route && (e.route !== 'meetup' || MEETUP.open));
+  const LEAD = new Set(['score', 'draw']);
   // An entry with `href` (the partner form) opens outside Picobo, in a new tab,
   // as a slim row under the tool cards.
   const outside = HOME.entries.filter(e => e.href).map(e => `<a class="home-partner" href="${esc(e.href)}" target="_blank" rel="noopener">
@@ -20,8 +24,9 @@ export function mountHome(root) {
       <p class="intro">${esc(HOME.intro)}</p>
     </section>
     <div class="home-me"></div>
-    ${eventCardHtml()}
-    <nav class="home-entries" aria-label="${esc(HOME.entriesLabel)}">${entry(lead, 'lead')}${rest.map(e => entry(e, '')).join('')}</nav>
+    ${EVENT.open ? eventCardHtml() : ''}
+    <nav class="home-entries" aria-label="${esc(HOME.entriesLabel)}">${tools.map(e => entry(e, LEAD.has(e.route) ? 'lead' : '')).join('')}</nav>
+    ${EVENT.open ? '' : eventCardHtml()}
     ${outside}`;
   // 我的戰績 this week, once there is something to show; redrawn on each visit.
   const meBox = root.querySelector('.home-me');
