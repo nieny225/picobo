@@ -7,7 +7,7 @@ export const ME = {
   whoHint: '点你的名字；同一个人有好几种写法（例如 Max、max3066）就都点。',
   whoNone: '还没有比赛记录。可以先输入你的名字，打完的比赛就会算进来。',
   namePlaceholder: '输入你的名字',
-  add: '加入',
+  add: '＋ 另一种写法',
   confirm: '就是我',
   cancel: '取消',
   iAm: '我是',

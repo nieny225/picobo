@@ -7,7 +7,7 @@ export const ME = {
   whoHint: 'Tap your name. If you show up under several spellings (say Max and max3066), tap them all.',
   whoNone: 'No games yet. Enter your name now and your finished games will count.',
   namePlaceholder: 'Your name',
-  add: 'Add',
+  add: '+ Another spelling',
   confirm: 'That\'s me',
   cancel: 'Cancel',
   iAm: 'I\'m',

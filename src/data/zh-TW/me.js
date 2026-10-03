@@ -7,7 +7,7 @@ export const ME = {
   whoHint: '點你的名字；同一個人有好幾種寫法（例如 Max、max3066）就都點。',
   whoNone: '還沒有比賽紀錄。可以先輸入你的名字，打完的比賽就會算進來。',
   namePlaceholder: '輸入你的名字',
-  add: '加入',
+  add: '＋ 另一種寫法',
   confirm: '就是我',
   cancel: '取消',
   iAm: '我是',

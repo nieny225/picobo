@@ -53,7 +53,7 @@ function pickerHtml(games, me) {
     <h3>${esc(T.who)}</h3>
     <p class="muted small">${esc(all.length ? T.whoHint : T.whoNone)}</p>
     <div class="me-names">${all.map(n => `<button type="button" class="group-chip" data-name="${esc(n)}" aria-pressed="${picked.includes(n)}">${esc(n)}</button>`).join('')}</div>
-    <form class="row" id="me-add"><input class="input" id="me-name" maxlength="20" autocomplete="off" placeholder="${esc(T.namePlaceholder)}"><button class="btn" type="submit" style="flex:0 0 auto">${esc(T.add)}</button></form>
+    <form class="row" id="me-add"><input class="input" id="me-name" maxlength="20" autocomplete="off" placeholder="${esc(T.namePlaceholder)}">${all.length ? `<button class="btn" type="submit" style="flex:0 0 auto">${esc(T.add)}</button>` : ''}</form>
     <div class="toolbar">${me ? `<button type="button" class="btn btn-ghost" data-cancel>${esc(T.cancel)}</button>` : ''}<button type="button" class="btn btn-primary" data-confirm>${esc(T.confirm)}</button></div>
   </article>`;
 }
@@ -120,8 +120,12 @@ export function mountMe(root) {
       picked = picked.includes(n) ? picked.filter(x => x !== n) : [...picked, n];
       sync();
     });
+    // No names yet: the box is just "your name", and Enter or 就是我 saves it.
+    // With names to pick from, the box adds another spelling to the picks.
+    const first = !root.querySelector('[data-name]');
     root.querySelector('#me-add').addEventListener('submit', e => {
       e.preventDefault();
+      if (first) { confirm(); return; }
       const input = root.querySelector('#me-name');
       const n = input.value.trim();
       if (!n) return;
@@ -134,11 +138,15 @@ export function mountMe(root) {
       sync();
     });
     root.querySelector('[data-cancel]')?.addEventListener('click', () => { picking = false; render(); });
-    root.querySelector('[data-confirm]').addEventListener('click', () => {
+    // A name typed but not added yet counts too.
+    const confirm = () => {
+      const typed = root.querySelector('#me-name').value.trim();
+      if (typed && !picked.includes(typed)) picked.push(typed);
       if (picked.length === 0) { root.querySelector('#me-name').focus(); return; }
       saveMe({ name: picked[0], aliases: picked.slice(1) });
       picking = false; render();
-    });
+    };
+    root.querySelector('[data-confirm]').addEventListener('click', confirm);
   };
 
   return { show: () => { picking = false; render(); } };
