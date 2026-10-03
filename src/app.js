@@ -14,7 +14,7 @@ import { registerServiceWorker, mountInstallButton } from './ui/install.js';
 import { decodeHandoff } from './handoff.js';
 import { routeOf } from './ui/handoff.js';
 import { toast } from './ui/share.js';
-import { HANDOFF, SCORE_SETUP, DRAW_SCORE } from './data/nav.js';
+import { HANDOFF, SCORE_SETUP, DRAW_SCORE, APP_TEXT } from './data/nav.js';
 import { RULEBOOK } from './data/rules.js';
 
 const ROUTES = ['home', 'rules', 'formats', 'score', 'draw', 'picobowl', 'meetup', 'venues', 'signup', 'me'];
@@ -61,7 +61,13 @@ mountVenues(document.getElementById('view-venues'));
 const signup = mountSignup(document.getElementById('view-signup'));
 const me = mountMe(document.getElementById('view-me'));
 mountMeButton(document.getElementById('me-btn'));
-document.getElementById('footer').textContent = `正統規則依據 ${RULEBOOK}。趣味玩法各球場做法不同，開打前先講好。`;
+document.getElementById('footer').textContent = APP_TEXT.footer.replace('{rulebook}', RULEBOOK);
+// Tab labels in the page's language (index.html carries zh-TW for no-JS).
+for (const nav of document.querySelectorAll('.tabs, .bottom-nav')) nav.setAttribute('aria-label', APP_TEXT.tabsLabel);
+for (const t of document.querySelectorAll('.tab[data-route]')) {
+  const label = t.querySelector('span');
+  if (label) label.textContent = APP_TEXT.tabs[t.dataset.route];
+}
 
 // Coming back to 抽籤 from the scoreboard lands on the courts (the one just
 // scored, after 回抽籤), not the roster at the top.

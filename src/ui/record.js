@@ -1,7 +1,7 @@
 import { makeGame, addGame, removeGame, cleanGames, hasRealNames, packGames, unpackGames, mergeGames, gamesOn } from '../record.js';
 import { encodeHandoff } from '../handoff.js';
 import { ME } from '../data/me.js';
-import { SHARE } from '../data/nav.js';
+import { SHARE, SCORE_TEXT } from '../data/nav.js';
 import { esc } from './scenes.js';
 import { sharePage, toast } from './share.js';
 
@@ -30,7 +30,7 @@ export function saveMe(me) {
 // Record one finished game; returns its id (null when it is nobody's: the
 // scoreboard's 甲1／乙1 placeholders).
 export function recordGame({ source, teams, scores = null, winner }) {
-  if (!hasRealNames(teams)) return null;
+  if (!hasRealNames(teams, [...SCORE_TEXT.placeholders.A, ...SCORE_TEXT.placeholders.B])) return null;
   const id = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
   saveGames(addGame(loadGames(), makeGame({ id, at: new Date().toISOString(), source, teams, scores, winner })));
   return id;

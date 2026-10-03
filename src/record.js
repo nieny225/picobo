@@ -6,8 +6,6 @@
 export const MAX_GAMES = 1000;
 const SOURCES = ['score', 'draw', 'koc'];
 
-// The scoreboard's placeholder names: a game with these is not anyone's.
-const PLACEHOLDER = /^[甲乙][12]$/;
 
 export function makeGame({ id, at, source, teams, scores = null, winner }) {
   if (!SOURCES.includes(source)) throw new Error(`record: unknown source ${source}`);
@@ -18,8 +16,9 @@ export function makeGame({ id, at, source, teams, scores = null, winner }) {
   return { id: String(id), at, source, teams: teams.map(t => t.map(String)), scores: scores && scores.map(Number), winner };
 }
 
-// False for a scoreboard game still using 甲1／乙1… (nobody's game).
-export const hasRealNames = teams => teams.flat().every(n => n.trim() && !PLACEHOLDER.test(n.trim()));
+// False for a scoreboard game still using the default names (甲1／乙1…,
+// in the page's language): nobody's game.
+export const hasRealNames = (teams, placeholders) => teams.flat().every(n => n.trim() && !placeholders.includes(n.trim()));
 
 export function addGame(games, game) {
   return [...games, game].slice(-MAX_GAMES);

@@ -278,3 +278,77 @@ export const FORMATS_PAGE = {
   groupShort: { 人多場地少: '人多', 人數湊不齊: '缺人', 想練技術: '練技術', 想玩熱鬧: '熱鬧' },
   scoring: '計分：',
 };
+
+// 計分板頁面上的字。甲隊／乙隊、預設名字 甲1、乙2…（record.js 認得這些預設名字，
+// 用預設名字的比賽不記進我的戰績）。{n}、{team}、{name}、{pos}、{names}、{a}、{b} 會換掉。
+export const SCORE_TEXT = {
+  title: '計分板',
+  intro: '按誰贏了這一球，站位、換發、喊分自動算好。',
+  teams: { A: '甲隊', B: '乙隊' },
+  placeholders: { A: ['甲1', '甲2'], B: ['乙1', '乙2'] },
+  player: '球員 {n}',
+  target: '打到幾分',
+  points: '{n} 分',
+  winBy: '要贏幾分',
+  winBy2: '贏 2 分',
+  winBy1: '贏 1 分就好',
+  first: '誰先發球',
+  flip: '丟硬幣決定',
+  flipped: '硬幣說：{team}先發',
+  deciding: '這是決勝局（到一半提醒換場）',
+  start: '開始計分',
+  alt: '目前站位與發球者',
+  fun: '快打模式，只算分數',
+  pos: { right: '右邊', left: '左邊' },
+  serverN: '第 {n} 發球員 ',
+  serving: '{team}發球：{n}{name} 從{pos}發',
+  switchSides: '到一半了，兩隊換場，發球員不變。',
+  switched: '已換場',
+  won: '{team}贏了 🎉 {a}-{b}',
+  rallyWon: '{names} 贏這球',
+  undo: '復原上一球',
+  again: '再來一局',
+  reset: '重新設定',
+};
+
+// 抽籤輪轉頁面上其他的字。{n}、{court}、{name}、{round}、{names} 會換掉。
+export const DRAW_TEXT = {
+  title: '抽籤輪轉',
+  intro: '先輸入今天的球友，再選要怎麼分。',
+  roster: '今天的球友',
+  people: '{n} 人',
+  remove: '移除 {name}',
+  namePlaceholder: '輸入名字',
+  add: '加入',
+  clear: '清空',
+  subs: { draw: '抽籤分組', rr: '輪轉賽', koc: '國王球場' },
+  courts: '場地數',
+  court: '{court} 號場',
+  vs: '對',
+  rounds: '幾輪',
+  makeRounds: '排輪次',
+  rrHint: '每輪換搭檔，盡量不重複；人數超過場地容量時輪流休息。',
+  round: '第 {round} 輪',
+  resting: '休息：{names}',
+  listSep: '、',
+  streakMax: '最多連贏幾場',
+  kocStart: '開始',
+  kocRestart: '重新開始',
+  kocHint: '贏的留場、輸的排隊尾；連贏到上限也下場。',
+  streak: '留場隊已連贏 {n} 場',
+  kocQueueHint: '（前兩位下一場上）',
+  atLeast: '至少要 {n} 個人。',
+};
+
+// 頁籤（頂部和手機底部）、頁尾、球場圖上的字，和幾個零散的小字。
+export const APP_TEXT = {
+  tabsLabel: '主選單',
+  tabs: { home: '首頁', rules: '規則', score: '計分', draw: '抽籤', venues: '揪團' },
+  footer: '正統規則依據 {rulebook}。趣味玩法各球場做法不同，開打前先講好。',
+  moreDetail: '更多說明',
+  people: '{n} 人',
+  court: { zone: '廚房（非截擊區）', zoneShort: '廚房', alt: '匹克球球場示意圖' },
+  standing: '{rank}. {team}  {won}勝{lost}負 {diff}',
+  division: '【{name}】',
+};
+

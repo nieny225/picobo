@@ -1,3 +1,4 @@
+import { APP_TEXT } from '../data/nav.js';
 import { PICOBOWL as E, MANAGE as T } from '../data/event.js';
 import { createTournament, recordScore, standings, readyMatches } from '../tournament.js';
 import { esc } from './scenes.js';
@@ -68,10 +69,10 @@ function divisionHtml(s, div) {
 function resultsText(s) {
   const lines = [E.name];
   for (const div of s.divisions) {
-    lines.push('', `【${divOf(div.id).name}】`);
+    lines.push('', fill(APP_TEXT.division, { name: divOf(div.id).name }));
     div.pools.forEach((_, p) => {
       lines.push(fill(T.pool, { pool: poolName(p) }));
-      standings(s, div.id, p).forEach((r, i) => lines.push(`${i + 1}. ${s.teams[r.team].name}  ${r.won}勝${r.lost}負 ${r.diff > 0 ? '+' : ''}${r.diff}`));
+      standings(s, div.id, p).forEach((r, i) => lines.push(fill(APP_TEXT.standing, { rank: i + 1, team: s.teams[r.team].name, won: r.won, lost: r.lost, diff: `${r.diff > 0 ? '+' : ''}${r.diff}` })));
     });
     for (const m of s.matches.filter(x => x.div === div.id && x.stage !== 'pool' && x.score)) {
       lines.push(`${label(m)}：${teamName(s, m.a)} ${m.score[0]}:${m.score[1]} ${teamName(s, m.b)}`);

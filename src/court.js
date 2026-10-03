@@ -10,6 +10,8 @@
 // left. Region ids: nvz, nvz:near, nvz:far, serviceBox:<side>:<pos>,
 // baseline:<side>, kitchenLine:<side>, centerline:<side>, court, net.
 
+import { APP_TEXT } from './data/nav.js';
+
 const M = 40;                 // margin
 const W = 200;                // court width
 const L = 440;                // court length
@@ -88,7 +90,7 @@ function lines() {
 function dimensionLabels(land) {
   const t = 'class="court-dim"';
   const up = (x, y) => (land ? ` transform="rotate(-90 ${x} ${y})"` : '');
-  const zone = land ? '廚房' : '廚房（非截擊區）';
+  const zone = land ? APP_TEXT.court.zoneShort : APP_TEXT.court.zone;
   return [
     `<text ${t} x="${XC}" y="${Y0 - 14}" text-anchor="middle">6.10 m（20 ft）</text>`, // lying down this runs along the short edge
     `<text ${t} x="${X1 + 30}" y="${YN}" text-anchor="middle" transform="rotate(${land ? -90 : 90} ${X1 + 30} ${YN})">13.41 m（44 ft）</text>`,
@@ -155,7 +157,7 @@ export function renderCourt(el, scene = {}, opts = {}) {
     return rect(r, `court-hl hl-${id.replace(/:/g, '-')}`);
   }).join('');
   el.innerHTML =
-    `<svg class="court${land ? ' landscape' : ''}" viewBox="${land ? `-16 0 ${VIEW.h + 32} ${VIEW.w + 14}` : `0 0 ${VIEW.w} ${VIEW.h}`}" role="img" aria-label="${esc(scene.alt ?? '匹克球球場示意圖')}">` +
+    `<svg class="court${land ? ' landscape' : ''}" viewBox="${land ? `-16 0 ${VIEW.h + 32} ${VIEW.w + 14}` : `0 0 ${VIEW.w} ${VIEW.h}`}" role="img" aria-label="${esc(scene.alt ?? APP_TEXT.court.alt)}">` +
     (land ? `<g transform="translate(${VIEW.h} 0) rotate(90)">` : '') +
     rect(REGIONS.court, 'court-surface') +
     rect(REGIONS['nvz:far'], 'court-nvz') + rect(REGIONS['nvz:near'], 'court-nvz') +

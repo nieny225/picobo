@@ -19,8 +19,9 @@ test('games are checked, added, capped and removed', () => {
 });
 
 test('placeholder names and who is me', () => {
-  assert.equal(hasRealNames([['甲1', '甲2'], ['Amy', 'Ben']]), false);
-  assert.equal(hasRealNames([['Amy', 'Ben'], ['Chris', 'Dan']]), true);
+  const ph = ['甲1', '甲2', '乙1', '乙2'];
+  assert.equal(hasRealNames([['甲1', '甲2'], ['Amy', 'Ben']], ph), false);
+  assert.equal(hasRealNames([['Amy', 'Ben'], ['Chris', 'Dan']], ph), true);
   const me = { name: 'Max', aliases: ['max3066'] };
   assert.equal(isMe(' max ', me), true);
   assert.equal(isMe('MAX3066', me), true);

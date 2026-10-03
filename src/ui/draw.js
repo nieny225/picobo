@@ -1,4 +1,4 @@
-import { SCORE_SETUP, DRAW_EMPTY, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X, DRAW_SCORE as S, SCORE_SHARE, GROUPS as G } from '../data/nav.js';
+import { SCORE_SETUP, DRAW_EMPTY, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X, DRAW_SCORE as S, SCORE_SHARE, GROUPS as G, DRAW_TEXT as T } from '../data/nav.js';
 import { openShareSheet, CAMERA_ICON } from './sharecard.js';
 import { loadGroups, groupChipsHtml, openGroupSheet } from './groups.js';
 import { recordGame, shareTodayGames } from './record.js';
@@ -12,6 +12,7 @@ import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, courtOfGame, clearOpenPlayStats } from '../draw.js';
 
 const ROSTER_KEY = 'picobo.roster';
+const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // A first visit starts with an empty list; after that the last list stays.
@@ -154,7 +155,7 @@ function wireScore(out, state, kind, firstOf, toScore) {
   });
 }
 
-const matchHtml = (m, firstIdx) => `<div class="match"><span class="court-no">${m.court} 號場</span>${teamHtml(m.teams[0], firstIdx === 0)}<span class="vs">對</span>${teamHtml(m.teams[1], firstIdx === 1)}</div>`;
+const matchHtml = (m, firstIdx) => `<div class="match"><span class="court-no">${esc(fill(T.court, { court: m.court }))}</span>${teamHtml(m.teams[0], firstIdx === 0)}<span class="vs">${esc(T.vs)}</span>${teamHtml(m.teams[1], firstIdx === 1)}</div>`;
 
 export function mountDraw(root, { toScore } = {}) {
   let roster = loadRoster();
@@ -174,14 +175,14 @@ export function mountDraw(root, { toScore } = {}) {
   };
 
   const html = () => `
-    <div class="section-head"><div class="head-row"><h2>抽籤輪轉</h2>${handoffButtonHtml()}</div><p class="intro">先輸入今天的球友，再選要怎麼分。</p></div>
+    <div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${handoffButtonHtml()}</div><p class="intro">${esc(T.intro)}</p></div>
     <div class="card roster-card">
-      <div class="card-head"><h3>今天的球友 <span class="muted small num">${roster.names.length} 人</span></h3></div>
+      <div class="card-head"><h3>${esc(T.roster)} <span class="muted small num">${esc(fill(T.people, { n: roster.names.length }))}</span></h3></div>
       ${(() => { const groups = loadGroups(); return groups.length || roster.names.length ? groupChipsHtml(groups, groupOf(groups, roster.names)?.name, roster.names.length > 0) : ''; })()}
-      <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip">${showTags() ? tagHtml(n, i) : ''}<button type="button" class="chip-name" data-rename="${i}">${esc(n)}</button><button data-remove="${i}" aria-label="移除 ${esc(n)}">×</button></span>`).join('')}</div>
+      <div class="roster" id="roster">${roster.names.map((n, i) => `<span class="name-chip">${showTags() ? tagHtml(n, i) : ''}<button type="button" class="chip-name" data-rename="${i}">${esc(n)}</button><button data-remove="${i}" aria-label="${esc(fill(T.remove, { name: n }))}">×</button></span>`).join('')}</div>
       ${roster.names.length ? '' : `<p class="muted small">${esc(DRAW_EMPTY)}</p>`}
       ${roster.names.length ? `<p class="muted small">${esc(showTags() ? `${R.hint}${X.hint}` : R.hint)}</p>` : ''}
-      <form class="row" id="add-form"><input class="input" id="add-name" placeholder="輸入名字" maxlength="8" autocomplete="off"><button class="btn" type="submit" style="flex:0 0 auto">加入</button><button class="btn btn-ghost" type="button" id="clear" style="flex:0 0 auto">清空</button></form>
+      <form class="row" id="add-form"><input class="input" id="add-name" placeholder="${esc(T.namePlaceholder)}" maxlength="8" autocomplete="off"><button class="btn" type="submit" style="flex:0 0 auto">${esc(T.add)}</button><button class="btn btn-ghost" type="button" id="clear" style="flex:0 0 auto">${esc(T.clear)}</button></form>
       <details class="paste-list"><summary>${esc(P.open)}</summary>
         <p class="muted small">${esc(P.hint)}</p>
         <textarea class="input" id="paste-text" rows="5" placeholder="${esc(P.placeholder)}"></textarea>
@@ -190,12 +191,12 @@ export function mountDraw(root, { toScore } = {}) {
       </details>
     </div>
     <div class="subtabs" role="tablist">
-      ${[['draw', '抽籤分組'], ['rr', '輪轉賽'], ['koc', '國王球場']].map(([id, t]) => `<button class="subtab" role="tab" data-sub="${id}" aria-selected="${sub === id}">${t}</button>`).join('')}
+      ${Object.entries(T.subs).map(([id, t]) => `<button class="subtab" role="tab" data-sub="${id}" aria-selected="${sub === id}">${esc(t)}</button>`).join('')}
     </div>
     <div id="sub-body"></div>`;
 
   const drawBody = () => `<div class="card draw-card"><div class="draw-controls">
-    <div class="row"><div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="${play ? play.courts.length : 1}"></div><div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${esc(play ? OPEN_PLAY.redraw : OPEN_PLAY.start)}</button></div></div>
+    <div class="row"><div class="field"><label for="courts">${esc(T.courts)}</label><input class="input num" id="courts" type="number" min="1" max="8" value="${play ? play.courts.length : 1}"></div><div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${esc(play ? OPEN_PLAY.redraw : OPEN_PLAY.start)}</button></div></div>
     <label class="mix-toggle"><input type="checkbox" id="mix"${mix ? ' checked' : ''}> ${esc(X.toggle)}<span class="muted small mix-note">${esc(X.note)}</span></label>
     <p class="muted small">${esc(OPEN_PLAY.hint)}</p></div>
     <div id="out"></div></div>`;
@@ -204,7 +205,7 @@ export function mountDraw(root, { toScore } = {}) {
     if (!play) { out.innerHTML = ''; return; }
     const ranked = Object.entries(play.stats).sort((a, b) => b[1].won - a[1].won || a[1].played - b[1].played);
     out.innerHTML = `${fullBtnHtml()}<div class="matches">${play.courts.map((c, ci) => c.teams.length === 2 ? `
-      <div class="koc-court" data-court="${c.court}"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span>${mix && c.mixed === false ? `<span class="waiting">${esc(X.notMixed)}</span>` : ''}${scoreBtnHtml(ci, c.court)}</div>
+      <div class="koc-court" data-court="${c.court}"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${esc(fill(T.court, { court: c.court }))}</span>${mix && c.mixed === false ? `<span class="waiting">${esc(X.notMixed)}</span>` : ''}${scoreBtnHtml(ci, c.court)}</div>
       <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.first === ti, true)}<button class="btn" data-court="${ci}" data-win="${ti}">${esc(OPEN_PLAY.won)}</button></div>`).join('')}</div></div>`
       : `<div class="koc-court"><span class="muted">${esc(OPEN_PLAY.idle.replace('{court}', c.court))}</span></div>`).join('')}</div>
       <p class="small" style="margin-top:10px"><b>${esc(OPEN_PLAY.queue)}</b>${esc(OPEN_PLAY.queueHint)}</p>
@@ -235,29 +236,29 @@ export function mountDraw(root, { toScore } = {}) {
 
   const rrBody = () => `<div class="card">
     <div class="row">
-      <div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="1"></div>
-      <div class="field"><label for="rounds">幾輪</label><input class="input num" id="rounds" type="number" min="1" max="12" value="5"></div>
-      <div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">排輪次</button></div>
+      <div class="field"><label for="courts">${esc(T.courts)}</label><input class="input num" id="courts" type="number" min="1" max="8" value="1"></div>
+      <div class="field"><label for="rounds">${esc(T.rounds)}</label><input class="input num" id="rounds" type="number" min="1" max="12" value="5"></div>
+      <div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${esc(T.makeRounds)}</button></div>
     </div>
-    <p class="muted small">每輪換搭檔，盡量不重複；人數超過場地容量時輪流休息。</p>
+    <p class="muted small">${esc(T.rrHint)}</p>
     <div id="out"></div></div>`;
 
   const kocBody = () => `<div class="card draw-card"><div class="draw-controls">
     <div class="row">
-      <div class="field"><label for="courts">場地數</label><input class="input num" id="courts" type="number" min="1" max="8" value="1"></div>
-      <div class="field"><label for="streak">最多連贏幾場</label><input class="input num" id="streak" type="number" min="1" max="10" value="${streakMax}"></div>
-      <div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${koc ? '重新開始' : '開始'}</button></div>
+      <div class="field"><label for="courts">${esc(T.courts)}</label><input class="input num" id="courts" type="number" min="1" max="8" value="1"></div>
+      <div class="field"><label for="streak">${esc(T.streakMax)}</label><input class="input num" id="streak" type="number" min="1" max="10" value="${streakMax}"></div>
+      <div class="field"><label>&nbsp;</label><button class="btn btn-primary" id="go">${esc(koc ? T.kocRestart : T.kocStart)}</button></div>
     </div>
-    <p class="muted small">贏的留場、輸的排隊尾；連贏到上限也下場。</p></div>
+    <p class="muted small">${esc(T.kocHint)}</p></div>
     <div id="out"></div></div>`;
 
   const renderKoc = out => {
     if (!koc) { out.innerHTML = ''; return; }
     out.innerHTML = `${fullBtnHtml()}<div class="matches">${koc.courts.map((c, ci) => c.teams.length === 2 ? `
-      <div class="koc-court" data-court="${c.court}"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${c.court} 號場</span><span class="streak">留場隊已連贏 ${c.streak} 場</span>${scoreBtnHtml(ci, c.court)}</div>
-      <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.streak === 0 ? ti === 0 : ti === 1, true)}<button class="btn" data-court="${ci}" data-win="${ti}">這隊贏</button></div>`).join('')}</div></div>`
-      : `<div class="koc-court"><span class="muted">${c.court} 號場：人不夠，先休息</span></div>`).join('')}</div>
-      <p class="small" style="margin-top:10px"><b>排隊中</b>（前兩位下一場上）</p><div class="queue">${koc.queue.map(n => nameHtml(n, true)).join('') || '<span class="muted">沒有人在排隊</span>'}</div>
+      <div class="koc-court" data-court="${c.court}"><div class="court-head"><span class="court-no num" style="color:var(--accent);font-weight:700">${esc(fill(T.court, { court: c.court }))}</span><span class="streak">${esc(fill(T.streak, { n: c.streak }))}</span>${scoreBtnHtml(ci, c.court)}</div>
+      <div class="koc-teams">${c.teams.map((t, ti) => `<div class="koc-team">${teamHtml(t, c.streak === 0 ? ti === 0 : ti === 1, true)}<button class="btn" data-court="${ci}" data-win="${ti}">${esc(OPEN_PLAY.won)}</button></div>`).join('')}</div></div>`
+      : `<div class="koc-court"><span class="muted">${esc(OPEN_PLAY.idle.replace('{court}', c.court))}</span></div>`).join('')}</div>
+      <p class="small" style="margin-top:10px"><b>${esc(OPEN_PLAY.queue)}</b>${esc(T.kocQueueHint)}</p><div class="queue">${koc.queue.map(n => nameHtml(n, true)).join('') || `<span class="muted">${esc(OPEN_PLAY.queueEmpty)}</span>`}</div>
       <p class="muted small">${esc(W.hint)}</p>`;
     for (const b of out.querySelectorAll('[data-win]')) b.addEventListener('click', () => {
       recordGame({ source: 'koc', teams: koc.courts[Number(b.dataset.court)].teams, winner: Number(b.dataset.win) });
@@ -275,7 +276,7 @@ export function mountDraw(root, { toScore } = {}) {
     const out = body.querySelector('#out');
     const courts = () => Number(body.querySelector('#courts').value) || 1;
     const guard = min => {
-      if (roster.names.length < min) { out.innerHTML = `<p class="banner">至少要 ${min} 個人。</p>`; return false; }
+      if (roster.names.length < min) { out.innerHTML = `<p class="banner">${esc(fill(T.atLeast, { n: min }))}</p>`; return false; }
       return true;
     };
     body.querySelector('#go').addEventListener('click', () => {
@@ -288,7 +289,7 @@ export function mountDraw(root, { toScore } = {}) {
       } else if (sub === 'rr') {
         if (!guard(4)) return;
         const rounds = roundRobin(roster.names, courts(), Number(body.querySelector('#rounds').value) || 1);
-        out.innerHTML = rounds.map(r => `<div class="round"><h3><span>第 ${r.round} 輪</span>${r.resting.length ? `<span class="waiting">休息：${r.resting.join('、')}</span>` : ''}</h3><div class="matches">${r.matches.map(m => matchHtml(m, -1)).join('')}</div></div>`).join('<div style="height:8px"></div>');
+        out.innerHTML = rounds.map(r => `<div class="round"><h3><span>${esc(fill(T.round, { round: r.round }))}</span>${r.resting.length ? `<span class="waiting">${esc(fill(T.resting, { names: r.resting.join(T.listSep) }))}</span>` : ''}</h3><div class="matches">${r.matches.map(m => matchHtml(m, -1)).join('')}</div></div>`).join('<div style="height:8px"></div>');
       } else {
         if (!guard(4)) return;
         koc = createKingOfCourt(roster.names, courts());

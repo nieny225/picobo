@@ -1,7 +1,7 @@
 import { SECTIONS, COMPARE } from '../data/rules.js';
 import { FORMATS } from '../data/formats.js';
 import { GLOSSARY, MISCONCEPTIONS } from '../data/glossary.js';
-import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER, FILTER, FORMATS_PAGE } from '../data/nav.js';
+import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER, FILTER, FORMATS_PAGE, APP_TEXT } from '../data/nav.js';
 import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
 import { formatCardHtml, wireFormat } from './formats.js';
 import { shareButtonHtml, sharePage, toast } from './share.js';
@@ -15,7 +15,7 @@ const figureHtml = f => (f ? `<figure class="rule-figure">${FIGURES[f.kind](f)}<
 
 function ruleCard(item, applies = '') {
   const detail = item.detail?.length
-    ? `<details${item.collapsed ? '' : ''}><summary>更多說明</summary><div class="detail"><ul>${item.detail.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div></details>`
+    ? `<details${item.collapsed ? '' : ''}><summary>${esc(APP_TEXT.moreDetail)}</summary><div class="detail"><ul>${item.detail.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div></details>`
     : '';
   // 借場地打: one drawing per host court (court.js), then what to reuse and tape.
   const st = item.setup;

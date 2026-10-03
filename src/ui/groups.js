@@ -1,4 +1,4 @@
-import { GROUPS as G } from '../data/nav.js';
+import { GROUPS as G, APP_TEXT } from '../data/nav.js';
 import { saveGroup, removeGroup, cleanGroups } from '../groups.js';
 import { esc } from './scenes.js';
 import { toast } from './share.js';
@@ -31,7 +31,7 @@ export function openGroupSheet(names, done) {
   const dlg = document.createElement('dialog');
   dlg.className = 'install-sheet group-sheet';
   const listHtml = () => groups.length ? `<p class="small swap-group">${esc(G.manage)}</p>
-    <ul class="group-list">${groups.map(g => `<li><span><b>${esc(g.name)}</b> <span class="muted small">${g.names.length} 人</span></span><button type="button" class="btn btn-ghost" data-del="${esc(g.name)}">${esc(G.remove)}</button></li>`).join('')}</ul>` : '';
+    <ul class="group-list">${groups.map(g => `<li><span><b>${esc(g.name)}</b> <span class="muted small">${esc(APP_TEXT.people.replace('{n}', g.names.length))}</span></span><button type="button" class="btn btn-ghost" data-del="${esc(g.name)}">${esc(G.remove)}</button></li>`).join('')}</ul>` : '';
   dlg.innerHTML = `<form method="dialog" class="rename-form"><b>${esc(G.sheetTitle)}</b>
     <p class="muted small">${esc(G.sheetHint)}</p>
     <input class="input" name="gname" maxlength="20" autocomplete="off" placeholder="${esc(G.namePlaceholder)}">
