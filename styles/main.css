@@ -315,7 +315,7 @@ button { cursor: pointer; }
   box-shadow: 2px 2px 0 var(--shadow-ink); opacity: 0.92;
 }
 /* Latin text reads sideways, not one stacked letter at a time. */
-:lang(en) .drawer-tab span { text-orientation: mixed; letter-spacing: 0.05em; transform: rotate(180deg); }
+:lang(en) .drawer-tab span { text-orientation: mixed; letter-spacing: 0.05em; }
 .drawer-tab:active span { transform: translateX(3px); }
 @media (max-width: 767px) { .drawer-tab { bottom: calc(112px + env(safe-area-inset-bottom, 0px)); } }
 #view-rules[hidden] .drawer-tab { display: none; }
