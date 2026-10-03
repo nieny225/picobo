@@ -7,6 +7,7 @@ import { mountMeetup } from './ui/meetup.js';
 import { mountVenues } from './ui/venues.js';
 import { mountSignup } from './ui/signup.js';
 import { mountMe, mountMeButton } from './ui/me.js';
+import { receiveGames } from './ui/record.js';
 import { autoHideTopbar } from './ui/topbar.js';
 import { mountThemeToggle } from './ui/theme.js';
 import { registerServiceWorker, mountInstallButton } from './ui/install.js';
@@ -108,6 +109,13 @@ async function receiveHandoff() {
   if (!code || location.hash.startsWith('#meetup')) return;
   let payload;
   try { payload = await decodeHandoff(code); } catch { toast(HANDOFF.broken); history.replaceState(null, '', location.hash.split('?')[0]); return; }
+  // A 戰績連結 only adds games to 我的戰績; nothing is replaced, so no question.
+  if (payload.kind === 'games') {
+    history.replaceState(null, '', '#me');
+    try { receiveGames(payload.data); } catch { toast(HANDOFF.broken); }
+    show();
+    return;
+  }
   const tool = { score: scoreboard, draw, tourney: event }[payload.kind];
   const kind = HANDOFF.kinds[payload.kind];
   history.replaceState(null, '', `#${routeOf(payload.kind)}`);

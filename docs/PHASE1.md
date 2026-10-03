@@ -1,4 +1,4 @@
-# Phase 1: stickiness (draft design, waiting for the user's picks)
+# Phase 1: stickiness (built, except 固定場次範本)
 
 Goal: people open Picobo every time they play, not only when they need a
 tool. Four features, picked by the user on 2026-10-03:
@@ -79,6 +79,14 @@ and give 1 and 2 cleaner names to count. 2 needs 1.
 - Content: big 「這週打了 14 場」, 勝率 64%, 最長連勝 4, 最佳拍檔 Amy,
   date range, picobo.net; the brand tag top left as on the other pictures.
 - Entry: 「📷 IG」 on the 我的戰績 page, sharing whatever range is shown.
+
+## 戰績連結 — A built 2026-10-03, B later
+
+Someone else usually keeps score, so games land on their phone. A: a link
+with today's games (「🔗 傳給球友」 in 抽籤 今天戰績, 「把今天的比賽傳給球友」
+on 我的戰績), opened by each player once; merged by game id. B: accounts +
+cloud database with the future login / profile; uploads the games already on
+phones.
 
 ## Decisions (user, 2026-10-03)
 

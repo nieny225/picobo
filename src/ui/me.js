@@ -1,6 +1,6 @@
 import { ME as T } from '../data/me.js';
-import { summary, namesSeen } from '../record.js';
-import { loadGames, saveGames, loadMe, saveMe } from './record.js';
+import { summary, namesSeen, gamesOn } from '../record.js';
+import { loadGames, saveGames, loadMe, saveMe, shareTodayGames } from './record.js';
 import { esc } from './scenes.js';
 import { toast } from './share.js';
 import { openShareSheet, CAMERA_ICON } from './sharecard.js';
@@ -11,6 +11,8 @@ import { SCORE_SHARE } from '../data/nav.js';
 // last games. Everything is read from this phone (src/ui/record.js).
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 const PERSON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
+// A chain link: the 戰績連結 that passes today's games to the other players.
+export const LINK_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>';
 const RANGE_KEY = 'picobo.meRange';
 function loadRange() {
   try { const r = localStorage.getItem(RANGE_KEY); return T.ranges[r] ? r : 'week'; } catch { return 'week'; }
@@ -97,7 +99,9 @@ export function mountMe(root) {
     root.innerHTML = `${head.replace('</h2></div>', `</h2>${ig}</div>`)}
       <p class="me-who-line">${esc(T.iAm)} <b>${esc(me.name)}</b>${me.aliases.length ? ` <span class="muted small">${esc(T.alsoKnown)} ${esc(me.aliases.join('、'))}</span>` : ''} <button type="button" class="me-link" data-change>${esc(T.change)}</button></p>
       ${statsHtml(s, range)}
+      ${gamesOn(games).length ? `<article class="card me-pass"><p class="muted small">${esc(T.link.hint)}</p><button type="button" class="btn btn-block icon-btn" data-pass>${LINK_ICON}<span>${esc(T.link.button)}</span></button></article>` : ''}
       ${games.length ? `<p class="me-clear"><button type="button" class="me-link" data-clear>${esc(T.clear)}</button></p>` : ''}`;
+    root.querySelector('[data-pass]')?.addEventListener('click', shareTodayGames);
     root.querySelector('[data-change]').addEventListener('click', () => { picking = true; render(); });
     root.querySelector('[data-report]')?.addEventListener('click', () => openShareSheet('report', { summary: s, name: me.name, range }));
     for (const b of root.querySelectorAll('[data-range]')) b.addEventListener('click', () => { saveRange(b.dataset.range); render(); });

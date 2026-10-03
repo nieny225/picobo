@@ -6,7 +6,7 @@ import { sharePage } from './share.js';
 // Share-the-current-state button for the scoreboard, draw and Pico Bowl
 // organizer. It looks like any share button; tapping it first explains what
 // the link does, then shares picobo.net/#<route>?s=<state>.
-const ROUTE = { score: 'score', draw: 'draw', tourney: 'picobowl/manage' };
+const ROUTE = { score: 'score', draw: 'draw', tourney: 'picobowl/manage', games: 'me' };
 export const routeOf = kind => ROUTE[kind];
 
 export const handoffButtonHtml = () =>

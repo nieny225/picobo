@@ -1,4 +1,9 @@
-import { makeGame, addGame, removeGame, cleanGames, hasRealNames } from '../record.js';
+import { makeGame, addGame, removeGame, cleanGames, hasRealNames, packGames, unpackGames, mergeGames, gamesOn } from '../record.js';
+import { encodeHandoff } from '../handoff.js';
+import { ME } from '../data/me.js';
+import { SHARE } from '../data/nav.js';
+import { esc } from './scenes.js';
+import { sharePage, toast } from './share.js';
 
 // Where 個人戰績本 lives on this phone (rules in src/record.js): every finished
 // game (picobo.games) and who "me" is (picobo.me). The scoreboard and the
@@ -32,4 +37,21 @@ export function recordGame({ source, teams, scores = null, winner }) {
 }
 export function unrecordGame(id) {
   if (id) saveGames(removeGame(loadGames(), id));
+}
+
+// 戰績連結: today's games on this phone, as a picobo.net/#me?s=… link for
+// the group chat. The link is built first, then shared straight from the tap.
+export async function shareTodayGames() {
+  const today = gamesOn(loadGames());
+  if (today.length === 0) { toast(esc(ME.link.none)); return; }
+  const code = await encodeHandoff('games', packGames(today));
+  await sharePage(ME.link.title, `${SHARE.url}#me?s=${code}`, ME.link.text);
+}
+
+// A 戰績連結 opened here: add the games this phone does not have yet.
+export function receiveGames(rows) {
+  const { games, added } = mergeGames(loadGames(), unpackGames(rows));
+  saveGames(games);
+  toast(esc(added ? ME.link.added.replace('{n}', added) : ME.link.dup));
+  return added;
 }

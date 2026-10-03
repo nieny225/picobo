@@ -95,3 +95,27 @@ export function summary(games, me, range = 'all', now = new Date(), min = 3) {
     })),
   };
 }
+
+// 戰績連結: games handed to the other players through the group chat, so
+// each phone's 我的戰績 has the games someone else scored. Packed small:
+// [id, at, source, teams, scores, winner].
+export const packGames = games => games.map(g => [g.id, g.at, g.source, g.teams, g.scores, g.winner]);
+export function unpackGames(rows) {
+  if (!Array.isArray(rows)) throw new Error('record: not a games link');
+  return cleanGames(rows.map(r => (Array.isArray(r) ? { id: r[0], at: r[1], source: r[2], teams: r[3], scores: r[4], winner: r[5] } : null)));
+}
+
+// Add incoming games that are not here yet (same id = same game), oldest first.
+export function mergeGames(mine, incoming) {
+  const have = new Set(mine.map(g => g.id));
+  const fresh = incoming.filter(g => !have.has(g.id));
+  const games = [...mine, ...fresh].sort((a, b) => a.at.localeCompare(b.at)).slice(-MAX_GAMES);
+  return { games, added: fresh.length };
+}
+
+// The games played today (local date) — what a 戰績連結 carries.
+export function gamesOn(games, now = new Date()) {
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1);
+  return games.filter(g => { const t = new Date(g.at); return t >= start && t < end; });
+}

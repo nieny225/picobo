@@ -60,9 +60,9 @@ work there and fast-forward `main` the same way.
 
 - Market: start with Taiwanese players in Singapore; later expand to Taiwan
   and add English.
-- Phase 1 design draft: docs/PHASE1.md (waiting for the user's answers).
+- Phase 1 design and decisions: docs/PHASE1.md (built except 固定場次範本).
 - Phase 1 features (goal: stickiness, so people open Picobo every time they
-  play). Not started; propose a design and ask before building each:
+  play). Built (see "Where things stand"); 4 skipped:
   1. 個人戰績本: every game from the scoreboard and 抽籤 is recorded
      automatically; show win rate, most frequent partner, longest win streak.
   2. 本週／本月戰報圖: a share picture like 「這週打了 14 場、勝率 64%、
@@ -444,6 +444,18 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   count on yellow, tiles 勝率／最長連勝／最佳拍檔 (else 最常搭檔)／戰績.
   Photo, 限動／貼文, 小中大 and drag work as for the other pictures.
   Phase 1 is done except 固定場次範本 (skipped).
+- 戰績連結 (user, 2026-10-03: "A 先做，B 之後"). Usually someone else keeps
+  score or runs 抽籤, so the games land on their phone. A, built: 「🔗 傳給球友」
+  next to 「📷 IG」 under 抽籤 今天戰績, and 「把今天的比賽傳給球友」 on 我的戰績
+  (covers scoreboard games too), share today's games on this phone as
+  `picobo.net/#me?s=…` (handoff kind 'games', packGames in src/record.js).
+  Opening it merges them into picobo.games by game id (mergeGames; opening
+  twice adds nothing; toast 「加入 N 場比賽」) and shows #me; with no "me" yet
+  the picker lists the names from the link.
+  B, later, with login / profile: games written to a shared database so
+  everyone sees theirs without a link. Needs a backend, accounts and a privacy
+  policy (breaks today's no-backend rule; ask first). Game records already
+  carry ids, so B can upload what phones hold.
 
 ## Known gaps and ideas not yet scheduled
 

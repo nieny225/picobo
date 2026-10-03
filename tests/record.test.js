@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { makeGame, addGame, removeGame, cleanGames, hasRealNames, isMe, rangeStart, namesSeen, summary, MAX_GAMES } from '../src/record.js';
+import { makeGame, addGame, removeGame, cleanGames, hasRealNames, isMe, rangeStart, namesSeen, summary, MAX_GAMES, packGames, unpackGames, mergeGames, gamesOn } from '../src/record.js';
 
 let n = 0;
 const g = (at, teams, winner, scores = null, source = 'draw') => makeGame({ id: ++n, at, source, teams, winner, scores });
@@ -80,4 +80,20 @@ test('scores are shown from my side, and names are listed by how often they appe
   assert.deepEqual(s.recent[0].scores, [4, 11]);
   assert.equal(s.recent[0].won, false);
   assert.deepEqual(namesSeen([...games, g('2026-10-01T11:00:00', [['Max'], ['Amy']], 0)]).slice(0, 2), ['Amy', 'Max']);
+});
+
+test('戰績連結: pack, unpack, merge without duplicates, today only', () => {
+  const a = g('2026-10-02T02:00:00.000Z', [['Max', 'Amy'], ['Chris', 'Dan']], 0, [11, 7], 'score');
+  const b = g('2026-10-02T03:00:00.000Z', [['Max', 'Ben'], ['Chris', 'Dan']], 1);
+  const c = g('2026-09-30T03:00:00.000Z', [['Max', 'Ben'], ['Erin', 'Dan']], 1);
+  const back = unpackGames(JSON.parse(JSON.stringify(packGames([a, b]))));
+  assert.deepEqual(back, [a, b]);
+  assert.deepEqual(unpackGames([['x'], 'junk']), []);
+  assert.throws(() => unpackGames('nope'), /games link/);
+  const once = mergeGames([c, a], [a, b]);
+  assert.equal(once.added, 1);
+  assert.deepEqual(once.games.map(x => x.id), [c.id, a.id, b.id]);
+  assert.equal(mergeGames(once.games, [a, b]).added, 0);
+  const today = gamesOn([a, b, c], new Date('2026-10-02T06:00:00.000Z'));
+  assert.deepEqual(today.map(x => x.id).sort(), [a.id, b.id].sort());
 });
