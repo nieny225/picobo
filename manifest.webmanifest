@@ -1,7 +1,7 @@
 {
   "name": "Picobo 痞克柏",
   "short_name": "痞克柏",
-  "description": "匹克球規則圖解、計分板、抽籤輪轉。",
+  "description": "匹克球規則圖解、計分板、抽籤輪轉、找場地揪團。",
   "lang": "zh-Hant-TW",
   "start_url": "./#home",
   "scope": "./",

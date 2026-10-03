@@ -1,7 +1,7 @@
 {
   "name": "Picobo",
   "short_name": "Picobo",
-  "description": "Pickleball rules in pictures, a scoreboard and draws for group play.",
+  "description": "Pickleball rules in pictures, a scoreboard, draws for group play and courts to book.",
   "lang": "en",
   "start_url": "./#home",
   "scope": "./",
