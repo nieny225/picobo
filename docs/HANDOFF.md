@@ -56,6 +56,17 @@ work there and fast-forward `main` the same way.
 - The artifact preview cannot install the app or use the real Fullscreen API
   (iframe); the in-page full-screen fallback works there.
 
+## Roadmap (user, 2026-10-03)
+
+- Market: start with Taiwanese players in Singapore; later expand to Taiwan
+  and add English.
+- Phase 1 features: the user picked ideas 1, 2, 3 and 4 from a proposal list
+  that is not recorded in this repo — ask the user to restate them before
+  building.
+- Decided against for now: court-fee splitting (friends already settle it in
+  the chat sign-up list), rules quiz, and situation / ruling lookup
+  (情境查判). Keep the ideas on file, do not build them.
+
 ## Where things stand
 
 v1 is built, tested and pushed. `docs/PLAN.md` is the approved plan; the
