@@ -726,6 +726,12 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 .chrome-hidden .venue-bar { top: 0; }
 .venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
 .venue-list { display: grid; gap: 14px; }
+/* A friend's filter link: what is filtered, and the way back to the whole list. */
+.venue-shared { display: flex; align-items: center; gap: 10px; margin: 8px 0; padding: 10px 12px; border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--mark); color: var(--mark-fg); }
+.venue-shared[hidden], .venue-bar[hidden] { display: none; }
+.venue-shared p { flex: 1; margin: 0; }
+.venue-shared .nowrap { white-space: nowrap; }
+.venue-shared .btn { flex: none; min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
 /* Bar row under the regions: favourites, the 篩選 button (badge = filters on), sort. */
 .venue-tools { display: flex; gap: 8px; align-items: stretch; }
 .venue-tools .btn { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 4px 12px; }

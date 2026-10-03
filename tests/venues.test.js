@@ -49,3 +49,21 @@ test('venue data: every venue has an operator and a price that is a number or ab
   // free courts say so in fee, and only they have price 0
   for (const v of VENUES) assert.equal(v.price === 0, v.fee === '免費', v.id);
 });
+
+test('shared filter link: round trip, language-free regions, junk dropped', async () => {
+  const { filterToQuery, queryToFilter, isFiltered, REGION_KEYS } = await import('../src/venues.js');
+  const { VENUES_PAGE: TW } = await import('../src/data/zh-TW/venues.js');
+  const { VENUES_PAGE: EN } = await import('../src/data/en/venues.js');
+  const tw = TW.regions.map(r => r.id), en = EN.regions.map(r => r.id);
+  assert.equal(tw.length, REGION_KEYS.length);
+  const f = { q: 'abc', region: '東區', prices: ['free', 'low'], ops: ['public'], dry: true, fav: true, minCourts: 4, sort: 'price' };
+  const qs = filterToQuery(f, tw);
+  assert.equal(qs, 'r=east&p=free%2Clow&op=public&dry=1&c=4&sort=price');
+  assert.deepEqual(queryToFilter(qs, en), { q: '', fav: false, region: 'East', prices: ['free', 'low'], ops: ['public'], dry: true, minCourts: 4, sort: 'price' });
+  assert.equal(queryToFilter('', tw), null);
+  assert.equal(queryToFilter('s=xyz', tw), null);
+  assert.deepEqual(queryToFilter('r=mars&p=cheap,free&c=3&sort=near', tw), { q: '', fav: false, region: '', prices: ['free'], ops: [], dry: false, minCourts: 0, sort: 'region' });
+  assert.equal(isFiltered({ region: '', prices: [], ops: [], sort: 'region' }), false);
+  assert.equal(isFiltered({ region: '', prices: [], ops: [], sort: 'price' }), true);
+  assert.throws(() => filterToQuery({ region: 'Mars' }, tw), /unknown region/);
+});

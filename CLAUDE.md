@@ -72,7 +72,7 @@ src/groups.js           pure 常用球團 list: save (same name replaces, max 20
 src/record.js           pure 個人戰績本: game records (score / draw / koc), who is me, summary for a range;
                         pack / merge for the 戰績連結 (today's games by link, #me?s=…)
 src/sharecard.js        pure share-image content: a finished game's score card, the 抽籤 戰績 ranking, the 我的戰績 戰報
-src/venues.js           pure 場地名錄 filters: price bands, operator, rain-proof, minimum courts (2/4/6), favourites; sort by region / price
+src/venues.js           pure 場地名錄 filters: price bands, operator, rain-proof, minimum courts (2/4/6), favourites; sort by region / price; filter ↔ link query (#venues?r=east&p=low…)
 src/meetup.js           pure 揪團卡 logic: check the form, chat summary line, .ics, map / LINE / WhatsApp links
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes
@@ -96,7 +96,7 @@ src/ui/install.js       top-bar install button (prompt or steps), an invite/shar
 src/ui/event.js         Pico Bowl tournament page + its home-page card
 src/ui/tournament.js    organizer screen at #picobowl/manage (local to one phone)
 src/ui/meetup.js        揪團: form, card preview, shared card (#meetup?s=…, shown only, never loaded)
-src/ui/venues.js        場地名錄 by region; bar (search, region, ♥, 篩選 sheet, sort); #venues/<id> one court (card share icon); 發報名訊息 → #signup?venue=<id>
+src/ui/venues.js        場地名錄 by region; bar (search, region, ♥, 篩選 sheet, sort); #venues/<id> one court (card share icon); #venues?… a friend's filter (shown, not saved); 發報名訊息 → #signup?venue=<id>
 src/ui/signup.js        報名訊息: sessions, names, optional cap → live preview, copy / share as text
 src/data/rules.js       rule copy + court scene definitions
 src/data/formats.js     fun formats + court scenes, grouped by purpose: 人多場地少 (國王球場, 輪轉賽, 快打短局),

@@ -94,7 +94,7 @@ function show() {
   // 揪團 reads its own query: a shared card (?s=) or a court to start from.
   if (route === 'meetup') meetup.show(location.hash.split('?')[1] ?? '');
   if (route === 'signup') signup.show(location.hash.split('?')[1] ?? '');
-  if (route === 'venues') venues.show(sub);
+  if (route === 'venues') venues.show(sub, location.hash.split('?')[1] ?? '');
   if (route === 'me') me.show();
   if (route === 'home') home.refresh();
   // #score?play=…&scoring=… from a rule page: preset the mode, then drop the query.

@@ -7,7 +7,7 @@ import { shareButtonHtml, sharePage, shareIcon } from './share.js';
 import { SHARE } from '../data/nav.js';
 import { fill } from '../fill.js';
 import { SETTINGS } from '../data/settings.js';
-import { matchVenue, sortVenues, activeCount, PRICE_BANDS, OPERATORS, SORTS, COURT_STEPS } from '../venues.js';
+import { matchVenue, sortVenues, activeCount, PRICE_BANDS, OPERATORS, SORTS, COURT_STEPS, filterToQuery, queryToFilter, isFiltered } from '../venues.js';
 
 // A court's setting: one of indoor / sheltered / outdoor, or a list when it has both kinds.
 const settingsOf = v => [v.setting ?? []].flat().map(k => { if (!V.settings[k]) throw new Error(`venues: unknown setting ${k}`); return k; });
@@ -146,6 +146,20 @@ function listHtml(f) {
     ${unlisted}`;
 }
 
+const REGION_IDS = V.regions.map(r => r.id);
+// 東區 / S$10 以下 / 不怕下雨: the parts of the strip over a friend's filtered list.
+function sharedSummary(f) {
+  const label = (list, id) => list.find(o => o.id === id).label;
+  return [
+    f.region,
+    ...f.prices.map(b => label(V.prices, b)),
+    ...f.ops.map(o => label(V.ops, o)),
+    f.dry && label(V.others, 'dry'),
+    f.minCourts && label(V.courtSteps, f.minCourts),
+    f.sort !== 'region' && label(V.sorts, f.sort),
+  ].filter(Boolean);
+}
+
 // Courts directory (#venues), grouped by region in data order. #venues/<id>
 // is one court's own page (the link its share icon sends): just that card,
 // whatever the filters, with a way back to the whole list.
@@ -153,17 +167,27 @@ export function mountVenues(root) {
   const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(V.intro)}</p><p class="muted small">${esc(V.disclaimer)}</p></div>`;
   if (VENUES.length === 0) { root.innerHTML = `${head}<article class="card"><p>${esc(V.empty)}</p></article>`; return { show() {} }; }
   const f = loadFilter();
-  root.innerHTML = `<div class="venue-all">${head}${barHtml(f)}<div class="venue-list"></div></div><div class="venue-one" hidden></div>`;
+  root.innerHTML = `<div class="venue-all">${head}${barHtml(f)}<div class="venue-shared" hidden></div><div class="venue-list"></div></div><div class="venue-one" hidden></div>`;
   const all = root.querySelector('.venue-all'), one = root.querySelector('.venue-one');
   const list = root.querySelector('.venue-list');
   let current = null; // the venue shown on its own page, if any
+  let shared = null; // a filter opened from a friend's link: shown, never saved
+  const sharedBox = root.querySelector('.venue-shared');
+  const renderShared = () => {
+    sharedBox.innerHTML = `<p><b>${esc(V.sharedLabel)}</b> ${sharedSummary(shared).map(t => `<span class="nowrap">${esc(t)}</span>`).join(esc(V.sharedSep))}</p><a class="btn" href="#venues">${esc(V.seeAll)}</a>`;
+  };
   const renderOne = () => {
     one.innerHTML = `<nav class="rule-top"><a class="back" href="#venues">${esc(V.back)}</a></nav>${venueCard(current)}`;
   };
-  const render = () => { if (current) renderOne(); else list.innerHTML = listHtml(f); };
+  const render = () => { if (current) renderOne(); else list.innerHTML = listHtml(shared ?? f); };
   render();
   root.addEventListener('click', e => {
-    if (e.target.closest('.share-btn')) { sharePage(V.title); return; }
+    // With filters on (and not already a friend's link), the link carries them.
+    if (e.target.closest('.share-btn')) {
+      if (!shared && isFiltered(f)) sharePage(V.title, `${SHARE.url}#venues?${filterToQuery(f, REGION_IDS)}`);
+      else sharePage(V.title);
+      return;
+    }
     const s = e.target.closest('[data-share-venue]');
     if (s) {
       const v = VENUES.find(x => x.id === s.dataset.shareVenue);
@@ -202,12 +226,16 @@ export function mountVenues(root) {
     redraw();
   });
   return {
-    show(sub) {
+    show(sub, query = '') {
       const v = VENUES.find(x => x.id === decodeURIComponent(sub || ''));
       if (sub && !v) history.replaceState(null, '', '#venues');
       current = v ?? null;
+      shared = current ? null : queryToFilter(query, REGION_IDS);
       all.hidden = !!current;
       one.hidden = !current;
+      bar.hidden = !!shared;
+      sharedBox.hidden = !shared;
+      if (shared) renderShared();
       render();
     },
   };
