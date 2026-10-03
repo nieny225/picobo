@@ -21,6 +21,23 @@ function bookingHref(b) {
   throw new Error(`venues: unknown booking type ${b.type}`);
 }
 
+// Booking links stay one row: web booking as calendar icon + 「預約」, phone,
+// WhatsApp and LINE as icons only (the full label is the tooltip / screen reader name).
+const ICON = {
+  url: '<path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/>',
+  phone: '<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
+  whatsapp: '<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 1a4 4 0 0 1-2-2l1-1-1-2z"/>',
+  line: '<path d="M12 4c5 0 9 3.1 9 7s-4 7-9 7l-4 3v-3.6C5 16.2 3 13.8 3 11c0-3.9 4-7 9-7z"/>',
+};
+function bookingBtn(b) {
+  const href = bookingHref(b), label = b.label || V.booking[b.type];
+  const svg = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${ICON[b.type]}</svg>`;
+  const ext = href.startsWith('tel:') ? '' : ' target="_blank" rel="noopener"';
+  return b.type === 'url'
+    ? `<a class="btn book-btn" href="${esc(href)}"${ext} title="${esc(label)}" aria-label="${esc(label)}">${svg}<span aria-hidden="true">${esc(V.bookShort)}</span></a>`
+    : `<a class="btn book-btn icon-only" href="${esc(href)}"${ext} title="${esc(label)}" aria-label="${esc(label)}">${svg}</a>`;
+}
+
 function venueCard(v) {
   const link = (href, label, cls = 'btn') => `<a class="${cls}" href="${esc(href)}"${href.startsWith('#') || href.startsWith('tel:') ? '' : ' target="_blank" rel="noopener"'}>${esc(label)}</a>`;
   return `<article class="card venue" id="venue-${esc(v.id)}">
@@ -33,7 +50,7 @@ function venueCard(v) {
     </dl>
     ${v.note ? `<p class="muted small">${esc(v.note)}</p>` : ''}
     <div class="meetup-actions">
-      ${(v.booking ?? []).map(b => link(bookingHref(b), b.label || V.booking[b.type])).join('')}
+      ${(v.booking ?? []).map(bookingBtn).join('')}
       ${link(`#signup?venue=${encodeURIComponent(v.id)}`, SIGNUP.fromVenue, 'btn btn-primary')}
       ${MEETUP.open ? link(`#meetup?venue=${encodeURIComponent(v.id)}`, V.meetup, 'btn') : ''}
     </div>

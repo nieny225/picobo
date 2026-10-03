@@ -146,6 +146,7 @@ export const VENUES_PAGE = {
   map: '地图',
   meetup: '在这里组局',
   booking: { phone: '电话预约', whatsapp: 'WhatsApp 预约', line: 'LINE 预约', url: '在线预约' },
+  bookShort: '预约',
   // 顶部筛选：搜索、区域、类型。区域的 id 对应上面 city 的值。
   search: '搜索场地名称或地址',
   regionLabel: '区域',

@@ -146,6 +146,7 @@ export const VENUES_PAGE = {
   map: '地圖',
   meetup: '在這裡揪團',
   booking: { phone: '電話預約', whatsapp: 'WhatsApp 預約', line: 'LINE 預約', url: '線上預約' },
+  bookShort: '預約',
   // 頂部：搜尋、區域。區域的短名稱對應上面 city 的值。
   search: '搜尋場地名稱或地址',
   regionLabel: '區域',

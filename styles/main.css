@@ -729,6 +729,11 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 .chrome-hidden .venue-bar { top: 0; }
 .venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
 .venue-list { display: grid; gap: 14px; }
+/* Booking: icon buttons (phone, WhatsApp, LINE) and a short 預約 for the web, then 發報名訊息. */
+.book-btn { gap: 6px; justify-content: center; padding: 8px 12px; }
+.book-btn svg { width: 22px; height: 22px; flex: none; }
+.book-btn.icon-only { width: 48px; padding: 0; }
+.venue .meetup-actions .btn-primary { margin-left: auto; }
 /* Scoreboard 直接開始: one big tap, then the full setup for anyone who wants it. */
 .quick-start { display: grid; gap: 8px; }
 .quick-start #quick { min-height: 56px; font-size: 1.15rem; }

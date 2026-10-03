@@ -148,6 +148,7 @@ export const VENUES_PAGE = {
   map: 'Map',
   meetup: 'Find players here',
   booking: { phone: 'Book by phone', whatsapp: 'Book on WhatsApp', line: 'Book on LINE', url: 'Book online' },
+  bookShort: 'Book',
   // Top filters: search, region, type. Region ids match the city values above.
   search: 'Search by venue name or address',
   regionLabel: 'Region',
