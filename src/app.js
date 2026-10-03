@@ -19,7 +19,7 @@ import { RULEBOOK } from './data/rules.js';
 
 const ROUTES = ['home', 'rules', 'formats', 'score', 'draw', 'picobowl', 'meetup', 'venues', 'signup', 'me'];
 // Fun formats live under the rules tab, Pico Bowl under home; 報名訊息 and
-// 揪團 sit with 找場地 under the 約球 tab; 我的戰績 under home.
+// 揪團卡 sit with 找場地 under the 揪團 tab; 我的戰績 under home.
 const TAB_OF = { formats: 'rules', picobowl: 'home', meetup: 'venues', signup: 'venues', me: 'home' };
 
 // Hash shape: #<route> or #<route>/<sub>, e.g. #rules/kitchen. Links from v1

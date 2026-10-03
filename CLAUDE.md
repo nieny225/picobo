@@ -40,11 +40,11 @@ static site later. There is no backend and no build step.
 
 ```
 index.html              the page; hash-routed tabs: #home (default) #rules #score #draw
-                        #venues (約球: 場地名錄; #signup 報名訊息 under it), sub-pages #rules/<id> and
+                        #venues (揪團 tab, was 約球: 場地名錄; #signup 報名訊息 under it), sub-pages #rules/<id> and
                         #formats/<id> (fun formats sit under the rules tab),
                         #picobowl (tournament page, under home), #me (我的戰績, under home; person icon
                         in the top bar), #meetup (揪團卡,
-                        under 約球, no entry point yet); tabs in the header on desktop, in a bottom bar on
+                        under the 揪團 tab, no entry point yet); tabs in the header on desktop, in a bottom bar on
                         phones (< 768px)
 styles/main.css         design tokens on :root, dark mode, mobile-first
 manifest.webmanifest    installable web app (name, icons, standalone)
