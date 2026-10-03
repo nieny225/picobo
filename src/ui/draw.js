@@ -62,7 +62,7 @@ const NEXT_GENDER = { '': 'm', m: 'f', f: '' };
 
 // A name on court or in the queue is a button when players can be swapped by hand.
 const nameHtml = (n, swap) => (swap ? `<button type="button" class="name-btn" data-swap="${esc(n)}">${esc(n)}</button>` : `<span>${esc(n)}</span>`);
-const teamHtml = (t, first, swap = false) => `<div class="team-names${first ? ' serve-first' : ''}">${t.map(n => nameHtml(n, swap)).join('')}</div>`;
+const teamHtml = (t, first, swap = false) => `<div class="team-names${first ? ' serve-first' : ''}"${first ? ` data-first="${esc(T.servesFirst)}"` : ''}>${t.map(n => nameHtml(n, swap)).join('')}</div>`;
 
 // Who `name` can trade places with: everyone on court or in the queue except
 // themself and their partner, grouped by where they are.

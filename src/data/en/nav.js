@@ -312,6 +312,8 @@ export const SCORE_TEXT = {
 
 // Other copy on the Draw page. {n}, {court}, {name}, {round}, {names} are filled in.
 export const DRAW_TEXT = {
+  // 場上先發球那一隊名字下的小標籤。
+  servesFirst: 'Serves first',
   title: 'Draw & rotation',
   intro: 'Enter today\'s players, then pick how to split them.',
   roster: 'Today\'s players',

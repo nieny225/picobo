@@ -313,6 +313,8 @@ export const SCORE_TEXT = {
 
 // 抽籤輪轉頁面上其他的字。{n}、{court}、{name}、{round}、{names} 會換掉。
 export const DRAW_TEXT = {
+  // 場上先發球那一隊名字下的小標籤。
+  servesFirst: '先發球',
   title: '抽籤輪轉',
   intro: '先輸入今天的球友，再選要怎麼分。',
   roster: '今天的球友',

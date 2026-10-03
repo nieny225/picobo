@@ -641,7 +641,7 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .match .vs { color: var(--muted); font-size: 0.8rem; font-weight: 900; text-align: center; }
 .team-names { display: grid; gap: 2px; min-width: 0; }
 .team-names span { display: block; overflow-wrap: anywhere; }
-.team-names.serve-first::after { content: "先發球"; font-size: 0.7rem; font-weight: 900; color: var(--mark-fg); background: var(--mark); justify-self: start; padding: 0 4px; border-radius: 3px; }
+.team-names.serve-first::after { content: attr(data-first); font-size: 0.7rem; font-weight: 900; color: var(--mark-fg); background: var(--mark); justify-self: start; padding: 0 4px; border-radius: 3px; }
 .waiting { color: var(--muted); font-size: 0.9rem; }
 .round { display: grid; gap: 8px; }
 .round h3 { display: flex; justify-content: space-between; align-items: baseline; }

@@ -312,6 +312,8 @@ export const SCORE_TEXT = {
 
 // 抽签轮转页面上其他的字。{n}、{court}、{name}、{round}、{names} 会换掉。
 export const DRAW_TEXT = {
+  // 場上先發球那一隊名字下的小標籤。
+  servesFirst: '先发球',
   title: '抽签轮转',
   intro: '先输入今天的球友，再选要怎么分。',
   roster: '今天的球友',
