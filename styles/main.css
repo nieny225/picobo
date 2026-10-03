@@ -683,6 +683,12 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .share-sheet [hidden] { display: none !important; }
 .share-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .share-sheet-head .btn { min-height: 44px; padding: 4px 12px; }
+/* Settings (src/ui/settings.js): each label sits above its buttons, so long
+   English labels fit, with room between the rows. */
+.settings-sheet[open] { display: grid; gap: 16px; }
+.settings-sheet .seg-row { flex-direction: column; align-items: stretch; gap: 6px; }
+.settings-sheet .seg-label { width: auto; font-size: 0.9rem; }
+.settings-sheet p { margin: -8px 0 0; }
 .share-photo { display: flex; gap: 8px; flex-wrap: wrap; }
 .share-photo .btn { flex: 1; text-align: center; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 10px; }
 .share-preview { display: block; width: auto; max-width: 100%; max-height: 48dvh; margin: 0 auto; border: 2px solid var(--ink); border-radius: 6px; background: var(--surface-2); }
