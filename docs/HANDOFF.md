@@ -1,7 +1,9 @@
 # Handoff — read this first when resuming
 
-Last updated: 2026-10-01, branch `ccr-7b6d14a5-myo5fh` (also pushed to `main`,
-which is live at https://picobo.net). The latest commit is on both.
+Last updated: 2026-10-03, branch `ccr-7b6d14a5-myo5fh` (also pushed to `main`,
+which is live at https://picobo.net). The latest commit is on both; the
+working tree was clean at hand-over. A new session gets its own branch name:
+work there and fast-forward `main` the same way.
 
 ## How the user works (keep doing this)
 
@@ -31,6 +33,20 @@ which is live at https://picobo.net). The latest commit is on both.
 
 ## Open items
 
+- Share to IG (src/ui/sharecard.js) is built but **not yet tried on a real
+  phone**: 分享 → Instagram Story/post, 📷 拍照 (camera via
+  capture=environment), drag + 小／中／大 on the preview, and the 貼紙 tab
+  (複製貼紙 → paste in an IG story). The claude.ai preview cannot do share
+  sheet / clipboard images / camera; test on picobo.net in Safari or Chrome.
+  Wait for the user's report and fix what fails.
+- Optional 戰績 picture title was offered (今日球場戰報 / 誰是今天的 carry /
+  本日 MVP：<name> / 今天誰最兇); the user has not picked one, so there is none.
+- Home 找場地 card: added 「還能快速揪團」 to the description; the user may
+  instead want the title changed (e.g. 找場地・揪團) — asked, not answered.
+- 國王球場 has no 混雙 option yet (抽籤分組 has it).
+- Old remote branch `ccr-e7df49dc-8t69j2` only holds a "Create CNAME" commit
+  whose content is already on `main`; safe to delete, left in place.
+
 - Pico Bowl: date (November), venue, hours, Google Form link still TBD; the
   home card stays "Coming soon" until `PICOBOWL.open = true` in
   `src/data/event.js`. Organizer tool lives at picobo.net/#picobowl/manage.
@@ -51,7 +67,7 @@ code follows it except where noted under "Decisions" below.
 | `src/court.js` shared SVG court | done |
 | Rules content (`src/data/rules.js`, 31 scenes) | done, zh-TW copy reviewed once |
 | Fun formats ×11, glossary ×16, misconceptions ×8 | done |
-| Tests (`node --test`) | 38, all green: scoring + oracle, draw + open play, tournament, handoff, sw precache list |
+| Tests (`node --test`) | 62, all green: scoring + oracle, draw + open play + mixed doubles, tournament, handoff, signup parser, sharecard, sw precache list |
 | Rules view with step carousel, scoreboard view, draw view | done |
 | Layout check at 390px and 1280px, light and dark | done, no overflow |
 | Artifact | https://claude.ai/artifact/W4LaC8XBDpJiVMLHmdeVKD, kept in step with `main` |
