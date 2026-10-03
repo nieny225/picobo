@@ -60,9 +60,18 @@ work there and fast-forward `main` the same way.
 
 - Market: start with Taiwanese players in Singapore; later expand to Taiwan
   and add English.
-- Phase 1 features: the user picked ideas 1, 2, 3 and 4 from a proposal list
-  that is not recorded in this repo — ask the user to restate them before
-  building.
+- Phase 1 features (goal: stickiness, so people open Picobo every time they
+  play). Not started; propose a design and ask before building each:
+  1. 個人戰績本: every game from the scoreboard and 抽籤 is recorded
+     automatically; show win rate, most frequent partner, longest win streak.
+  2. 本週／本月戰報圖: a share picture like 「這週打了 14 場、勝率 64%、
+     最佳拍檔 Amy」 (reuse src/ui/sharecard.js).
+  3. 常用球團: save a regular group's roster; one tap fills it into 抽籤,
+     報名訊息 and 揪團.
+  4. 固定場次範本: e.g. 「每週六 5-7pm @ 某場地」; one tap makes this
+     week's 報名訊息.
+  Open question for 1 and 2: whose record it is — the phone owner picks
+  "this is me" among roster names (all local, localStorage, no accounts).
 - Decided against for now: court-fee splitting (friends already settle it in
   the chat sign-up list), rules quiz, and situation / ruling lookup
   (情境查判). Keep the ideas on file, do not build them.
