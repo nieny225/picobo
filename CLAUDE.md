@@ -72,7 +72,7 @@ src/groups.js           pure 常用球團 list: save (same name replaces, max 20
 src/record.js           pure 個人戰績本: game records (score / draw / koc), who is me, summary for a range;
                         pack / merge for the 戰績連結 (today's games by link, #me?s=…)
 src/sharecard.js        pure share-image content: a finished game's score card, the 抽籤 戰績 ranking, the 我的戰績 戰報
-src/venues.js           pure 場地名錄 filters: price bands, operator, rain-proof, 4+ courts, favourites; sort by region / price
+src/venues.js           pure 場地名錄 filters: price bands, operator, rain-proof, minimum courts (2/4/6), favourites; sort by region / price
 src/meetup.js           pure 揪團卡 logic: check the form, chat summary line, .ics, map / LINE / WhatsApp links
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes

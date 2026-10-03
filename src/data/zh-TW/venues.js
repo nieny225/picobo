@@ -163,7 +163,9 @@ export const VENUES_PAGE = {
   ops: [{ id: 'public', label: '公家場地' }, { id: 'private', label: '私人球館' }, { id: 'club', label: '會員俱樂部' }],
   opHint: '公家場地：ActiveSG、社區中心、學校、組屋免費場。',
   otherLabel: '其他',
-  others: [{ id: 'dry', label: '不怕下雨' }, { id: 'big', label: '4 面場以上' }],
+  courtsLabel: '場地數',
+  courtSteps: [{ id: 0, label: '不限' }, { id: 2, label: '2 面以上' }, { id: 4, label: '4 面以上' }, { id: 6, label: '6 面以上' }],
+  others: [{ id: 'dry', label: '不怕下雨' }],
   clear: '清除',
   show: '看 {n} 個場地',
   // 場地卡右上角的愛心：存成最愛（只存在這支手機）。

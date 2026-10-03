@@ -165,7 +165,9 @@ export const VENUES_PAGE = {
   ops: [{ id: 'public', label: 'Public' }, { id: 'private', label: 'Private' }, { id: 'club', label: 'Members’ club' }],
   opHint: 'Public: ActiveSG, community centres, schools, free HDB courts.',
   otherLabel: 'More',
-  others: [{ id: 'dry', label: 'Rain-proof' }, { id: 'big', label: '4+ courts' }],
+  courtsLabel: 'Courts',
+  courtSteps: [{ id: 0, label: 'Any' }, { id: 2, label: '2+' }, { id: 4, label: '4+' }, { id: 6, label: '6+' }],
+  others: [{ id: 'dry', label: 'Rain-proof' }],
   clear: 'Clear',
   show: 'Show {n} {n|venue|venues}',
   // Heart at the top right of a venue card: save as favourite (stored on this phone only).

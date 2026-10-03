@@ -11,7 +11,7 @@ export const PRICE_BANDS = {
 };
 export const OPERATORS = ['public', 'private', 'club'];
 export const SORTS = ['region', 'price'];
-export const BIG = 4; // "4 面以上"
+export const COURT_STEPS = [2, 4, 6]; // "N 面以上"; 0 = any
 
 const settingsOf = v => [v.setting ?? []].flat();
 
@@ -21,10 +21,11 @@ function inBand(price, band) {
   return price !== undefined && price >= b.min && price <= b.max;
 }
 
-// f = { region, q, prices: [], ops: [], dry, fav, big }. Groups combine with AND,
+// f = { region, q, prices: [], ops: [], dry, fav, minCourts }. Groups combine with AND,
 // choices inside a group (prices, ops) with OR. Unknown prices only drop out
-// while a price band is chosen; unknown court counts while 4+ is on.
+// while a price band is chosen; unknown court counts while a minimum is set.
 export function matchVenue(v, f, favs = new Set()) {
+  if (f.minCourts && !COURT_STEPS.includes(f.minCourts)) throw new Error(`venues: unknown court step ${f.minCourts}`);
   for (const o of f.ops ?? []) if (!OPERATORS.includes(o)) throw new Error(`venues: unknown operator ${o}`);
   if (f.region && v.city !== f.region) return false;
   if (f.q && !`${v.name} ${v.address ?? ''}`.toLowerCase().includes(f.q.toLowerCase())) return false;
@@ -32,7 +33,7 @@ export function matchVenue(v, f, favs = new Set()) {
   if (f.ops?.length && !f.ops.includes(v.operator)) return false;
   if (f.dry && !settingsOf(v).some(k => k === 'indoor' || k === 'sheltered')) return false;
   if (f.fav && !favs.has(v.id)) return false;
-  if (f.big && !(v.courts >= BIG)) return false;
+  if (f.minCourts && !(v.courts >= f.minCourts)) return false;
   return true;
 }
 
@@ -49,4 +50,4 @@ export function sortVenues(list, by) {
 
 // How many filters are on, for the badge on the 篩選 button (region, search
 // and favourites have their own controls and don't count).
-export const activeCount = f => (f.prices?.length ?? 0) + (f.ops?.length ?? 0) + (f.dry ? 1 : 0) + (f.big ? 1 : 0);
+export const activeCount = f => (f.prices?.length ?? 0) + (f.ops?.length ?? 0) + (f.dry ? 1 : 0) + (f.minCourts ? 1 : 0);

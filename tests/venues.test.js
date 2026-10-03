@@ -21,13 +21,17 @@ test('price bands: OR inside, unknown price only hidden while a band is on', () 
   assert.equal(ids({ prices: [] }), 'abcd');
   assert.throws(() => ids({ prices: ['cheap'] }), /unknown price band/);
 });
-test('operators, dry, favourites, 4+ courts', () => {
+test('operators, dry, favourites, minimum courts', () => {
   assert.equal(ids({ ops: ['private'] }), 'cd');
   assert.equal(ids({ ops: ['public', 'club'] }), 'ab');
   assert.throws(() => ids({ ops: ['gov'] }), /unknown operator/);
   assert.equal(ids({ dry: true }), 'bcd');
   assert.equal(ids({ fav: true }, new Set(['c'])), 'c');
-  assert.equal(ids({ big: true }), 'ad');
+  assert.equal(ids({ minCourts: 2 }), 'abd');
+  assert.equal(ids({ minCourts: 4 }), 'ad');
+  assert.equal(ids({ minCourts: 6 }), 'd');
+  assert.equal(ids({ minCourts: 0 }), 'abcd');
+  assert.throws(() => ids({ minCourts: 3 }), /unknown court step/);
 });
 test('groups combine with AND', () => assert.equal(ids({ region: '東區', dry: true, ops: ['private'] }), 'd'));
 test('sort by price: cheapest first, unknown last; region keeps data order', () => {
@@ -35,7 +39,7 @@ test('sort by price: cheapest first, unknown last; region keeps data order', () 
   assert.equal(sortVenues([C, A], 'region').map(v => v.id).join(''), 'ca');
   assert.throws(() => sortVenues(ALL, 'near'), /unknown sort/);
 });
-test('active filter count', () => assert.equal(activeCount({ prices: ['free', 'low'], ops: ['club'], dry: true, big: false, fav: true }), 4));
+test('active filter count', () => assert.equal(activeCount({ prices: ['free', 'low'], ops: ['club'], dry: true, minCourts: 2, fav: true }), 5));
 
 test('venue data: every venue has an operator and a price that is a number or absent', () => {
   for (const v of VENUES) {

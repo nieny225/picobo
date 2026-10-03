@@ -6,7 +6,7 @@ import { esc } from './scenes.js';
 import { shareButtonHtml, sharePage } from './share.js';
 import { fill } from '../fill.js';
 import { SETTINGS } from '../data/settings.js';
-import { matchVenue, sortVenues, activeCount, PRICE_BANDS, OPERATORS, SORTS } from '../venues.js';
+import { matchVenue, sortVenues, activeCount, PRICE_BANDS, OPERATORS, SORTS, COURT_STEPS } from '../venues.js';
 
 // A court's setting: one of indoor / sheltered / outdoor, or a list when it has both kinds.
 const settingsOf = v => [v.setting ?? []].flat().map(k => { if (!V.settings[k]) throw new Error(`venues: unknown setting ${k}`); return k; });
@@ -51,10 +51,10 @@ const favs = loadFavs();
 const heart = on => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>`;
 
 // Filters: search, region and a favourites toggle on the bar; price, type,
-// rain-proof and 4+ courts in the 篩選 sheet; sort by region or price.
+// minimum courts and rain-proof in the 篩選 sheet; sort by region or price.
 // Remembered per device (not the search text).
 const FILTER_KEY = 'picobo.venueFilter';
-const blank = () => ({ q: '', region: '', prices: [], ops: [], dry: false, fav: false, big: false, sort: 'region' });
+const blank = () => ({ q: '', region: '', prices: [], ops: [], dry: false, fav: false, minCourts: 0, sort: 'region' });
 function loadFilter() {
   const f = blank();
   try {
@@ -67,7 +67,9 @@ function loadFilter() {
     if (s.kind === 'fav') f.fav = true;
     if (Array.isArray(s.prices)) f.prices = s.prices.filter(b => b in PRICE_BANDS);
     if (Array.isArray(s.ops)) f.ops = s.ops.filter(o => OPERATORS.includes(o));
-    for (const k of ['dry', 'fav', 'big']) if (typeof s[k] === 'boolean') f[k] = s[k];
+    for (const k of ['dry', 'fav']) if (typeof s[k] === 'boolean') f[k] = s[k];
+    if (s.big === true) f.minCourts = 4; // before the 場地數 row there was one 4+ chip
+    if (COURT_STEPS.includes(s.minCourts)) f.minCourts = s.minCourts;
     if (SORTS.includes(s.sort)) f.sort = s.sort;
   } catch { /* storage unavailable or corrupt */ }
   return f;
@@ -105,6 +107,7 @@ function openFilter(f, onChange) {
     dlg.innerHTML = `<div class="share-sheet-head"><b>${esc(V.filterTitle)}</b><button type="button" class="btn btn-ghost" data-close>${esc(SETTINGS.close)}</button></div>
       <section><h4>${esc(V.priceLabel)}</h4>${chips('price', V.prices, id => f.prices.includes(id))}<p class="muted small">${esc(V.priceHint)}</p></section>
       <section><h4>${esc(V.opLabel)}</h4>${chips('op', V.ops, id => f.ops.includes(id))}<p class="muted small">${esc(V.opHint)}</p></section>
+      <section><h4>${esc(V.courtsLabel)}</h4>${chips('courts', V.courtSteps, id => f.minCourts === id)}</section>
       <section><h4>${esc(V.otherLabel)}</h4>${chips('other', V.others, id => f[id])}</section>
       <div class="toolbar"><button type="button" class="btn btn-ghost" data-clear>${esc(V.clear)}</button>
         <button type="button" class="btn btn-primary" data-close>${esc(fill(V.show, { n: shownOf(f).length }))}</button></div>`;
@@ -117,8 +120,9 @@ function openFilter(f, onChange) {
     if (!b) return;
     if (b.dataset.price) f.prices = toggle(f.prices, b.dataset.price);
     else if (b.dataset.op) f.ops = toggle(f.ops, b.dataset.op);
+    else if (b.dataset.courts) { const n = Number(b.dataset.courts); f.minCourts = f.minCourts === n ? 0 : n; }
     else if (b.dataset.other) f[b.dataset.other] = !f[b.dataset.other];
-    else if ('clear' in b.dataset) Object.assign(f, { prices: [], ops: [], dry: false, big: false });
+    else if ('clear' in b.dataset) Object.assign(f, { prices: [], ops: [], dry: false, minCourts: 0 });
     else return;
     render();
     onChange();

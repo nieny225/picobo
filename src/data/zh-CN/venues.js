@@ -163,7 +163,9 @@ export const VENUES_PAGE = {
   ops: [{ id: 'public', label: '公共场地' }, { id: 'private', label: '私人球馆' }, { id: 'club', label: '会员俱乐部' }],
   opHint: '公共场地：ActiveSG、社区中心、学校、组屋免费场。',
   otherLabel: '其他',
-  others: [{ id: 'dry', label: '不怕下雨' }, { id: 'big', label: '4 片场以上' }],
+  courtsLabel: '场地数',
+  courtSteps: [{ id: 0, label: '不限' }, { id: 2, label: '2 片以上' }, { id: 4, label: '4 片以上' }, { id: 6, label: '6 片以上' }],
+  others: [{ id: 'dry', label: '不怕下雨' }],
   clear: '清除',
   show: '看 {n} 个场地',
   // 场地卡右上角的爱心：加入收藏（只存在这台手机）。

@@ -34,7 +34,7 @@ work there and fast-forward `main` the same way.
 ## Open items
 
 - 場地篩選 (2026-10-03): the bar is search, region, ♥ (favourites only), 篩選
-  (sheet: 價位 / 類型 / 不怕下雨 / 4 面場以上) and sort 依區域｜最便宜. Logic in
+  (sheet: 價位 / 類型 / 場地數 2・4・6 面以上 / 不怕下雨) and sort 依區域｜最便宜. Logic in
   `src/venues.js`. Every venue carries `price` (lowest non-member hourly S$,
   read off `fee`; absent when fee has no number) and `operator`
   (public / private / club), same values in all three language files.
