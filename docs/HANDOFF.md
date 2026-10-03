@@ -60,6 +60,7 @@ work there and fast-forward `main` the same way.
 
 - Market: start with Taiwanese players in Singapore; later expand to Taiwan
   and add English.
+- Phase 1 design draft: docs/PHASE1.md (waiting for the user's answers).
 - Phase 1 features (goal: stickiness, so people open Picobo every time they
   play). Not started; propose a design and ask before building each:
   1. 個人戰績本: every game from the scoreboard and 抽籤 is recorded
