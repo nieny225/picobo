@@ -34,6 +34,8 @@ for (const side of ['near', 'far']) {
     SPOTS[`${side}:${pos}:baseline`] = [x, near ? Y1 - 22 : Y0 + 22];
     SPOTS[`${side}:${pos}:mid`] = [x, near ? YK_NEAR + 55 : YK_FAR - 55];
     SPOTS[`${side}:${pos}:kitchenLine`] = [x, near ? YK_NEAR + 14 : YK_FAR - 14];
+    // Exactly on the kitchen line (a ball touching it); kitchenLine is just behind it, where players stand.
+    SPOTS[`${side}:${pos}:onKitchenLine`] = [x, near ? YK_NEAR : YK_FAR];
     SPOTS[`${side}:${pos}:kitchen`] = [x, near ? YK_NEAR - 30 : YK_FAR + 30];
   }
   SPOTS[`${side}:center:baseline`] = [XC, side === 'near' ? Y1 - 22 : Y0 + 22];

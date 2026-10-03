@@ -92,13 +92,13 @@ export const SECTIONS = [
           '自己那一邊的界內外由自己判，看不清楚就判對方界內。',
         ],
         singlesScenes: [
-          { caption: '正常回合中，球碰到廚房線算界內。', highlight: ['kitchenLine:near'], ball: { path: ['far:left:mid', 'near:right:kitchenLine'], bounces: [1] } },
-          { caption: '發球時碰到廚房線就是失誤，球必須落在廚房線之後。', highlight: ['kitchenLine:far', 'nvz:far'], players: [S(srv), R()], ball: { path: ['near:right:behind', 'far:right:kitchenLine'], bounces: [1] } },
+          { caption: '正常回合中，球碰到廚房線算界內。', highlight: ['kitchenLine:near'], ball: { path: ['far:left:mid', 'near:right:onKitchenLine'], bounces: [1] } },
+          { caption: '發球時碰到廚房線就是失誤，球必須落在廚房線之後。', highlight: ['kitchenLine:far', 'nvz:far'], players: [S(srv), R()], ball: { path: ['near:right:behind', 'far:right:onKitchenLine'], bounces: [1] } },
           { caption: '發球落在中線上算界內，邊線、底線也一樣。', highlight: ['serviceBox:far:right', 'centerline:far'], players: [S(srv), R()], ball: { path: ['near:right:behind', 'far:center:mid'], bounces: [1] } },
         ],
         scenes: [
-          { caption: '正常回合中，球碰到廚房線算界內。', highlight: ['kitchenLine:near'], ball: { path: ['far:left:mid', 'near:right:kitchenLine'], bounces: [1] } },
-          { caption: '發球時碰到廚房線就是失誤，球必須落在廚房線之後。', highlight: ['kitchenLine:far', 'nvz:far'], players: [A1({ depth: 'behind', serving: true })], ball: { path: ['near:right:behind', 'far:right:kitchenLine'], bounces: [1] } },
+          { caption: '正常回合中，球碰到廚房線算界內。', highlight: ['kitchenLine:near'], ball: { path: ['far:left:mid', 'near:right:onKitchenLine'], bounces: [1] } },
+          { caption: '發球時碰到廚房線就是失誤，球必須落在廚房線之後。', highlight: ['kitchenLine:far', 'nvz:far'], players: [A1({ depth: 'behind', serving: true })], ball: { path: ['near:right:behind', 'far:right:onKitchenLine'], bounces: [1] } },
           { caption: '發球落在中線上算界內，邊線、底線也一樣。', highlight: ['serviceBox:far:right', 'centerline:far'], players: [A1({ depth: 'behind', serving: true })], ball: { path: ['near:right:behind', 'far:center:mid'], bounces: [1] } },
         ],
       },
