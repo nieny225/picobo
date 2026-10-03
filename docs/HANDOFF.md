@@ -448,7 +448,8 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   Phase 1 is done except 固定場次範本 (skipped).
 - 場地名錄 private-venue sweep (2026-10-03, official sites first): added
   Pickle Up and ARK Pickle @ Orchid Country Club, MADPICKLERS (北區), PickleChoo
-  Apex, Pickle Padel Movement, Pixel Pickle, Picklepark Balestier (中區),
+  Apex, Pickle Padel Movement, Pixel Pickle, Picklepark Balestier, Ace Club
+  Tennis @ Funan (中區),
   PickleChoo Prime (東北區, CHECK). Play! Pickle Punggol may close end Oct 2026
   (unofficial; noted on the card; re-check). Play! Pickle Kallang / Bukit Merah
   are no longer on the official site, not added. Not added (members only or
