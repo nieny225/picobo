@@ -366,6 +366,28 @@ svg.court { width: 100%; height: auto; display: block; overflow: visible; }
 .setup-group { display: grid; gap: 8px; border-top: 2px solid var(--line-soft); padding-top: 12px; }
 .setup-group h4 { margin: 0; font-size: 1.05rem; }
 .setup-group svg.setup { max-width: 520px; }
+/* Paddle drawings (src/paddle.js). */
+.rule-figure { margin: 12px 0; display: grid; gap: 6px; justify-items: center; }
+.paddle-fig { width: 100%; max-width: 420px; height: auto; display: block; }
+.rule-figure .paddle-fig[viewBox^="0 0 330"] { max-width: 260px; }
+.picker-shapes .paddle-fig { max-width: 300px; margin: 0 auto; }
+.pd-face { fill: var(--court); }
+.pd-edge { fill: none; stroke: var(--ink); stroke-width: 6; stroke-linejoin: round; }
+.pd-grip { fill: var(--ink); }
+.pd-tape { fill: none; stroke: var(--mark); }
+.pd-tape-fill { fill: var(--mark); }
+.pd-spot { fill: var(--mark); opacity: 0.85; stroke: #111111; stroke-width: 3; }
+.pd-dim { stroke: var(--muted); stroke-width: 3; }
+.pd-arrowhead { fill: var(--muted); }
+.pd-lead { stroke: var(--muted); stroke-width: 2; stroke-dasharray: 4 4; }
+.pd-label { font-size: 24px; font-weight: 700; fill: var(--fg); }
+.pd-pin circle { fill: var(--surface); stroke: var(--ink); stroke-width: 4; }
+.pd-pin text { font-size: 24px; font-weight: 900; fill: var(--fg); }
+.rule-figure figcaption { display: grid; gap: 6px; max-width: 420px; }
+.figure-keys { margin: 0; padding-left: 1.4em; display: grid; gap: 4px; }
+.pd-name { font-size: 26px; font-weight: 900; fill: var(--fg); }
+.pd-shape.dim { opacity: 0.3; }
+.pd-shape.picked .pd-edge { stroke: var(--mark); stroke-width: 10; }
 /* 怎麼選球拍: sport chips, then the suggestion. */
 .picker { display: grid; gap: 10px; margin: 12px 0; padding: 14px; border: var(--bw) solid var(--ink); border-radius: var(--radius); background: var(--surface-2); }
 .picker p { margin: 0; }

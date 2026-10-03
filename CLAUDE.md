@@ -52,6 +52,7 @@ sw.js                   service worker: network first, cache fallback for offlin
                         its FILES list must name every app file (tests/sw.test.js)
 icons/                  icon.svg (source) + PNGs rendered from it with Playwright
 src/app.js              router; mounts the views
+src/paddle.js           球拍圖：規格上限和可貼膠帶的範圍、三種拍型照比例（裝備頁）
 src/court.js            SVG court renderer shared by rules + scoreboard; renderCourt(el,
                         scene, { landscape }) lies the court down (near side left);
                         setupSvg(host) draws it on a badminton / tennis / volleyball court (借場地打)
@@ -138,6 +139,8 @@ tests/*.test.js         node:test for the pure modules
 
 ## Content style guide
 
+- 圖解是這個網站的特色（使用者 2026-10-03 提醒）：每一頁新內容都要配圖，能用圖講的不要只寫字。
+  球場用 `court.js`，球拍用 `src/paddle.js`；文字放 `src/data/`，圖上字少、放大，說明放圖下。
 - 繁體中文，台灣用語。全形標點「，。、：；？！」，中英文之間留一個半形空格。
 - 術語以 `src/data/glossary.js` 為準。第一次出現寫「中文（English）」，之後只用中文，
   例外是球友日常直接講英文的詞（dink、side-out、drop serve）可以中英並用。

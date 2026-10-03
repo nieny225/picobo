@@ -20,6 +20,7 @@ const FILES = [
   'src/handoff.js',
   'src/record.js',
   'src/meetup.js',
+  'src/paddle.js',
   'src/scoring.js',
   'src/sharecard.js',
   'src/signup.js',

@@ -6,6 +6,11 @@ import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
 import { formatCardHtml, wireFormat } from './formats.js';
 import { shareButtonHtml, sharePage, toast } from './share.js';
 import { setupSvg } from '../court.js';
+import { paddleRulesSvg, paddleShapesSvg } from '../paddle.js';
+
+// Drawings that are not a court scene (src/paddle.js), by figure kind.
+const FIGURES = { paddleRules: f => paddleRulesSvg(f), paddleShapes: f => paddleShapesSvg(f) };
+const figureHtml = f => (f ? `<figure class="rule-figure">${FIGURES[f.kind](f)}<figcaption class="small">${f.keys ? `<ol class="figure-keys">${f.keys.map(k => `<li>${esc(k)}</li>`).join('')}</ol>` : ''}<span class="muted">${esc(f.caption)}</span></figcaption></figure>` : '');
 
 
 function ruleCard(item, applies = '') {
@@ -30,6 +35,7 @@ function ruleCard(item, applies = '') {
     <p class="summary">${esc(item.summary)}</p>
     ${sceneBlock(item)}
     ${setup}
+    ${figureHtml(item.figure)}
     ${pickerHtml(item.picker)}
     ${blocks}
     ${detail}
@@ -43,21 +49,22 @@ function pickerHtml(pk) {
     <div class="picker-options">${pk.options.map(o => `<button type="button" class="group-chip" data-pick="${o.id}" aria-pressed="false">${esc(o.label)}</button>`).join('')}</div>
     <div class="picker-result" aria-live="polite"></div><p class="muted small">${esc(pk.note)}</p></div>`;
 }
-function pickResultHtml(pk, o) {
+function pickResultHtml(pk, o, fig) {
   const L = pk.labels;
+  const shapes = fig && o.shapes ? `<div class="picker-shapes">${paddleShapesSvg(fig, o.shapes)}</div>` : '';
   const row = k => `<div class="me-row"><span class="muted">${esc(L[k])}</span><b>${esc(o[k])}</b></div>`;
-  return `${['shape', 'weight', 'grip', 'face'].map(row).join('')}
+  return `${shapes}${['shape', 'weight', 'grip', 'face'].map(row).join('')}
     <p><b>${esc(L.why)}</b>：${esc(o.why)}</p>
     ${o.watch.length ? `<p><b>${esc(L.watch)}</b></p><ul>${o.watch.map(w => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}`;
 }
-function wirePicker(el, pk) {
+function wirePicker(el, pk, fig) {
   const box = el.querySelector('.picker');
   if (!box) return;
   box.addEventListener('click', e => {
     const b = e.target.closest('[data-pick]');
     if (!b) return;
     for (const x of box.querySelectorAll('[data-pick]')) x.setAttribute('aria-pressed', String(x === b));
-    box.querySelector('.picker-result').innerHTML = pickResultHtml(pk, pk.options.find(o => o.id === b.dataset.pick));
+    box.querySelector('.picker-result').innerHTML = pickResultHtml(pk, pk.options.find(o => o.id === b.dataset.pick), fig);
   });
 }
 
@@ -328,7 +335,7 @@ export function mountRules(root) {
     if (p?.kind === 'rule') {
       const wrap = pageEl.querySelector('.scene-wrap');
       if (wrap) wireScene(wrap, p.item.scenes);
-      if (p.item.picker) wirePicker(pageEl, p.item.picker);
+      if (p.item.picker) wirePicker(pageEl, p.item.picker, p.item.figure);
     }
   };
   // Switching play or scoring, from the bar or a rule page. A rule that does
