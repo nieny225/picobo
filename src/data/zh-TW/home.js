@@ -3,7 +3,6 @@ export const HOME = {
   slogan: ['Pick a day,', 'pick a place,', 'picobo.'],
   entriesLabel: '從這裡開始',
   intro: '痞克柏是你的匹克球場邊夥伴。',
-  courtAlt: '一個人在發球，對面亮起一塊發球區',
   // 頂部列的「安裝」按鈕和它跳出的步驟說明。
   install: {
     title: '把痞克柏放到桌面',
@@ -26,6 +25,6 @@ export const HOME = {
     { route: 'meetup', title: '揪團', en: 'Find Players', desc: '填時間地點缺幾人，一張卡丟到群組。' },
     { route: 'venues', title: '找場地', en: 'Courts', desc: '哪裡能打、怎麼預約、怎麼去，還能快速揪團。' },
     // 合作表單（Google 表單，不顯示站長 email）。新加坡的人也會來，所以中英並列。
-    { href: 'https://forms.gle/X8Rsieeez7oDLZMFA', title: '找合作', en: 'Partner with us', desc: 'Venues, coaches, brands, events・場地、教練、品牌、活動' },
+    { href: 'https://forms.gle/X8Rsieeez7oDLZMFA', title: '找合作', en: 'Partner with us', desc: '場地、教練、品牌、活動' },
   ],
 };

@@ -3,7 +3,6 @@ export const HOME = {
   slogan: ['Pick a day,', 'pick a place,', 'picobo.'],
   entriesLabel: 'Start here',
   intro: 'Picobo is your courtside pickleball buddy.',
-  courtAlt: 'A player serving, with the service court across the net lit up',
   // The top-bar "Install" button and the steps it opens.
   install: {
     title: 'Add Picobo to your home screen',
