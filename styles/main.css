@@ -433,10 +433,11 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .faq p { padding: 6px 0 8px; max-width: 60ch; }
 
 /* Forms */
-.field { display: grid; gap: 6px; }
+/* minmax(0, 1fr): a native date / time box (Android) cannot push past its column. */
+.field { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
 .field label { font-weight: 900; font-size: 0.925rem; }
 .input, select.input {
-  border: var(--bw) solid var(--ink); background: var(--surface); border-radius: var(--radius-sm); padding: 8px 12px; min-height: 48px; width: 100%; font-weight: 700;
+  border: var(--bw) solid var(--ink); background: var(--surface); border-radius: var(--radius-sm); padding: 8px 12px; min-height: 48px; width: 100%; min-width: 0; font-weight: 700;
 }
 .row { display: flex; gap: 10px; flex-wrap: wrap; }
 .row > * { flex: 1 1 140px; min-width: 0; }
@@ -469,6 +470,8 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .board .toolbar.is-finished { flex-wrap: nowrap; gap: 6px; }
 .board .toolbar.is-finished .btn { padding: 8px 10px; white-space: nowrap; font-size: 0.95rem; }
 .board .toolbar.is-finished .icon-btn { gap: 4px; }
+/* One flat row: a raised 再來一局 next to flat buttons looks misaligned. */
+.board .toolbar.is-finished .btn-primary { box-shadow: none; }
 .board .toolbar.is-finished #undo, .board .toolbar.is-finished #reset { width: 44px; min-width: 44px; padding: 0; justify-content: center; margin-left: 0; }
 .board .toolbar.is-finished .btn-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .board #to-draw { margin: 0 auto 10px; display: block; }
