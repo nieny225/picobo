@@ -1,0 +1,52 @@
+// Courts directory filters and sort, no DOM. A venue carries `price` (lowest
+// non-member hourly fee in S$, 0 = free, absent when unknown), `operator`
+// ('public' | 'private' | 'club'), `setting` and `courts` (see src/data/venues.js).
+
+// Price bands: a venue is in a band when its price falls in [min, max].
+export const PRICE_BANDS = {
+  free: { min: 0, max: 0 },
+  low: { min: 0.01, max: 10 },
+  mid: { min: 10.01, max: 35 },
+  high: { min: 35.01, max: Infinity },
+};
+export const OPERATORS = ['public', 'private', 'club'];
+export const SORTS = ['region', 'price'];
+export const BIG = 4; // "4 面以上"
+
+const settingsOf = v => [v.setting ?? []].flat();
+
+function inBand(price, band) {
+  const b = PRICE_BANDS[band];
+  if (!b) throw new Error(`venues: unknown price band ${band}`);
+  return price !== undefined && price >= b.min && price <= b.max;
+}
+
+// f = { region, q, prices: [], ops: [], dry, fav, big }. Groups combine with AND,
+// choices inside a group (prices, ops) with OR. Unknown prices only drop out
+// while a price band is chosen; unknown court counts while 4+ is on.
+export function matchVenue(v, f, favs = new Set()) {
+  for (const o of f.ops ?? []) if (!OPERATORS.includes(o)) throw new Error(`venues: unknown operator ${o}`);
+  if (f.region && v.city !== f.region) return false;
+  if (f.q && !`${v.name} ${v.address ?? ''}`.toLowerCase().includes(f.q.toLowerCase())) return false;
+  if (f.prices?.length && !f.prices.some(b => inBand(v.price, b))) return false;
+  if (f.ops?.length && !f.ops.includes(v.operator)) return false;
+  if (f.dry && !settingsOf(v).some(k => k === 'indoor' || k === 'sheltered')) return false;
+  if (f.fav && !favs.has(v.id)) return false;
+  if (f.big && !(v.courts >= BIG)) return false;
+  return true;
+}
+
+// 'region' keeps data order (the list groups by region); 'price' is cheapest
+// first, unknown prices last, ties in data order.
+export function sortVenues(list, by) {
+  if (by === 'region') return [...list];
+  if (by === 'price') {
+    const key = v => (v.price === undefined ? Infinity : v.price);
+    return list.map((v, i) => [v, i]).sort((a, b) => key(a[0]) - key(b[0]) || a[1] - b[1]).map(([v]) => v);
+  }
+  throw new Error(`venues: unknown sort ${by}`);
+}
+
+// How many filters are on, for the badge on the 篩選 button (region, search
+// and favourites have their own controls and don't count).
+export const activeCount = f => (f.prices?.length ?? 0) + (f.ops?.length ?? 0) + (f.dry ? 1 : 0) + (f.big ? 1 : 0);

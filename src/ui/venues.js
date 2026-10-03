@@ -5,6 +5,8 @@ import { SIGNUP } from '../data/signup.js';
 import { esc } from './scenes.js';
 import { shareButtonHtml, sharePage } from './share.js';
 import { fill } from '../fill.js';
+import { SETTINGS } from '../data/settings.js';
+import { matchVenue, sortVenues, activeCount, PRICE_BANDS, OPERATORS, SORTS } from '../venues.js';
 
 // A court's setting: one of indoor / sheltered / outdoor, or a list when it has both kinds.
 const settingsOf = v => [v.setting ?? []].flat().map(k => { if (!V.settings[k]) throw new Error(`venues: unknown setting ${k}`); return k; });
@@ -48,44 +50,93 @@ function saveFavs(favs) {
 const favs = loadFavs();
 const heart = on => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>`;
 
-// Filters: a search box plus region and kind switches, remembered per device.
+// Filters: search, region and a favourites toggle on the bar; price, type,
+// rain-proof and 4+ courts in the 篩選 sheet; sort by region or price.
+// Remembered per device (not the search text).
 const FILTER_KEY = 'picobo.venueFilter';
+const blank = () => ({ q: '', region: '', prices: [], ops: [], dry: false, fav: false, big: false, sort: 'region' });
 function loadFilter() {
+  const f = blank();
   try {
-    const f = JSON.parse(localStorage.getItem(FILTER_KEY));
-    if (f && V.regions.some(r => r.id === f.region) && V.kinds.some(k => k.id === f.kind)) return { q: '', ...f };
+    const s = JSON.parse(localStorage.getItem(FILTER_KEY));
+    if (!s || typeof s !== 'object') return f;
+    if (V.regions.some(r => r.id === s.region)) f.region = s.region;
+    // Before the sheet there was one `kind` switch: dry, free or fav.
+    if (s.kind === 'dry') f.dry = true;
+    if (s.kind === 'free') f.prices = ['free'];
+    if (s.kind === 'fav') f.fav = true;
+    if (Array.isArray(s.prices)) f.prices = s.prices.filter(b => b in PRICE_BANDS);
+    if (Array.isArray(s.ops)) f.ops = s.ops.filter(o => OPERATORS.includes(o));
+    for (const k of ['dry', 'fav', 'big']) if (typeof s[k] === 'boolean') f[k] = s[k];
+    if (SORTS.includes(s.sort)) f.sort = s.sort;
   } catch { /* storage unavailable or corrupt */ }
-  return { q: '', region: '', kind: '' };
+  return f;
 }
-function saveFilter({ region, kind }) {
-  try { localStorage.setItem(FILTER_KEY, JSON.stringify({ region, kind })); } catch { /* storage unavailable */ }
+function saveFilter({ q, ...rest }) {
+  try { localStorage.setItem(FILTER_KEY, JSON.stringify(rest)); } catch { /* storage unavailable */ }
 }
-const KIND_TEST = {
-  '': () => true,
-  dry: v => settingsOf(v).some(k => k === 'indoor' || k === 'sheltered'),
-  free: v => v.fee === V.free,
-  fav: v => favs.has(v.id),
-};
-const matches = (v, f) => (!f.region || v.city === f.region) && KIND_TEST[f.kind](v)
-  && (!f.q || `${v.name} ${v.address ?? ''}`.toLowerCase().includes(f.q.toLowerCase()));
+const shownOf = f => sortVenues(VENUES.filter(v => matchVenue(v, f, favs)), f.sort);
+
+const FUNNEL = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>';
 
 function barHtml(f) {
-  const seg = (k, label, options) => `<div class="seg" role="group" aria-label="${esc(label)}">${options.map(o =>
-    `<button type="button" data-vf="${k}" data-v="${esc(o.id)}" aria-pressed="${f[k] === o.id}">${esc(o.label)}</button>`).join('')}</div>`;
+  const n = activeCount(f);
   return `<div class="venue-bar">
     <input class="input" type="search" id="venue-q" placeholder="${esc(V.search)}" aria-label="${esc(V.search)}" value="${esc(f.q)}" autocomplete="off">
-    ${seg('region', V.regionLabel, V.regions)}
-    ${seg('kind', V.kindLabel, V.kinds)}
+    <div class="seg" role="group" aria-label="${esc(V.regionLabel)}">${V.regions.map(o =>
+      `<button type="button" data-region="${esc(o.id)}" aria-pressed="${f.region === o.id}">${esc(o.label)}</button>`).join('')}</div>
+    <div class="venue-tools">
+      <button type="button" class="btn venue-fav" data-favonly aria-pressed="${f.fav}" aria-label="${esc(V.favOnly)}" title="${esc(V.favOnly)}">${heart(f.fav)}</button>
+      <button type="button" class="btn venue-filter" data-open-filter aria-pressed="${n > 0}">${FUNNEL}<span>${esc(V.filter)}</span>${n ? `<b class="venue-badge">${n}</b>` : ''}</button>
+      <div class="seg" role="group" aria-label="${esc(V.sortLabel)}">${V.sorts.map(o =>
+        `<button type="button" data-sort="${o.id}" aria-pressed="${f.sort === o.id}">${esc(o.label)}</button>`).join('')}</div>
+    </div>
   </div>`;
 }
 
+// The 篩選 sheet: chips toggle at once and the list behind it follows; the
+// footer button shows how many courts are left and closes the sheet.
+function openFilter(f, onChange) {
+  const dlg = document.createElement('dialog');
+  dlg.className = 'install-sheet share-sheet venue-sheet';
+  const chips = (k, options, on) => `<div class="chips" role="group">${options.map(o =>
+    `<button type="button" class="chip" data-${k}="${o.id}" aria-pressed="${on(o.id)}">${esc(o.label)}</button>`).join('')}</div>`;
+  const render = () => {
+    dlg.innerHTML = `<div class="share-sheet-head"><b>${esc(V.filterTitle)}</b><button type="button" class="btn btn-ghost" data-close>${esc(SETTINGS.close)}</button></div>
+      <section><h4>${esc(V.priceLabel)}</h4>${chips('price', V.prices, id => f.prices.includes(id))}<p class="muted small">${esc(V.priceHint)}</p></section>
+      <section><h4>${esc(V.opLabel)}</h4>${chips('op', V.ops, id => f.ops.includes(id))}<p class="muted small">${esc(V.opHint)}</p></section>
+      <section><h4>${esc(V.otherLabel)}</h4>${chips('other', V.others, id => f[id])}</section>
+      <div class="toolbar"><button type="button" class="btn btn-ghost" data-clear>${esc(V.clear)}</button>
+        <button type="button" class="btn btn-primary" data-close>${esc(fill(V.show, { n: shownOf(f).length }))}</button></div>`;
+  };
+  const toggle = (list, id) => (list.includes(id) ? list.filter(x => x !== id) : [...list, id]);
+  render();
+  dlg.addEventListener('click', e => {
+    if (e.target === dlg || e.target.closest('[data-close]')) { dlg.close(); return; }
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.price) f.prices = toggle(f.prices, b.dataset.price);
+    else if (b.dataset.op) f.ops = toggle(f.ops, b.dataset.op);
+    else if (b.dataset.other) f[b.dataset.other] = !f[b.dataset.other];
+    else if ('clear' in b.dataset) Object.assign(f, { prices: [], ops: [], dry: false, big: false });
+    else return;
+    render();
+    onChange();
+  });
+  dlg.addEventListener('close', () => dlg.remove());
+  document.body.append(dlg);
+  dlg.showModal();
+}
+
 function listHtml(f) {
-  const shown = VENUES.filter(v => matches(v, f));
+  const shown = shownOf(f);
   // Courts not in the list (a condo court, a friend's club) still get a sign-up message.
   const unlisted = `<p class="muted small venue-unlisted">${esc(V.unlisted)} <a href="#signup">${esc(SIGNUP.fromVenue)}</a></p>`;
-  if (shown.length === 0) return `<article class="card"><p>${esc(f.kind === 'fav' && favs.size === 0 && !f.q ? V.noFav : V.none)}</p></article>${unlisted}`;
+  if (shown.length === 0) return `<article class="card"><p>${esc(f.fav && favs.size === 0 && !f.q ? V.noFav : V.none)}</p></article>${unlisted}`;
+  const count = `<p class="muted small">${esc(fill(V.count, { n: shown.length }))}</p>`;
+  if (f.sort !== 'region') return `${count}${shown.map(venueCard).join('')}${unlisted}`;
   const cities = [...new Set(shown.map(v => v.city))];
-  return `<p class="muted small">${esc(fill(V.count, { n: shown.length }))}</p>
+  return `${count}
     ${cities.map(c => `<section class="rule-group"><h3>${esc(c)}</h3>${shown.filter(v => v.city === c).map(venueCard).join('')}</section>`).join('')}
     ${unlisted}`;
 }
@@ -108,12 +159,28 @@ export function mountVenues(root) {
     saveFavs(favs);
     render();
   });
-  root.querySelector('.venue-bar').addEventListener('click', e => {
-    const b = e.target.closest('[data-vf]');
-    if (!b) return;
-    f[b.dataset.vf] = b.dataset.v;
-    for (const x of root.querySelectorAll(`[data-vf="${b.dataset.vf}"]`)) x.setAttribute('aria-pressed', String(x === b));
+  const bar = root.querySelector('.venue-bar');
+  const redraw = () => {
     saveFilter(f);
     render();
+    const n = activeCount(f), fb = bar.querySelector('.venue-filter');
+    fb.setAttribute('aria-pressed', String(n > 0));
+    fb.querySelector('.venue-badge')?.remove();
+    if (n) fb.insertAdjacentHTML('beforeend', `<b class="venue-badge">${n}</b>`);
+    const fav = bar.querySelector('[data-favonly]');
+    fav.setAttribute('aria-pressed', String(f.fav));
+    fav.innerHTML = heart(f.fav);
+    for (const x of bar.querySelectorAll('[data-region]')) x.setAttribute('aria-pressed', String(x.dataset.region === f.region));
+    for (const x of bar.querySelectorAll('[data-sort]')) x.setAttribute('aria-pressed', String(x.dataset.sort === f.sort));
+  };
+  bar.addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    if ('region' in b.dataset) f.region = b.dataset.region;
+    else if (b.dataset.sort) f.sort = b.dataset.sort;
+    else if ('favonly' in b.dataset) f.fav = !f.fav;
+    else if ('openFilter' in b.dataset) { openFilter(f, redraw); return; }
+    else return;
+    redraw();
   });
 }

@@ -33,6 +33,16 @@ work there and fast-forward `main` the same way.
 
 ## Open items
 
+- 場地篩選 (2026-10-03): the bar is search, region, ♥ (favourites only), 篩選
+  (sheet: 價位 / 類型 / 不怕下雨 / 4 面場以上) and sort 依區域｜最便宜. Logic in
+  `src/venues.js`. Every venue carries `price` (lowest non-member hourly S$,
+  read off `fee`; absent when fee has no number) and `operator`
+  (public / private / club), same values in all three language files.
+  **離我最近 is phase 2**: needs `lat`/`lng` per venue from OneMap postal-code
+  search, but www.onemap.gov.sg is blocked by this environment's network
+  policy. The user must allow it (environment settings → Network access →
+  Allowed domains), then geocode, add sort `near` with navigator.geolocation
+  (computed on the phone only) and 約 N 公里 on each card.
 - Share to IG (src/ui/sharecard.js) is built but **not yet tried on a real
   phone**: 分享 → Instagram Story/post, 📷 拍照 (camera via
   capture=environment), drag + 小／中／大 on the preview, and the 貼紙 tab

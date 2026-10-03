@@ -8,7 +8,7 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 const DIR = new URL('../src/data/', import.meta.url);
 const FILES = readdirSync(new URL('zh-TW/', DIR)).filter(f => f.endsWith('.js'));
 const LANGS = ['en', 'zh-CN'];
-const SAME = new Set(['id', 'route', 'href', 'kind', 'host', 'shapes', 'url', 'signupUrl', 'source', 'path', 'highlight', 'bounces', 'side', 'pos', 'depth', 'team', 'play', 'scoring', 'step', 'at', 'address', 'block', 'open']);
+const SAME = new Set(['id', 'route', 'href', 'kind', 'host', 'shapes', 'url', 'signupUrl', 'source', 'path', 'highlight', 'bounces', 'side', 'pos', 'depth', 'team', 'play', 'scoring', 'step', 'at', 'address', 'block', 'open', 'operator']);
 // Translated on purpose, together with what they key: venue regions and format groups.
 const TRANSLATED_IDS = [/^VENUES\.\d+\.city$/, /^VENUES_PAGE\.regions\.\d+\.id$/, /^FORMATS\.\d+\.group$/];
 const KEYS_TRANSLATED = [/^FORMATS_PAGE\.groupShort$/];
