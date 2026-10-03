@@ -100,6 +100,13 @@ button { cursor: pointer; }
 .topbar.is-hidden { transform: translateY(calc(-100% - 6px)); }
 @media (prefers-reduced-motion: reduce) { .topbar { transition: none; } }
 .brand { color: var(--fg); text-decoration: none; min-height: 44px; }
+/* Narrow phones: the brand and up to four top-bar icons (install, share, me,
+   theme) stay on one line. */
+@media (max-width: 389px) {
+  .topbar-inner { gap: 8px 6px; }
+  .brand h1 { font-size: 1.15rem; }
+  .theme-btn, .install-btn.is-invite { width: 40px; height: 40px; }
+}
 .theme-btn {
   flex: none; display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0;
   border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--surface); color: var(--fg); box-shadow: var(--shadow);
@@ -521,6 +528,26 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .mix-toggle { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 44px; font-weight: 700; }
 .mix-toggle input { width: 20px; height: 20px; margin: 0; }
 .mix-note { font-weight: 500; }
+.me-btn { text-decoration: none; }
+.me-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0; }
+.me-tile { border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); padding: 8px 6px; background: var(--surface); text-align: center; box-shadow: var(--shadow); }
+.me-tile b { display: block; font-family: var(--font-num); font-size: 1.9rem; line-height: 1.15; }
+.me-tile span { font-size: 0.8rem; color: var(--muted); font-weight: 700; }
+.me-tile.hl { background: var(--mark); color: var(--mark-fg); }
+.me-tile.hl span { color: var(--mark-fg); }
+.me-card { display: block; text-decoration: none; color: inherit; margin-bottom: 14px; }
+.me-card p { margin: 6px 0 0; }
+.me-range { margin: 4px 0 6px; }
+.me-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 2px solid var(--line-soft); }
+.me-row:last-child { border-bottom: 0; }
+.me-row b { text-align: right; overflow-wrap: anywhere; }
+.me-wl { flex: none; font-family: var(--font-num); font-weight: 900; border: 2px solid var(--ink); border-radius: 6px; padding: 0 8px; }
+.me-wl.w { background: var(--mark); color: var(--mark-fg); }
+.me-names { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+.me-who .toolbar { margin-top: 12px; justify-content: flex-end; }
+.me-who-line { margin: 0; }
+.me-clear { text-align: center; margin-top: 18px; }
+.me-link { border: 0; background: none; color: var(--accent); font: inherit; font-weight: 700; text-decoration: underline; padding: 6px 4px; min-height: 44px; cursor: pointer; }
 .group-chips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; margin: 0 -2px; scrollbar-width: none; }
 .group-chip { flex: none; min-height: 44px; padding: 6px 14px; border: 2px solid var(--ink); border-radius: 999px; background: var(--surface); color: var(--fg); font: inherit; font-weight: 900; white-space: nowrap; }
 .group-chip[aria-pressed="true"] { background: var(--mark); color: var(--mark-fg); }
@@ -593,7 +620,7 @@ td:first-child { font-weight: 700; white-space: nowrap; }
 .stats td.num, .stats th:not(:first-child) { text-align: right; width: 3.5em; }
 footer { text-align: center; color: var(--muted); font-size: 0.8rem; padding-top: 12px; }
 /* The rulebook line belongs with the rules, not on the home page. */
-html[data-route="home"] #footer { display: none; }
+html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; }
 
 
 /* 揪團卡 and the courts list. */

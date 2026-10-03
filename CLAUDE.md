@@ -42,7 +42,8 @@ static site later. There is no backend and no build step.
 index.html              the page; hash-routed tabs: #home (default) #rules #score #draw
                         #venues (約球: 場地名錄; #signup 報名訊息 under it), sub-pages #rules/<id> and
                         #formats/<id> (fun formats sit under the rules tab),
-                        #picobowl (tournament page, under home), #meetup (揪團卡,
+                        #picobowl (tournament page, under home), #me (我的戰績, under home; person icon
+                        in the top bar), #meetup (揪團卡,
                         under 約球, no entry point yet); tabs in the header on desktop, in a bottom bar on
                         phones (< 768px)
 styles/main.css         design tokens on :root, dark mode, mobile-first
@@ -60,6 +61,7 @@ src/handoff.js          pack / unpack a tool's state into a hand-over link (#sco
 src/signup.js           pure 報名訊息 text: 9/5 (Sat) 5-7pm, 📍 place, short map link, numbered list;
                         parseSignup reads a pasted list back into sessions of names (抽籤 uses it)
 src/groups.js           pure 常用球團 list: save (same name replaces, max 20), remove, find by members
+src/record.js           pure 個人戰績本: game records (score / draw / koc), who is me, summary for a range
 src/sharecard.js        pure share-image content: a finished game's score card, the 抽籤 戰績 ranking
 src/meetup.js           pure 揪團卡 logic: check the form, chat summary line, .ics, map / LINE / WhatsApp links
 src/ui/home.js          home: slogan, hero court, entry cards
@@ -72,6 +74,8 @@ src/ui/share.js         share button: system share sheet, else copy link (picobo
 src/ui/handoff.js       share-state button + explainer sheet: picobo.net/#<tool>?s=<state>; app.js loads it
 src/ui/fullscreen.js    full screen for one view at a time (scoreboard, draw): real API or in-page fallback
 src/ui/groups.js        常用球團 chips + save/delete sheet (picobo.groups), used by 抽籤 and 報名訊息
+src/ui/record.js        戰績 storage (picobo.games, picobo.me); recordGame / unrecordGame for scoreboard and draw
+src/ui/me.js            我的戰績 page (#me), its home card, the top-bar person icon
 src/ui/sharecard.js     share as picture: canvas card (B1 score / 戰績), own photo, IG sticker; share sheet or save
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
@@ -86,6 +90,7 @@ src/data/formats.js     fun formats + court scenes, grouped by purpose: 人多�
                         人數湊不齊 (3 人制, 半場單打), 想練技術 (廚房戰, 截擊大戰, 第三拍挑戰), 想玩熱鬧 (接力團體賽, 繞場, 蘇格蘭雙打)
 src/data/glossary.js    中英術語對照 + 常見誤解
 src/data/home.js        首頁 slogan 與入口文字
+src/data/me.js          我的戰績的介面文字
 src/data/nav.js         目錄、上一條／下一條、玩法頁的介面文字
 src/data/event.js       Pico Bowl 比賽資訊（open: false 時首頁卡片顯示 Coming soon）
 src/data/signup.js      報名訊息的介面文字和訊息裡的英文固定字

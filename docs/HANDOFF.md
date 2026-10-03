@@ -426,6 +426,17 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   roster (asks first; clears the draw in progress); the chip whose members
   match the roster is highlighted. The ＋ sheet also lists groups to delete.
   報名訊息 shows the group chips above 已經報名; a tap fills the names.
+- 個人戰績本 (phase 1, feature 1): src/record.js (pure, tested),
+  src/ui/record.js (picobo.games, max 1000; picobo.me = { name, aliases }),
+  page src/ui/me.js at #me (under 首頁; top-bar person icon `#me-btn`; home
+  card 「我的戰績 這週」 once me has a game this week, refreshed on each visit
+  to home). Recorded: scoreboard games when they finish (not with 甲1/乙1
+  placeholder names; undo on a finished game removes the record; a game sent
+  from 抽籤 and reported back counts once, from the scoreboard), every 這隊贏
+  in 抽籤分組 (source draw) and 國王球場 (koc), with no score. The page: pick
+  who you are (several spellings = aliases), 這週／本月／全部, 場數・勝率・
+  最長連勝, 最佳拍檔 (≥3 games), 最常搭檔, 最難纏的對手 (≥3), last 10 games,
+  清除所有紀錄. 固定場次範本 (feature 4) skipped by the user for now.
 
 ## Known gaps and ideas not yet scheduled
 

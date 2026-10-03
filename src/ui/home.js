@@ -3,6 +3,7 @@ import { HOME } from '../data/home.js';
 import { esc, enTag } from './scenes.js';
 import { eventCardHtml } from './event.js';
 import { MEETUP } from '../data/meetup.js';
+import { homeMeCardHtml } from './me.js';
 
 // Slogan "Pick a day, pick a place, picobo." (set a time, find a court, play);
 // the hero shows a serve landing in the lit service box.
@@ -27,7 +28,13 @@ export function mountHome(root) {
       <div class="home-court court-wrap"></div>
       <p class="intro">${esc(HOME.intro)}</p>
     </section>
+    <div class="home-me"></div>
     ${eventCardHtml()}
     <nav class="home-entries" aria-label="${esc(HOME.entriesLabel)}">${entry(lead, 'lead')}${rest.map(e => entry(e, '')).join('')}</nav>`;
   renderCourt(root.querySelector('.home-court'), HERO_SCENE);
+  // 我的戰績 this week, once there is something to show; redrawn on each visit.
+  const meBox = root.querySelector('.home-me');
+  const refresh = () => { meBox.innerHTML = homeMeCardHtml(); };
+  refresh();
+  return { refresh };
 }

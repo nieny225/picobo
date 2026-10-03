@@ -34,7 +34,7 @@ and give 1 and 2 cleaner names to count. 2 needs 1.
 - Pure: `src/groups.js` — add / rename / remove / mergeInto(roster) with
   tests (duplicates, empty names, the 20 limit).
 
-## 4. 固定場次範本 (templates)
+## 4. 固定場次範本 (templates) — skipped for now (user: not used often yet)
 
 - Storage `picobo.templates`: `[{ id, weekday 0-6, start, end, place,
   cap, groupId? }]`, at most 10.
@@ -48,7 +48,7 @@ and give 1 and 2 cleaner names to count. 2 needs 1.
 - Pure: `nextDate(template, now)` in `src/signup.js` (or `templates.js`),
   tested across week ends, month ends and "today after start time".
 
-## 1. 個人戰績本 (personal record)
+## 1. 個人戰績本 (personal record) — built 2026-10-03
 
 - **Who is "me"**: no accounts. The first time, the 我的戰績 page asks
   「你是哪一位？」 and lists names seen in recent rosters; the choice is

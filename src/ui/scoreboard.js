@@ -3,6 +3,7 @@ import { MODES, createMatch, pointWon, undo, announce, serverPosition, sideSwitc
 import { coinFlip } from '../draw.js';
 import { FILTER, SCORE_SETUP, DRAW_SCORE as D, SCORE_SHARE } from '../data/nav.js';
 import { openShareSheet, CAMERA_ICON } from './sharecard.js';
+import { recordGame, unrecordGame } from './record.js';
 import { LANDSCAPE } from './scenes.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { shareButtonHtml, sharePage } from './share.js';
@@ -258,14 +259,24 @@ export function mountScoreboard(root, { toDraw } = {}) {
     root.innerHTML = `<div class="section-head"><h2>計分板</h2></div><div class="card">${playHtml(state)}</div>`;
     syncPlaying();
     // The last 10 rallies travel with the hand-over so the next scorekeeper can still undo.
-    root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('score', { ...state, from: undefined, history: state.history.slice(-10) }));
+    root.querySelector('.handoff-btn').addEventListener('click', () => openHandoff('score', { ...state, from: undefined, recordId: undefined, history: state.history.slice(-10) }));
     root.querySelector('#fullscreen').addEventListener('click', () => toggleFull('score'));
     const court = root.querySelector('#board-court');
     if (court) renderCourt(court, courtScene(state), { landscape: lieDown() });
-    const update = next => { state = next; save(state); renderPlay(); };
+    // A game that just ended goes into 我的戰績 (src/ui/record.js); undoing
+    // the last rally of a finished game takes it out again.
+    const update = next => {
+      if (next.finished && !state.finished) {
+        next = { ...next, recordId: recordGame({ source: 'score', teams: [next.teams.A.names, next.teams.B.names], scores: [next.scores.A, next.scores.B], winner: next.winner === 'A' ? 0 : 1 }) };
+      }
+      state = next; save(state); renderPlay();
+    };
     root.querySelector('#win-A').addEventListener('click', () => update(pointWon(state, 'A')));
     root.querySelector('#win-B').addEventListener('click', () => update(pointWon(state, 'B')));
-    root.querySelector('#undo').addEventListener('click', () => update(undo(state)));
+    root.querySelector('#undo').addEventListener('click', () => {
+      if (state.finished) unrecordGame(state.recordId);
+      update(undo(state));
+    });
     // A finished game as a picture for IG and friends (src/ui/sharecard.js).
     root.querySelector('#share-score')?.addEventListener('click', () => openShareSheet('score', state));
     root.querySelector('#switched')?.addEventListener('click', () => update(markSidesSwitched(state)));

@@ -1,6 +1,7 @@
 import { SCORE_SETUP, DRAW_EMPTY, OPEN_PLAY, DRAW_PASTE as P, DRAW_SWAP as W, DRAW_RENAME as R, DRAW_MIX as X, DRAW_SCORE as S, SCORE_SHARE, GROUPS as G } from '../data/nav.js';
 import { openShareSheet, CAMERA_ICON } from './sharecard.js';
 import { loadGroups, groupChipsHtml, openGroupSheet } from './groups.js';
+import { recordGame } from './record.js';
 import { groupOf } from '../groups.js';
 import { parseSignup } from '../signup.js';
 import { toast } from './share.js';
@@ -212,6 +213,8 @@ export function mountDraw(root, { toScore } = {}) {
       <table class="stats"><thead><tr>${OPEN_PLAY.cols.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
       <tbody>${ranked.map(([n, r]) => `<tr><td>${esc(n)}</td><td class="num">${r.played}</td><td class="num">${r.won}</td></tr>`).join('')}</tbody></table>`;
     for (const b of out.querySelectorAll('[data-win]')) b.addEventListener('click', () => {
+      // Into 我的戰績 too (win/loss only: no score in 抽籤).
+      recordGame({ source: 'draw', teams: play.courts[Number(b.dataset.court)].teams, winner: Number(b.dataset.win) });
       setPlay(finishOpenPlayGame(play, Number(b.dataset.court), Number(b.dataset.win), Math.random, mixGenders()));
       renderPlay(out);
     });
@@ -248,6 +251,7 @@ export function mountDraw(root, { toScore } = {}) {
       <p class="small" style="margin-top:10px"><b>排隊中</b>（前兩位下一場上）</p><div class="queue">${koc.queue.map(n => nameHtml(n, true)).join('') || '<span class="muted">沒有人在排隊</span>'}</div>
       <p class="muted small">${esc(W.hint)}</p>`;
     for (const b of out.querySelectorAll('[data-win]')) b.addEventListener('click', () => {
+      recordGame({ source: 'koc', teams: koc.courts[Number(b.dataset.court)].teams, winner: Number(b.dataset.win) });
       koc = advanceKingOfCourt(koc, Number(b.dataset.court), Number(b.dataset.win), streakMax);
       renderKoc(out);
     });

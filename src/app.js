@@ -6,6 +6,7 @@ import { mountEvent } from './ui/event.js';
 import { mountMeetup } from './ui/meetup.js';
 import { mountVenues } from './ui/venues.js';
 import { mountSignup } from './ui/signup.js';
+import { mountMe, mountMeButton } from './ui/me.js';
 import { autoHideTopbar } from './ui/topbar.js';
 import { mountThemeToggle } from './ui/theme.js';
 import { registerServiceWorker, mountInstallButton } from './ui/install.js';
@@ -15,10 +16,10 @@ import { toast } from './ui/share.js';
 import { HANDOFF, SCORE_SETUP, DRAW_SCORE } from './data/nav.js';
 import { RULEBOOK } from './data/rules.js';
 
-const ROUTES = ['home', 'rules', 'formats', 'score', 'draw', 'picobowl', 'meetup', 'venues', 'signup'];
+const ROUTES = ['home', 'rules', 'formats', 'score', 'draw', 'picobowl', 'meetup', 'venues', 'signup', 'me'];
 // Fun formats live under the rules tab, Pico Bowl under home; 報名訊息 and
-// 揪團 sit with 找場地 under the 約球 tab.
-const TAB_OF = { formats: 'rules', picobowl: 'home', meetup: 'venues', signup: 'venues' };
+// 揪團 sit with 找場地 under the 約球 tab; 我的戰績 under home.
+const TAB_OF = { formats: 'rules', picobowl: 'home', meetup: 'venues', signup: 'venues', me: 'home' };
 
 // Hash shape: #<route> or #<route>/<sub>, e.g. #rules/kitchen. Links from v1
 // used #rules-<id>; those are rewritten in place.
@@ -40,7 +41,7 @@ const topbar = autoHideTopbar(document.querySelector('.topbar'));
 mountThemeToggle(document.getElementById('theme-toggle'));
 registerServiceWorker();
 mountInstallButton(document.getElementById('install-btn'));
-mountHome(document.getElementById('view-home'));
+const home = mountHome(document.getElementById('view-home'));
 const rules = mountRules(document.getElementById('view-rules'));
 // 抽籤 → 計分板 with a court's four names, and the winner back again.
 const scoreboard = mountScoreboard(document.getElementById('view-score'), {
@@ -57,6 +58,8 @@ const event = mountEvent(document.getElementById('view-picobowl'));
 const meetup = mountMeetup(document.getElementById('view-meetup'));
 mountVenues(document.getElementById('view-venues'));
 const signup = mountSignup(document.getElementById('view-signup'));
+const me = mountMe(document.getElementById('view-me'));
+mountMeButton(document.getElementById('me-btn'));
 document.getElementById('footer').textContent = `正統規則依據 ${RULEBOOK}。趣味玩法各球場做法不同，開打前先講好。`;
 
 // Coming back to 抽籤 from the scoreboard lands on the courts (the one just
@@ -82,6 +85,8 @@ function show() {
   // 揪團 reads its own query: a shared card (?s=) or a court to start from.
   if (route === 'meetup') meetup.show(location.hash.split('?')[1] ?? '');
   if (route === 'signup') signup.show(location.hash.split('?')[1] ?? '');
+  if (route === 'me') me.show();
+  if (route === 'home') home.refresh();
   // #score?play=…&scoring=… from a rule page: preset the mode, then drop the query.
   const query = new URLSearchParams(location.hash.split('?')[1] ?? '');
   if (route === 'score' && query.has('play')) {
