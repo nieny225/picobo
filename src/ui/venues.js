@@ -49,7 +49,7 @@ function saveFavs(favs) {
   try { localStorage.setItem(FAV_KEY, JSON.stringify([...favs])); } catch { /* storage unavailable: this visit only */ }
 }
 const favs = loadFavs();
-const heart = on => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>`;
+const heart = on => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="${on ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 21s-8.5-5.2-8.5-11.5a4.8 4.8 0 0 1 8.5-3A4.8 4.8 0 0 1 20.5 9.5C20.5 15.8 12 21 12 21z"/></svg>`;
 
 // Filters: search, region and a favourites toggle on the bar; price, type,
 // minimum courts and rain-proof in the 篩選 sheet; sort by region or price.

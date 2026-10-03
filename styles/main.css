@@ -753,7 +753,9 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 /* The name takes the free width, so ♥ and share stay pinned top right on every card. */
 .venue-head h3 { flex: 1; min-width: 0; }
 .venue-share { margin-right: -4px; color: var(--fg); }
-.venue-share svg { width: 22px; height: 22px; }
+/* Heart and share drawn to the same box and stroke, so neither looks bigger. */
+.venue-head .fav-btn svg { width: 24px; height: 24px; }
+.venue-head .fav-btn:not([aria-pressed="true"]) { color: var(--fg); }
 .venue-one { display: grid; gap: 14px; }
 .venue .event-facts div { grid-template-columns: 5em 1fr; }
 :lang(en) .venue .event-facts div { grid-template-columns: 5.5em 1fr; }
