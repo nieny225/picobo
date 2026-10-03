@@ -1,7 +1,6 @@
 // 規則目錄、單條規則頁與趣味玩法頁的介面文字。
 export const RULES_INDEX = {
   title: '學規則',
-  intro: '挑一條看圖解。每一條都有自己的網址，可以直接傳給球友。',
   more: '更多',
   moreEn: 'More',
 };

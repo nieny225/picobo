@@ -1,7 +1,6 @@
 // UI copy for the rules index, single rule pages and fun format pages.
 export const RULES_INDEX = {
   title: 'Learn the rules',
-  intro: 'Pick a rule and see it on the court. Every rule has its own link you can send to friends.',
   more: 'More',
   moreEn: '',
 };

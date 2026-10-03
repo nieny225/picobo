@@ -1,7 +1,6 @@
 // 规则目录、单条规则页与趣味玩法页的界面文字。
 export const RULES_INDEX = {
   title: '学规则',
-  intro: '挑一条看图解。每一条都有自己的链接，可以直接发给球友。',
   more: '更多',
   moreEn: 'More',
 };

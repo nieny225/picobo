@@ -177,7 +177,7 @@ function indexHtml(f) {
       ${g.lists.map(([sub, pages]) => `${sub ? `<h4 class="format-group">${esc(sub)}</h4>` : ''}<div class="rule-list">${pages.map(link).join('')}</div>`).join('')}
     </section>`).join('');
   return `
-    <div class="section-head"><h2>${esc(RULES_INDEX.title)}</h2><p class="intro">${esc(RULES_INDEX.intro)}</p></div>
+    <div class="section-head"><h2>${esc(RULES_INDEX.title)}</h2></div>
     ${groups}`;
 }
 
