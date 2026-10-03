@@ -166,3 +166,46 @@ export function renderCourt(el, scene = {}, opts = {}) {
       : players(scene.players, false, false)) +
     `</svg>`;
 }
+
+// 借場地打: a pickleball court laid on a badminton, tennis or volleyball court,
+// drawn lying down (length left to right) in the same units. Host sizes in
+// feet × 10 from the BWF, ITF and FIVB rules; `reuse` names the pickleball
+// lines that sit on a host line (the rest are taped).
+const HOSTS = {
+  // 13.40 × 6.10 m; short service line 1.98 m from the net, doubles long
+  // service line 0.76 m in, singles sidelines 0.46 m in.
+  badminton: { l: 440, w: 200, lines: [[155, 0, 155, 200], [285, 0, 285, 200], [25, 0, 25, 200], [415, 0, 415, 200], [0, 15, 440, 15], [0, 185, 440, 185], [0, 100, 155, 100], [285, 100, 440, 100]], reuse: ['baseline', 'side', 'center'] },
+  // 23.77 × 10.97 m; singles 8.23 m wide; service line 6.40 m from the net.
+  tennis: { l: 780, w: 360, lines: [[0, 45, 780, 45], [0, 315, 780, 315], [180, 45, 180, 315], [600, 45, 600, 315], [180, 180, 600, 180]], reuse: ['center'] },
+  // 18 × 9 m; attack lines 3 m from the centre line.
+  volleyball: { l: 590, w: 295, lines: [[196.6, 0, 196.6, 295], [393.4, 0, 393.4, 295]], reuse: [] },
+};
+export const SETUP_HOSTS = Object.keys(HOSTS);
+
+export function setupSvg(host, alt) {
+  const h = HOSTS[host];
+  if (!h) throw new Error(`court: unknown host court ${host}`);
+  const m = 24, ox = m + (h.l - L) / 2, oy = m + (h.w - W) / 2, xn = ox + L / 2;
+  const seg = ([x1, y1, x2, y2], cls) => `<line class="${cls}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+  // Pickleball lines by kind, lying down: baselines left and right.
+  const pb = {
+    baseline: [[ox, oy, ox, oy + W], [ox + L, oy, ox + L, oy + W]],
+    side: [[ox, oy, ox + L, oy], [ox, oy + W, ox + L, oy + W]],
+    kitchen: [[xn - NVZ, oy, xn - NVZ, oy + W], [xn + NVZ, oy, xn + NVZ, oy + W]],
+    center: [[ox, oy + W / 2, xn - NVZ, oy + W / 2], [xn + NVZ, oy + W / 2, ox + L, oy + W / 2]],
+  };
+  const pbLines = Object.entries(pb).flatMap(([kind, list]) => list.map(l => {
+    const cls = h.reuse.includes(kind) ? 'setup-reuse' : 'setup-tape';
+    return seg(l, `${cls}-edge`) + seg(l, cls);
+  }));
+  return `<svg class="court setup" viewBox="0 0 ${h.l + 2 * m} ${h.w + 2 * m}" role="img" aria-label="${esc(alt)}">` +
+    `<rect class="setup-floor" x="${m}" y="${m}" width="${h.l}" height="${h.w}"/>` +
+    `<rect class="court-surface setup-pb" x="${ox}" y="${oy}" width="${L}" height="${W}"/>` +
+    `<rect class="court-nvz" x="${xn - NVZ}" y="${oy}" width="${NVZ * 2}" height="${W}"/>` +
+    seg([m, m, m + h.l, m], 'setup-host') + seg([m, m + h.w, m + h.l, m + h.w], 'setup-host') +
+    seg([m, m, m, m + h.w], 'setup-host') + seg([m + h.l, m, m + h.l, m + h.w], 'setup-host') +
+    h.lines.map(([x1, y1, x2, y2]) => seg([m + x1, m + y1, m + x2, m + y2], 'setup-host')).join('') +
+    pbLines.join('') +
+    seg([xn, m - 12, xn, m + h.w + 12], 'setup-net') +
+    `</svg>`;
+}

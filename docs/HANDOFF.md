@@ -446,6 +446,9 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   there is one (≥3 games); the panel grows to fit.
   Photo, 限動／貼文, 小中大 and drag work as for the other pictures.
   Phase 1 is done except 固定場次範本 (skipped).
+- 借場地打 (#rules/setup, after 球場尺寸; user asked for drawings and its own page):
+  one drawing per host court from court.js setupSvg (white = reuse, yellow =
+  tape, dashed = host lines), then the steps. Copy in rules.js `setup`.
 - 場地名錄 private-venue sweep (2026-10-03, official sites first): added
   Pickle Up and ARK Pickle @ Orchid Country Club, MADPICKLERS (北區), PickleChoo
   Apex, Pickle Padel Movement, Pixel Pickle, Picklepark Balestier, Ace Club

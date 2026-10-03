@@ -5,24 +5,28 @@ import { RULES_INDEX, RULE_PAGE, EXTRA_PAGES, DRAWER, FILTER, FORMATS_PAGE } fro
 import { esc, enTag, sceneBlock, wireScene } from './scenes.js';
 import { formatCardHtml, wireFormat } from './formats.js';
 import { shareButtonHtml, sharePage, toast } from './share.js';
+import { setupSvg } from '../court.js';
 
 
 function ruleCard(item, applies = '') {
   const detail = item.detail?.length
     ? `<details${item.collapsed ? '' : ''}><summary>更多說明</summary><div class="detail"><ul>${item.detail.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div></details>`
     : '';
-  // 借別的球場打: practical setup tips, kept apart from the rule text.
-  const a = item.adapt;
-  const adapt = a
-    ? `<details><summary>${esc(a.title)}</summary><div class="detail"><p>${esc(a.intro)}</p>${a.groups.map(g => `<h4>${esc(g.name)}</h4><ul>${g.items.map(p => `<li>${esc(p)}</li>`).join('')}</ul>`).join('')}<p class="muted small">${esc(a.note)}</p></div></details>`
+  // 借場地打: one drawing per host court (court.js), then what to reuse and tape.
+  const st = item.setup;
+  const setup = st
+    ? `<div class="setup-body"><p>${esc(st.intro)}</p>
+      <p class="setup-legend small"><span><i class="lg-reuse"></i>${esc(st.legend.reuse)}</span><span><i class="lg-tape"></i>${esc(st.legend.tape)}</span><span><i class="lg-host"></i>${esc(st.legend.host)}</span></p>
+      ${st.groups.map(g => `<section class="setup-group"><h4>${esc(g.name)}</h4>${setupSvg(g.host, g.name)}<ul>${g.items.map(p => `<li>${esc(p)}</li>`).join('')}</ul></section>`).join('')}
+      <p class="muted small">${esc(st.note)}</p></div>`
     : '';
   return `<article class="card rule" id="rules-${item.id}">
     <div class="card-head"><h3>${esc(item.title)}${enTag(item.en)}</h3></div>
     ${applies}
     <p class="summary">${esc(item.summary)}</p>
     ${sceneBlock(item)}
+    ${setup}
     ${detail}
-    ${adapt}
   </article>`;
 }
 

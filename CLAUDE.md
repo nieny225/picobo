@@ -53,7 +53,8 @@ sw.js                   service worker: network first, cache fallback for offlin
 icons/                  icon.svg (source) + PNGs rendered from it with Playwright
 src/app.js              router; mounts the views
 src/court.js            SVG court renderer shared by rules + scoreboard; renderCourt(el,
-                        scene, { landscape }) lies the court down (near side left)
+                        scene, { landscape }) lies the court down (near side left);
+                        setupSvg(host) draws it on a badminton / tennis / volleyball court (借場地打)
 src/scoring.js          pure scoring state machines (no DOM)
 src/draw.js             pure draw / round-robin / king-of-court logic (no DOM)
 src/tournament.js       pure Pico Bowl logic: pools, court queue, standings, playoffs (no DOM)
