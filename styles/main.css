@@ -349,6 +349,8 @@ details[open] summary::before { content: "－"; }
 .detail { display: grid; gap: 8px; padding-top: 8px; max-width: 62ch; }
 .detail li { margin: 0; }
 .detail ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.detail h4 { margin: 6px 0 0; font-size: 1rem; }
+.detail p { margin: 0; }
 
 /* Court */
 .court-wrap { width: 100%; max-width: 420px; margin: 0 auto; }

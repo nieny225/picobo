@@ -11,12 +11,18 @@ function ruleCard(item, applies = '') {
   const detail = item.detail?.length
     ? `<details${item.collapsed ? '' : ''}><summary>更多說明</summary><div class="detail"><ul>${item.detail.map(p => `<li>${esc(p)}</li>`).join('')}</ul></div></details>`
     : '';
+  // 借別的球場打: practical setup tips, kept apart from the rule text.
+  const a = item.adapt;
+  const adapt = a
+    ? `<details><summary>${esc(a.title)}</summary><div class="detail"><p>${esc(a.intro)}</p>${a.groups.map(g => `<h4>${esc(g.name)}</h4><ul>${g.items.map(p => `<li>${esc(p)}</li>`).join('')}</ul>`).join('')}<p class="muted small">${esc(a.note)}</p></div></details>`
+    : '';
   return `<article class="card rule" id="rules-${item.id}">
     <div class="card-head"><h3>${esc(item.title)}${enTag(item.en)}</h3></div>
     ${applies}
     <p class="summary">${esc(item.summary)}</p>
     ${sceneBlock(item)}
     ${detail}
+    ${adapt}
   </article>`;
 }
 
