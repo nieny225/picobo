@@ -726,6 +726,11 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 .chrome-hidden .venue-bar { top: 0; }
 .venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
 .venue-list { display: grid; gap: 14px; }
+/* Scoreboard 直接開始: one big tap, then the full setup for anyone who wants it. */
+.quick-start { display: grid; gap: 8px; }
+.quick-start #quick { min-height: 56px; font-size: 1.15rem; }
+.quick-start p { margin: 0; }
+.quick-or { margin: 0 0 -4px; font-size: 1rem; color: var(--muted); }
 /* A friend's filter link: what is filtered, and the way back to the whole list. */
 .venue-shared { display: flex; align-items: center; gap: 10px; margin: 8px 0; padding: 10px 12px; border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); background: var(--mark); color: var(--mark-fg); }
 .venue-shared[hidden], .venue-bar[hidden] { display: none; }
