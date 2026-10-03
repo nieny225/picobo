@@ -136,7 +136,7 @@ export const VENUES = [
 ];
 
 export const VENUES_PAGE = {
-  title: 'Find a court',
+  title: 'Meetup & courts',
   en: 'Courts',
   intro: 'Where to play pickleball in Singapore, how to book and how to get there.',
   disclaimer: 'Prices and hours are compiled from venue websites and online round-ups (October 2026) and may change. Check the venue\'s own notice before booking.',

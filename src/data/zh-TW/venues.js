@@ -134,7 +134,7 @@ export const VENUES = [
 ];
 
 export const VENUES_PAGE = {
-  title: '找場地',
+  title: '揪團・找場地',
   en: 'Courts',
   intro: '新加坡可以打匹克球的場地，怎麼預約、怎麼去。',
   disclaimer: '價格和時間整理自場地官網和網路整理（2026 年 10 月），可能會變，預約前以場地公告為準。',

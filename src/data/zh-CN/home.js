@@ -23,7 +23,7 @@ export const HOME = {
     { route: 'draw', title: '抽签轮转', en: 'Draw', desc: '分组、轮转赛、国王球场，人多也不乱。' },
     { route: 'rules', title: '学规则', en: 'Rules', desc: '图解一步步搞懂规则' },
     { route: 'meetup', title: '约球', en: 'Find Players', desc: '填时间地点缺几人，一张卡发到群里。' },
-    { route: 'venues', title: '找场地', en: 'Courts', desc: '哪里能打、怎么预约、怎么去，还能快速组局。' },
+    { route: 'venues', title: '约球・找场地', en: 'Meetup', desc: '哪里能打、怎么预约，再发报名信息约人。' },
     // 合作表单（Google 表单，不显示站长 email）。新加坡的人也会来，所以中英并列。
     { href: 'https://forms.gle/X8Rsieeez7oDLZMFA', title: '找合作', en: 'Partner with us', desc: '场地、教练、品牌、活动' },
   ],
