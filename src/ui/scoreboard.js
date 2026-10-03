@@ -1,15 +1,15 @@
 import { renderCourt } from '../court.js';
 import { MODES, createMatch, pointWon, undo, announce, serverPosition, sideSwitchDue, markSidesSwitched, other, gamePoint } from '../scoring.js';
 import { coinFlip } from '../draw.js';
-import { FILTER, SCORE_SETUP, DRAW_SCORE as D, SCORE_SHARE, SCORE_TEXT as T } from '../data/nav.js';
+import { FILTER, SCORE_SETUP, DRAW_SCORE as D, SCORE_SHARE, SCORE_TEXT as T, APP_TEXT } from '../data/nav.js';
 
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 import { openShareSheet, CAMERA_ICON } from './sharecard.js';
 import { recordGame, unrecordGame } from './record.js';
 import { LANDSCAPE } from './scenes.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { shareButtonHtml, sharePage } from './share.js';
 import { isFull, toggleFull, exitFull, onFullChange, fullIcon } from './fullscreen.js';
+import { fill } from '../fill.js';
 
 const KEY = 'picobo.match';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -116,7 +116,7 @@ function modeLabel(state) {
 const fullscreenIcon = () => fullIcon(SCORE_SETUP);
 
 function playHtml(state) {
-  const A = state.teams.A.names.join('・'), B = state.teams.B.names.join('・');
+  const A = state.teams.A.names.join(APP_TEXT.and), B = state.teams.B.names.join(APP_TEXT.and);
   const teamName = id => T.teams[id];
   let who = '';
   if (state.finished) who = '';
@@ -143,7 +143,7 @@ function playHtml(state) {
       <button class="score-btn team-A" id="win-A"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.A}</span><span class="name">${esc(fill(T.rallyWon, { names: A }))}</span></button>
       <button class="score-btn team-B" id="win-B"${state.finished ? ' disabled' : ''}><span class="pts num">${state.scores.B}</span><span class="name">${esc(fill(T.rallyWon, { names: B }))}</span></button>
     </div>
-    ${state.finished && state.from ? `<button class="btn btn-primary btn-block" id="to-draw">${esc(D.back.replace('{names}', state.teams[state.winner].names.join('・')))}</button>` : ''}
+    ${state.finished && state.from ? `<button class="btn btn-primary btn-block" id="to-draw">${esc(D.back.replace('{names}', state.teams[state.winner].names.join(APP_TEXT.and)))}</button>` : ''}
     <div class="toolbar${state.finished ? ' is-finished' : ''}">
       <button class="btn icon-btn" id="undo" aria-label="${esc(T.undo)}"${state.history.length ? '' : ' disabled'}><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg><span class="btn-text">${esc(T.undo)}</span></button>
       ${state.finished ? `<button class="btn${state.from ? '' : ' btn-primary'}" id="again">${esc(T.again)}</button><button class="btn icon-btn" id="share-score" aria-label="${esc(SCORE_SHARE.open)}">${CAMERA_ICON}<span class="lbl-long" aria-hidden="true">${esc(SCORE_SHARE.open)}</span><span class="lbl-short" aria-hidden="true">${esc(SCORE_SHARE.ig)}</span></button>` : ''}

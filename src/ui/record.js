@@ -4,6 +4,7 @@ import { ME } from '../data/me.js';
 import { SHARE, SCORE_TEXT } from '../data/nav.js';
 import { esc } from './scenes.js';
 import { sharePage, toast } from './share.js';
+import { fill } from '../fill.js';
 
 // Where 個人戰績本 lives on this phone (rules in src/record.js): every finished
 // game (picobo.games) and who "me" is (picobo.me). The scoreboard and the
@@ -57,6 +58,6 @@ export async function shareTodayGames(link = todayGamesLink()) {
 export function receiveGames(rows) {
   const { games, added } = mergeGames(loadGames(), unpackGames(rows));
   saveGames(games);
-  toast(esc(added ? ME.link.added.replace('{n}', added) : ME.link.dup));
+  toast(esc(added ? fill(ME.link.added, { n: added }) : ME.link.dup));
   return added;
 }

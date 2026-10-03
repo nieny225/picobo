@@ -66,3 +66,12 @@ test('no Chinese left in the English copy', () => {
     assert.deepEqual(lines, [], f);
   }
 });
+
+test('fill: placeholders and {n|one|other} word forms', async () => {
+  const { fill } = await import('../src/fill.js');
+  assert.equal(fill('{n} {n|game|games}', { n: 1 }), '1 game');
+  assert.equal(fill('{n} {n|game|games}', { n: 3 }), '3 games');
+  assert.equal(fill('{n} {n|game|games}', { n: 0 }), '0 games');
+  assert.equal(fill('{a}-{b}', { a: 11, b: 7 }), '11-7');
+  assert.equal(fill('打了 {n} 場', { n: 1 }), '打了 1 場');
+});

@@ -31,7 +31,7 @@ export const SIGNUP = {
   // Fixed text inside the message (English).
   labels: {
     heading: '🏓 Pickleball',
-    cap: 'Max {n} players',
+    cap: 'Max {n} {n|player|players}',
     footer: 'via picobo.net',
   },
   // Entry point on venue cards and the courts page.

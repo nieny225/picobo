@@ -20,10 +20,10 @@ export const HOME = {
   },
   entries: [
     { route: 'rules', title: 'Learn the rules', en: '', desc: 'Step-by-step rules in pictures' },
-    { route: 'score', title: 'Scoreboard', en: '', desc: 'Who serves, where to stand, what\'s the score' },
-    { route: 'draw', title: 'Draw', en: '', desc: 'Random draw, round robin, king of the court. Lots of players, no chaos.' },
+    { route: 'score', title: 'Scoreboard', en: '', desc: 'Who serves, from where, and the score' },
+    { route: 'draw', title: 'Draw', en: '', desc: 'Random draw, round robin, king of the court' },
     { route: 'meetup', title: 'Find players', en: '', desc: 'Time, place, players needed. One card for the group chat.' },
-    { route: 'venues', title: 'Courts', en: '', desc: 'Where to play, how to book, how to get there. Rally a group fast.' },
+    { route: 'venues', title: 'Courts', en: '', desc: 'Where to play and how to book' },
     // Partnership form (Google Form, no owner email shown).
     { href: 'https://forms.gle/X8Rsieeez7oDLZMFA', title: 'Partner with us', en: '', desc: 'Venues, coaches, brands, events' },
   ],

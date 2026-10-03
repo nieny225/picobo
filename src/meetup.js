@@ -1,6 +1,7 @@
 // 揪團卡: the data a host fills in, checked and normalized, plus the text and
 // links built from it (share line, calendar file, map, contact). No DOM; the
 // zh-TW words come in as `labels` from src/data/meetup.js.
+import { fill } from './fill.js';
 
 export const PLAYS = ['doubles', 'singles', 'open'];
 export const LEVELS = ['any', 'beginner', 'intermediate', 'advanced'];
@@ -47,7 +48,6 @@ export function normalizeMeetup(d) {
 }
 
 const pad = n => String(n).padStart(2, '0');
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 export const needText = (n, labels) => (n === 0 ? labels.needNone : fill(labels.need, { n }));
 const weekdayOf = date => new Date(`${date}T00:00:00Z`).getUTCDay();
 

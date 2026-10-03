@@ -4,12 +4,12 @@ import { loadGames, saveGames, loadMe, saveMe, shareTodayGames } from './record.
 import { esc } from './scenes.js';
 import { toast } from './share.js';
 import { openShareSheet, CAMERA_ICON } from './sharecard.js';
-import { SCORE_SHARE } from '../data/nav.js';
+import { SCORE_SHARE, APP_TEXT } from '../data/nav.js';
+import { fill } from '../fill.js';
 
 // 我的戰績 (#me): who "me" is, then this week / this month / all games of
 // theirs: counts, win rate, streaks, partners, the toughest opponent and the
 // last games. Everything is read from this phone (src/ui/record.js).
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 const PERSON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
 // A chain link: the 戰績連結 that passes today's games to the other players.
 export const LINK_ICON = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>';
@@ -65,7 +65,7 @@ function statsHtml(s, range) {
   const row = (icon, label, p, detail) => p ? `<div class="me-row"><span>${icon} ${esc(label)}</span><b>${esc(p.name)} <span class="muted small">${esc(detail(p))}</span></b></div>` : '';
   const wl = p => fill(T.wl, { won: p.won, lost: p.played - p.won });
   const games = s.recent.map(r => {
-    const who = r.partners.length ? fill(T.with, { partners: r.partners.join('・'), opponents: r.opponents.join('・') }) : fill(T.alone, { opponents: r.opponents.join('・') });
+    const who = r.partners.length ? fill(T.with, { partners: r.partners.join(APP_TEXT.and), opponents: r.opponents.join(APP_TEXT.and) }) : fill(T.alone, { opponents: r.opponents.join(APP_TEXT.and) });
     return `<div class="me-row"><span><span class="muted small">${esc(day(r.at))} ${esc(T.sources[r.source])}${r.scores ? ` ${r.scores[0]}-${r.scores[1]}` : ''}</span><br>${esc(who)}</span><span class="me-wl${r.won ? ' w' : ''}">${esc(r.won ? T.win : T.loss)}</span></div>`;
   }).join('');
   const people = [

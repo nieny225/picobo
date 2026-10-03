@@ -731,9 +731,12 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 .fav-btn[aria-pressed="true"] { color: var(--fav); }
 .fav-btn svg { width: 24px; height: 24px; }
 .venue .event-facts div { grid-template-columns: 5em 1fr; }
+:lang(en) .venue .event-facts div { grid-template-columns: 5.5em 1fr; }
 .name-btn {
   display: block; width: 100%; min-height: 44px; padding: 4px 8px; text-align: left; font: inherit; font-weight: 700; color: var(--fg);
-  background: var(--surface); border: 2px dashed var(--line-soft); border-radius: 6px; overflow-wrap: anywhere;
+  background: var(--surface); border: 2px dashed var(--line-soft); border-radius: 6px;
+  /* A long name ends in … instead of breaking mid-word; the full name is on the list and in 戰績. */
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .name-btn:active { border-color: var(--ink); }
 .queue .name-btn { display: inline-flex; align-items: center; width: auto; min-height: 44px; border: 2px solid var(--ink); border-radius: 4px; padding: 2px 10px; font-size: 0.9rem; }
@@ -770,7 +773,7 @@ a.event-card:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(
 .event-hero { display: grid; gap: 10px; }
 .event-name { font-family: var(--font-num); font-size: clamp(2.6rem, 13vw, 4rem); line-height: 1; letter-spacing: -0.02em; justify-self: start; background: var(--mark); color: var(--mark-fg); padding: 2px 10px; box-shadow: 0 0 0 var(--bw) var(--ink); margin-left: 3px; }
 .event-facts, .event-day { display: grid; gap: 6px; margin: 0; }
-.event-facts div, .event-day div { display: grid; grid-template-columns: 3.5em 1fr; gap: 8px; }
+.event-facts div, .event-day div { display: grid; grid-template-columns: max-content 1fr; gap: 12px; }
 .event-facts dt, .event-day dt { font-weight: 900; }
 .event-facts dd, .event-day dd { margin: 0; }
 .event-draft { display: flex; gap: 8px; align-items: baseline; color: var(--muted); font-size: 0.9rem; }

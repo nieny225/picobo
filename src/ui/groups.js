@@ -2,6 +2,7 @@ import { GROUPS as G, APP_TEXT } from '../data/nav.js';
 import { saveGroup, removeGroup, cleanGroups } from '../groups.js';
 import { esc } from './scenes.js';
 import { toast } from './share.js';
+import { fill } from '../fill.js';
 
 // 常用球團 on this phone (src/groups.js holds the rules): a row of chips to
 // load one, and a sheet to save the current names or delete old groups.
@@ -23,7 +24,7 @@ export function groupChipsHtml(groups, current, add) {
     `<button type="button" class="group-chip" data-group="${esc(g.name)}" aria-pressed="${g.name === current}">${esc(g.name)}</button>`).join('')}</div>`;
 }
 
-const fill = (s, name) => s.replace('{name}', name);
+const fillName = (s, name) => fill(s, { name });
 
 // Save `names` under a name, or delete saved groups. Calls `done()` after any change.
 export function openGroupSheet(names, done) {
@@ -31,7 +32,7 @@ export function openGroupSheet(names, done) {
   const dlg = document.createElement('dialog');
   dlg.className = 'install-sheet group-sheet';
   const listHtml = () => groups.length ? `<p class="small swap-group">${esc(G.manage)}</p>
-    <ul class="group-list">${groups.map(g => `<li><span><b>${esc(g.name)}</b> <span class="muted small">${esc(APP_TEXT.people.replace('{n}', g.names.length))}</span></span><button type="button" class="btn btn-ghost" data-del="${esc(g.name)}">${esc(G.remove)}</button></li>`).join('')}</ul>` : '';
+    <ul class="group-list">${groups.map(g => `<li><span><b>${esc(g.name)}</b> <span class="muted small">${esc(fill(APP_TEXT.people, { n: g.names.length }))}</span></span><button type="button" class="btn btn-ghost" data-del="${esc(g.name)}">${esc(G.remove)}</button></li>`).join('')}</ul>` : '';
   dlg.innerHTML = `<form method="dialog" class="rename-form"><b>${esc(G.sheetTitle)}</b>
     <p class="muted small">${esc(G.sheetHint)}</p>
     <input class="input" name="gname" maxlength="20" autocomplete="off" placeholder="${esc(G.namePlaceholder)}">
@@ -52,7 +53,7 @@ export function openGroupSheet(names, done) {
       err.textContent = why; err.hidden = false; return;
     }
     storeGroups(groups);
-    toast(esc(fill(G.saved, name)));
+    toast(esc(fillName(G.saved, name)));
     close(); done();
   });
   dlg.addEventListener('click', e => {
@@ -61,7 +62,7 @@ export function openGroupSheet(names, done) {
     if (!del) return;
     groups = removeGroup(groups, del.dataset.del);
     storeGroups(groups);
-    toast(esc(fill(G.removed, del.dataset.del)));
+    toast(esc(fillName(G.removed, del.dataset.del)));
     dlg.querySelector('.group-manage').innerHTML = listHtml();
     done();
   });

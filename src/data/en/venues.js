@@ -140,7 +140,7 @@ export const VENUES_PAGE = {
   disclaimer: 'Prices and hours are compiled from venue websites and online round-ups (October 2026) and may change. Check the venue\'s own notice before booking.',
   empty: 'The venue directory is on its way; the first partner venues are coming soon.',
   settings: { indoor: 'Indoor', sheltered: 'Sheltered', outdoor: 'Outdoor' },
-  courts: '{n} courts',
+  courts: '{n} {n|court|courts}',
   fee: 'Price',
   hours: 'Hours',
   map: 'Map',
@@ -156,7 +156,7 @@ export const VENUES_PAGE = {
   fav: 'Add to favourites',
   unfav: 'Remove from favourites',
   noFav: 'No favourite venues yet. Tap the heart at the top right of a venue card and it shows up here.',
-  count: '{n} venues',
+  count: '{n} {n|venue|venues}',
   none: 'No venues match. Try other filters.',
   // Bottom of the directory: venues not on the list (condo courts, a friend's club) can still get a sign-up message.
   unlisted: 'Playing somewhere not listed (a condo court, a friend\'s club)? You can type in the venue name yourself:',

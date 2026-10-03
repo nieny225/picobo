@@ -6,6 +6,7 @@
 //   2.
 // Players copy it, add their name on the next number and paste it back.
 // No DOM; the fixed words come in as `labels` from src/data/signup.js.
+import { fill } from './fill.js';
 
 // A short map link: a Singapore postal code pins the building, so it is
 // enough; otherwise the place name.
@@ -67,7 +68,7 @@ export function signupText({ sessions, names = [], cap = null, blanks = 3 }, lab
       `${dateText(s.date)} ${timeText(s.start, s.end)}`,
       `📍 ${place}`,
       s.link && !repeat ? s.link : null,
-      cap ? labels.cap.replace('{n}', cap) : null,
+      cap ? fill(labels.cap, { n: cap }) : null,
       ...numbered,
     ].filter(line => line !== null).join('\n');
   });

@@ -1,4 +1,4 @@
-import { SCORE_SHARE as T } from '../data/nav.js';
+import { SCORE_SHARE as T, APP_TEXT } from '../data/nav.js';
 import { scoreCard, statsCard, reportCard } from '../sharecard.js';
 import { esc } from './scenes.js';
 import { toast } from './share.js';
@@ -120,7 +120,7 @@ function scoreBand(ctx, h, card) {
       const lh = 78, top = mid - ((names.length - 1) * lh) / 2;
       names.forEach((n, j) => fitText(ctx, n, nx, top + j * lh, side, 60, 900, CJK));
     } else {
-      fitText(ctx, names.join('・'), nx, y + 330, w / 2 - 72, 56, 900, CJK);
+      fitText(ctx, names.join(APP_TEXT.and), nx, y + 330, w / 2 - 72, 56, 900, CJK);
     }
   }
   // Meta line and the small brand block.

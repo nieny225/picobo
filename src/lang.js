@@ -38,7 +38,13 @@ function pick() {
 
 const picked = pick();
 export const LANG = AVAILABLE.includes(picked) ? picked : 'zh-TW';
-if (typeof document !== 'undefined') document.documentElement.lang = HTML_LANG[LANG];
+if (typeof document !== 'undefined') {
+  document.documentElement.lang = HTML_LANG[LANG];
+  // The install name comes from the manifest (and, on iPhone, this meta), so
+  // English installs as plain "Picobo".
+  if (LANG !== 'zh-TW') document.querySelector('link[rel="manifest"]')?.setAttribute('href', `manifest.${LANG}.webmanifest`);
+  if (LANG === 'en') document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Picobo');
+}
 
 export function setLang(l) {
   if (!AVAILABLE.includes(l)) throw new Error(`lang: unknown language ${l}`);

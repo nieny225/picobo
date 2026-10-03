@@ -10,9 +10,9 @@ import { toast } from './share.js';
 import { isFull, toggleFull, onFullChange, fullIcon } from './fullscreen.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
 import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, courtOfGame, clearOpenPlayStats } from '../draw.js';
+import { fill } from '../fill.js';
 
 const ROSTER_KEY = 'picobo.roster';
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // A first visit starts with an empty list; after that the last list stays.
@@ -322,7 +322,7 @@ export function mountDraw(root, { toScore } = {}) {
       roster = { names: [...roster.names, ...fresh] };
       if (play) for (const n of fresh) setPlay(joinOpenPlay(play, n, Math.random, mixGenders()));
       saveRoster(roster); render();
-      toast(esc(P.added.replace('{n}', fresh.length)));
+      toast(esc(fill(P.added, { n: fresh.length })));
     };
     root.querySelector('#paste-read').addEventListener('click', () => {
       const sessions = parseSignup(root.querySelector('#paste-text').value);
@@ -330,7 +330,7 @@ export function mountDraw(root, { toScore } = {}) {
       if (sessions.length === 0) { pick.innerHTML = `<p class="form-error">${esc(P.none)}</p>`; return; }
       if (sessions.length === 1) { addNames(sessions[0].names); return; }
       pick.innerHTML = `<p class="small"><b>${esc(P.pick)}</b></p><div class="paste-sessions">${sessions.map((s, i) =>
-        `<button class="btn" type="button" data-session="${i}">${esc(P.session.replace('{title}', s.title || P.untitled).replace('{n}', s.names.length))}</button>`).join('')}</div>`;
+        `<button class="btn" type="button" data-session="${i}">${esc(fill(P.session, { title: s.title || P.untitled, n: s.names.length }))}</button>`).join('')}</div>`;
       for (const b of pick.querySelectorAll('[data-session]')) b.addEventListener('click', () => addNames(sessions[Number(b.dataset.session)].names));
     });
     // 常用球團: load one (replacing the roster and any draw in progress), or save this roster.

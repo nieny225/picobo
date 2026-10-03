@@ -21,7 +21,7 @@ export const ME = {
   mostPartner: 'Most played with',
   toughest: 'Toughest opponent',
   wl: '{won}W {lost}L',
-  games: '{n} games',
+  games: '{n} {n|game|games}',
   vs: 'Won {won} lost {lost}',
   withScore: '{n} of these have scores (scoreboard). The rest are from the draw: win or loss only.',
   recent: 'Recent games',
@@ -36,13 +36,13 @@ export const ME = {
   cleared: 'Records cleared',
   // Record link: send today's games on this phone to the group; players who open it get them in My record.
   link: {
-    button: 'Send today\'s games to players',
-    short: 'Send to players',
+    button: 'Send today\'s games',
+    short: 'Send',
     hint: 'If someone else kept score or ran the draw, ask them to tap this and paste the link in the group. Open it and the games go into your record.',
     title: 'Today\'s games on Picobo',
     text: 'Here are today\'s games. Open the link to add them to "My record" on Picobo.',
     none: 'No games saved on this phone today.',
-    added: 'Added {n} games',
+    added: 'Added {n} {n|game|games}',
     dup: 'These games were already added',
   },
   // Home page card

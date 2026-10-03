@@ -2,8 +2,8 @@
 // game's score, the 抽籤 戰績 ranking, or a 戰報 (my week / month). No DOM; words come in as `labels`
 // (src/data/nav.js SCORE_SHARE) and the date as "YYYY-MM-DD".
 import { dateText } from './signup.js';
+import { fill } from './fill.js';
 
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 
 // A finished match from src/scoring.js: both teams' names, the scores, which
 // side won (0 = 甲, 1 = 乙) and one meta line, e.g.
@@ -50,7 +50,7 @@ export function reportCard(sum, name, range, now, labels) {
     const sun = new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + 6);
     period = `${md(mon)}–${md(sun)}`;
   } else if (range === 'month') period = fill(R.monthName, { m: now.getMonth() + 1 });
-  const [before, after] = R[range].split('{n}');
+  const [before, after] = R[range].split('{n}').map(part => fill(part, { n: sum.played }));
   const partner = sum.bestPartner ? { label: R.best, value: sum.bestPartner.name } : sum.mostPartner ? { label: R.most, value: sum.mostPartner.name } : null;
   return {
     meta: [name, period].join('・'),

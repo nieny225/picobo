@@ -51,9 +51,9 @@ export const SCORE_SHARE = {
   openReport: 'Share my stats to IG',
   // My stats report image. {n} games, {m} month, {won} / {lost} wins and losses.
   report: {
-    week: '{n} games this week',
-    month: '{n} games this month',
-    all: '{n} games in total',
+    week: '{n} {n|game|games} this week',
+    month: '{n} {n|game|games} this month',
+    all: '{n} {n|game|games} in total',
     monthName: 'Month {m}',
     allTime: 'All time',
     rate: 'Win rate',
@@ -93,7 +93,7 @@ export const SCORE_SHARE = {
   url: 'picobo.net',
   played: 'P',
   won: 'W',
-  people: '{n} players',
+  people: '{n} {n|player|players}',
   play: { doubles: 'Doubles', singles: 'Singles' },
   scoring: { sideout: 'Side-out', rally: 'Rally', fun: 'Quick' },
   file: 'picobo',
@@ -118,10 +118,10 @@ export const DRAW_PASTE = {
   placeholder: '9/5 (Sat) 5-7pm\n1. Amy & Ben\n2. Chris',
   read: 'Read names',
   pick: 'This list has several sessions. Which one?',
-  session: '{title} ({n} players)',
+  session: '{title} ({n} {n|player|players})',
   untitled: 'List',
   none: 'No names found. The list needs one numbered name per line, like "1. Name".',
-  added: 'Added {n} players',
+  added: 'Added {n} {n|player|players}',
 };
 
 // Saved groups: save a regular crowd's list and load it into Draw or Sign-up in one tap. {name} group name.
@@ -168,9 +168,9 @@ export const DRAW_SWAP = {
 
 // Random draw mixed doubles: when on, gender shows before names; tap to cycle (unset → ♂ → ♀).
 export const DRAW_MIX = {
-  toggle: 'Mixed',
+  toggle: 'Mixed doubles',
   // Small note next to the checkbox.
-  note: 'Then tap "?" on the list to set gender',
+  note: '(tap ? on a name to set gender)',
   hint: 'Tap ? to set gender (♂, ♀). Unset players can pair with anyone.',
   symbols: { '': '?', m: '♂︎', f: '♀︎' },
   labels: { '': 'Gender not set', m: 'Male', f: 'Female' },
@@ -199,7 +199,7 @@ export const OPEN_PLAY = {
   queueHint: ' (first four play next)',
   queueEmpty: 'Nobody in the queue',
   leaving: 'Leaving after this game:',
-  stats: 'Today\'s results',
+  stats: 'Results',
   cols: ['Player', 'P', 'W'],
   clear: 'Clear today\'s results',
   clearConfirm: 'Clear today\'s results? Everyone\'s games and wins reset to zero. The list, courts and queue stay. Games already saved to "My stats" are kept.',
@@ -264,7 +264,7 @@ export const RULE_PAGE = {
 export const EXTRA_PAGES = {
   compare: { summary: 'How the two scoring systems differ, in one table.' },
   faq: { title: 'Common misconceptions', en: '', summary: 'Who serves first in doubles, is a line ball in: the arguments you hear most on court.' },
-  glossary: { title: 'Glossary', en: '', summary: 'Dink, side-out, ATP and other terms explained.', intro: 'Players mix English and Chinese on court all the time. Here are the terms side by side.' },
+  glossary: { title: 'Glossary', en: '', summary: 'Dink, side-out, ATP and other terms explained.', intro: 'The words you will hear on court, in plain English.' },
 };
 
 export const FORMATS_PAGE = {
@@ -304,8 +304,8 @@ export const SCORE_TEXT = {
   switchSides: 'Halfway. Switch ends; the server stays the same.',
   switched: 'Ends switched',
   won: '{team} wins 🎉 {a}-{b}',
-  rallyWon: '{names} won the rally',
-  undo: 'Undo last rally',
+  rallyWon: '{names} won',
+  undo: 'Undo',
   again: 'Play again',
   reset: 'Reset',
 };
@@ -317,7 +317,7 @@ export const DRAW_TEXT = {
   title: 'Draw & rotation',
   intro: 'Enter today\'s players, then pick how to split them.',
   roster: 'Today\'s players',
-  people: '{n} players',
+  people: '{n} {n|player|players}',
   remove: 'Remove {name}',
   namePlaceholder: 'Enter a name',
   add: 'Add',
@@ -343,13 +343,15 @@ export const DRAW_TEXT = {
 
 // Tabs (top and phone bottom bar), footer, court diagram labels and a few odd bits.
 export const APP_TEXT = {
+  // 同一隊兩個人名字之間。
+  and: ' & ',
   // 頂部的站名和瀏覽器分頁標題（英文版不放中文名）。
   brand: 'Picobo',
   tabsLabel: 'Main menu',
   tabs: { home: 'Home', rules: 'Rules', score: 'Score', draw: 'Draw', venues: 'Meetup' },
   footer: 'Official rules follow the {rulebook}. Fun formats vary by club; agree on them before you play.',
   moreDetail: 'More details',
-  people: '{n} players',
+  people: '{n} {n|player|players}',
   court: { zone: 'Kitchen (non-volley zone)', zoneShort: 'Kitchen', alt: 'Pickleball court diagram' },
   standing: '{rank}. {team}  {won}W {lost}L {diff}',
   division: '[{name}]',

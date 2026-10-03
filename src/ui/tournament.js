@@ -3,6 +3,7 @@ import { PICOBOWL as E, MANAGE as T } from '../data/event.js';
 import { createTournament, recordScore, standings, readyMatches } from '../tournament.js';
 import { esc } from './scenes.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
+import { fill } from '../fill.js';
 
 // Organizer screen (#picobowl/manage): team entry, then courts, scores,
 // pool tables and playoffs. Everything lives in this phone's localStorage.
@@ -14,7 +15,6 @@ export function saveManage(data) {
   try { localStorage.setItem(KEY, JSON.stringify(data)); } catch { /* storage unavailable: this visit only */ }
 }
 
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 const poolName = p => String.fromCharCode(65 + p);
 const divOf = id => E.divisions.find(d => d.id === id);
 

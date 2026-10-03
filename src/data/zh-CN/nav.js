@@ -343,6 +343,8 @@ export const DRAW_TEXT = {
 
 // 页签（顶部和手机底部）、页脚、球场图上的字，和几个零散的小字。
 export const APP_TEXT = {
+  // 同一隊兩個人名字之間。
+  and: '・',
   // 頂部的站名和瀏覽器分頁標題（英文版不放中文名）。
   brand: 'Picobo 痞克柏',
   tabsLabel: '主菜单',

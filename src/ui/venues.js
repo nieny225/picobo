@@ -4,10 +4,10 @@ import { MEETUP } from '../data/meetup.js';
 import { SIGNUP } from '../data/signup.js';
 import { esc } from './scenes.js';
 import { shareButtonHtml, sharePage } from './share.js';
+import { fill } from '../fill.js';
 
 // A court's setting: one of indoor / sheltered / outdoor, or a list when it has both kinds.
 const settingsOf = v => [v.setting ?? []].flat().map(k => { if (!V.settings[k]) throw new Error(`venues: unknown setting ${k}`); return k; });
-const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => vars[k]);
 
 // A booking contact as a link: phone dials, LINE and web open in a new tab.
 function bookingHref(b) {
