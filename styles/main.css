@@ -293,6 +293,7 @@ button { cursor: pointer; }
 .share-btn svg { width: 20px; height: 20px; }
 .rule-top .share-btn { margin-left: auto; }
 .head-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; }
+.toast-reload { border: 0; background: none; color: inherit; font: inherit; font-weight: 900; text-decoration: underline; min-height: 44px; cursor: pointer; }
 .toast {
   position: fixed; z-index: 30; left: 50%; transform: translateX(-50%); bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   max-width: calc(100% - 32px); padding: 10px 14px; border: var(--bw) solid var(--ink); border-radius: var(--radius-sm);

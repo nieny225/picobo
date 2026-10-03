@@ -345,6 +345,8 @@ export const DRAW_TEXT = {
 
 // Tabs (top and phone bottom bar), footer, court diagram labels and a few odd bits.
 export const APP_TEXT = {
+  // 網路慢時有些檔案先用了舊版，新版到了就提示重新整理。
+  updated: 'New version ready. Tap to reload',
   // 同一隊兩個人名字之間。
   and: ' & ',
   // 頂部的站名和瀏覽器分頁標題（英文版不放中文名）。

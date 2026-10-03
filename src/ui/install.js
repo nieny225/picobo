@@ -1,7 +1,7 @@
 import { HOME } from '../data/home.js';
 import { esc } from './scenes.js';
-import { SHARE } from '../data/nav.js';
-import { sharePage } from './share.js';
+import { SHARE, APP_TEXT } from '../data/nav.js';
+import { sharePage, toast } from './share.js';
 
 // Install the app: a button in the top bar.
 // Chrome, Edge and Android hand us an install prompt (beforeinstallprompt)
@@ -80,4 +80,13 @@ export function mountInstallButton(btn) {
 export function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) return;
   navigator.serviceWorker.register('sw.js').catch(() => { /* not available here */ });
+  // Some files came from the cache because the network was slow, and a newer
+  // version has since arrived: offer a reload so the page is all one version.
+  let offered = false;
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data?.type !== 'picobo-updated' || offered) return;
+    offered = true;
+    toast(`<button type="button" class="toast-reload">${esc(APP_TEXT.updated)}</button>`, 10000);
+    document.querySelector('.toast-reload')?.addEventListener('click', () => location.reload());
+  });
 }

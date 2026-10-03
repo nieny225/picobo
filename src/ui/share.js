@@ -9,7 +9,7 @@ export const shareButtonHtml = () =>
   `<button class="share-btn" type="button" aria-label="${esc(SHARE.aria)}">${shareIcon}<span class="sr-only">${esc(SHARE.label)}</span></button>`;
 
 let toastTimer = 0;
-export function toast(html) {
+export function toast(html, ms = 4000) {
   let el = document.querySelector('.toast');
   if (!el) {
     el = document.createElement('div');
@@ -20,7 +20,7 @@ export function toast(html) {
   el.innerHTML = html;
   el.hidden = false;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.hidden = true; }, 4000);
+  toastTimer = setTimeout(() => { el.hidden = true; }, ms);
 }
 
 // Plain text (a sign-up list) through the share sheet, else to the clipboard.

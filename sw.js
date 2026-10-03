@@ -2,7 +2,7 @@
 // Network first, so every visit online gets the latest files; the cache is the
 // fallback when the network is gone or too slow. Every file the page needs is
 // listed in FILES (tests/sw.test.js checks the list against src/ and styles/).
-const CACHE = 'picobo-v8';
+const CACHE = 'picobo-v9';
 const FILES = [
   './',
   'index.html',
@@ -128,6 +128,15 @@ async function fromNetworkElseCache(req) {
   const cached = await cache.match(req, { ignoreSearch: true })
     ?? (req.mode === 'navigate' ? await cache.match('index.html') : undefined);
   if (!cached) return network;
-  const timeout = new Promise(resolve => setTimeout(() => resolve(cached), TIMEOUT_MS));
+  // Slow signal: after TIMEOUT_MS the cached copy is served. That copy can be
+  // from the last deploy while other files of the page come fresh, so when the
+  // network answer lands later with something new, tell the page to offer a reload.
+  let timedOut = false;
+  const timeout = new Promise(resolve => setTimeout(() => { timedOut = true; resolve(cached); }, TIMEOUT_MS));
+  network.then(async res => {
+    if (!timedOut || !res.ok) return;
+    const [a, b] = await Promise.all([res.clone().text(), cached.clone().text()]);
+    if (a !== b) for (const c of await self.clients.matchAll()) c.postMessage({ type: 'picobo-updated' });
+  }).catch(() => { /* offline: the cached copy is all there is */ });
   return Promise.race([network.catch(() => cached), timeout]);
 }
