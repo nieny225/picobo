@@ -57,7 +57,7 @@ const draw = mountDraw(document.getElementById('view-draw'), {
 });
 const event = mountEvent(document.getElementById('view-picobowl'));
 const meetup = mountMeetup(document.getElementById('view-meetup'));
-mountVenues(document.getElementById('view-venues'));
+const venues = mountVenues(document.getElementById('view-venues'));
 const signup = mountSignup(document.getElementById('view-signup'));
 const me = mountMe(document.getElementById('view-me'));
 mountMeButton(document.getElementById('me-btn'));
@@ -94,6 +94,7 @@ function show() {
   // 揪團 reads its own query: a shared card (?s=) or a court to start from.
   if (route === 'meetup') meetup.show(location.hash.split('?')[1] ?? '');
   if (route === 'signup') signup.show(location.hash.split('?')[1] ?? '');
+  if (route === 'venues') venues.show(sub);
   if (route === 'me') me.show();
   if (route === 'home') home.refresh();
   // #score?play=…&scoring=… from a rule page: preset the mode, then drop the query.

@@ -3,7 +3,8 @@ import { mapUrl } from '../meetup.js';
 import { MEETUP } from '../data/meetup.js';
 import { SIGNUP } from '../data/signup.js';
 import { esc } from './scenes.js';
-import { shareButtonHtml, sharePage } from './share.js';
+import { shareButtonHtml, sharePage, shareIcon } from './share.js';
+import { SHARE } from '../data/nav.js';
 import { fill } from '../fill.js';
 import { SETTINGS } from '../data/settings.js';
 import { matchVenue, sortVenues, activeCount, PRICE_BANDS, OPERATORS, SORTS, COURT_STEPS } from '../venues.js';
@@ -23,7 +24,7 @@ function bookingHref(b) {
 function venueCard(v) {
   const link = (href, label, cls = 'btn') => `<a class="${cls}" href="${esc(href)}"${href.startsWith('#') || href.startsWith('tel:') ? '' : ' target="_blank" rel="noopener"'}>${esc(label)}</a>`;
   return `<article class="card venue" id="venue-${esc(v.id)}">
-    <div class="card-head venue-head"><h3>${esc(v.name)}</h3><button type="button" class="fav-btn" data-fav="${esc(v.id)}" aria-pressed="${favs.has(v.id)}" aria-label="${esc(favs.has(v.id) ? V.unfav : V.fav)}">${heart(favs.has(v.id))}</button></div>
+    <div class="card-head venue-head"><h3>${esc(v.name)}</h3><button type="button" class="fav-btn venue-share" data-share-venue="${esc(v.id)}" aria-label="${esc(V.share)}">${shareIcon}</button><button type="button" class="fav-btn" data-fav="${esc(v.id)}" aria-pressed="${favs.has(v.id)}" aria-label="${esc(favs.has(v.id) ? V.unfav : V.fav)}">${heart(favs.has(v.id))}</button></div>
     <div class="format-meta">${settingsOf(v).map(k => `<span>${esc(V.settings[k])}</span>`).join('')}${v.courts ? `<span>${esc(fill(V.courts, { n: v.courts }))}</span>` : ''}</div>
     ${v.address ? `<a class="venue-address" href="${esc(mapUrl({ place: v.name, address: v.address }))}" target="_blank" rel="noopener" aria-label="${esc(`${V.map}：${v.address}`)}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>${esc(v.address)}</span></a>` : ''}
     <dl class="event-facts">
@@ -145,24 +146,37 @@ function listHtml(f) {
     ${unlisted}`;
 }
 
-// Courts directory (#venues), grouped by region in data order.
+// Courts directory (#venues), grouped by region in data order. #venues/<id>
+// is one court's own page (the link its share icon sends): just that card,
+// whatever the filters, with a way back to the whole list.
 export function mountVenues(root) {
   const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(V.intro)}</p><p class="muted small">${esc(V.disclaimer)}</p></div>`;
-  if (VENUES.length === 0) { root.innerHTML = `${head}<article class="card"><p>${esc(V.empty)}</p></article>`; return; }
+  if (VENUES.length === 0) { root.innerHTML = `${head}<article class="card"><p>${esc(V.empty)}</p></article>`; return { show() {} }; }
   const f = loadFilter();
-  root.innerHTML = `${head}${barHtml(f)}<div class="venue-list"></div>`;
+  root.innerHTML = `<div class="venue-all">${head}${barHtml(f)}<div class="venue-list"></div></div><div class="venue-one" hidden></div>`;
+  const all = root.querySelector('.venue-all'), one = root.querySelector('.venue-one');
   const list = root.querySelector('.venue-list');
-  const render = () => { list.innerHTML = listHtml(f); };
+  let current = null; // the venue shown on its own page, if any
+  const renderOne = () => {
+    one.innerHTML = `<nav class="rule-top"><a class="back" href="#venues">${esc(V.back)}</a></nav>${venueCard(current)}`;
+  };
+  const render = () => { if (current) renderOne(); else list.innerHTML = listHtml(f); };
   render();
-  root.querySelector('.share-btn').addEventListener('click', () => sharePage(V.title));
-  root.querySelector('#venue-q').addEventListener('input', e => { f.q = e.target.value.trim(); render(); });
-  list.addEventListener('click', e => {
+  root.addEventListener('click', e => {
+    if (e.target.closest('.share-btn')) { sharePage(V.title); return; }
+    const s = e.target.closest('[data-share-venue]');
+    if (s) {
+      const v = VENUES.find(x => x.id === s.dataset.shareVenue);
+      sharePage(v.name, `${SHARE.url}#venues/${encodeURIComponent(v.id)}`, fill(V.shareText, { name: v.name }));
+      return;
+    }
     const b = e.target.closest('[data-fav]');
     if (!b) return;
     if (favs.has(b.dataset.fav)) favs.delete(b.dataset.fav); else favs.add(b.dataset.fav);
     saveFavs(favs);
     render();
   });
+  root.querySelector('#venue-q').addEventListener('input', e => { f.q = e.target.value.trim(); render(); });
   const bar = root.querySelector('.venue-bar');
   const redraw = () => {
     saveFilter(f);
@@ -187,4 +201,14 @@ export function mountVenues(root) {
     else return;
     redraw();
   });
+  return {
+    show(sub) {
+      const v = VENUES.find(x => x.id === decodeURIComponent(sub || ''));
+      if (sub && !v) history.replaceState(null, '', '#venues');
+      current = v ?? null;
+      all.hidden = !!current;
+      one.hidden = !current;
+      render();
+    },
+  };
 }

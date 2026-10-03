@@ -151,6 +151,9 @@ export const VENUES_PAGE = {
   regionLabel: '区域',
   regions: [{ id: '', label: '全部' }, { id: '中区', label: '中' }, { id: '东区', label: '东' }, { id: '西区', label: '西' }, { id: '北区', label: '北' }, { id: '东北区', label: '东北' }],
   // 筛选：爱心钮、筛选钮（打开面板）、排序。
+  back: '全部场地',
+  share: '分享这个场地',
+  shareText: '{name}：在 Picobo 看怎么预约、怎么去',
   favOnly: '只看收藏',
   filter: '筛选',
   filterTitle: '筛选场地',

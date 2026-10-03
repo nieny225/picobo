@@ -4,8 +4,9 @@ import { esc } from './scenes.js';
 // A small share icon for the current page, top right on every tool. Uses the system share sheet
 // when there is one, else copies the link, else shows the link to copy by
 // hand. The link is always the public site plus the current hash.
+export const shareIcon = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
 export const shareButtonHtml = () =>
-  `<button class="share-btn" type="button" aria-label="${esc(SHARE.aria)}"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span class="sr-only">${esc(SHARE.label)}</span></button>`;
+  `<button class="share-btn" type="button" aria-label="${esc(SHARE.aria)}">${shareIcon}<span class="sr-only">${esc(SHARE.label)}</span></button>`;
 
 let toastTimer = 0;
 export function toast(html) {

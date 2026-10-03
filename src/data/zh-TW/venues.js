@@ -151,6 +151,9 @@ export const VENUES_PAGE = {
   regionLabel: '區域',
   regions: [{ id: '', label: '全部' }, { id: '中區', label: '中' }, { id: '東區', label: '東' }, { id: '西區', label: '西' }, { id: '北區', label: '北' }, { id: '東北區', label: '東北' }],
   // 篩選：愛心鈕、篩選鈕（打開面板）、排序。面板裡的選項同一排可以多選（或），不同排要同時符合（且）。
+  back: '全部場地',
+  share: '分享這個場地',
+  shareText: '{name}：在 Picobo 看怎麼預約、怎麼去',
   favOnly: '只看最愛',
   filter: '篩選',
   filterTitle: '篩選場地',

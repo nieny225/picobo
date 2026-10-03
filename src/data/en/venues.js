@@ -153,6 +153,9 @@ export const VENUES_PAGE = {
   regionLabel: 'Region',
   regions: [{ id: '', label: 'All' }, { id: 'Central', label: 'Central' }, { id: 'East', label: 'East' }, { id: 'West', label: 'West' }, { id: 'North', label: 'North' }, { id: 'North-East', label: 'NE' }],
   // Filters: heart toggle, Filter button (opens a sheet), sort.
+  back: 'All courts',
+  share: 'Share this court',
+  shareText: '{name}: how to book and get there, on Picobo',
   favOnly: 'Favourites only',
   filter: 'Filter',
   filterTitle: 'Filter courts',

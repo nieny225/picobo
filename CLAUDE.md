@@ -96,7 +96,7 @@ src/ui/install.js       top-bar install button (prompt or steps), an invite/shar
 src/ui/event.js         Pico Bowl tournament page + its home-page card
 src/ui/tournament.js    organizer screen at #picobowl/manage (local to one phone)
 src/ui/meetup.js        揪團: form, card preview, shared card (#meetup?s=…, shown only, never loaded)
-src/ui/venues.js        場地名錄 by region; bar (search, region, ♥, 篩選 sheet, sort); 發報名訊息 → #signup?venue=<id>
+src/ui/venues.js        場地名錄 by region; bar (search, region, ♥, 篩選 sheet, sort); #venues/<id> one court (card share icon); 發報名訊息 → #signup?venue=<id>
 src/ui/signup.js        報名訊息: sessions, names, optional cap → live preview, copy / share as text
 src/data/rules.js       rule copy + court scene definitions
 src/data/formats.js     fun formats + court scenes, grouped by purpose: 人多場地少 (國王球場, 輪轉賽, 快打短局),
