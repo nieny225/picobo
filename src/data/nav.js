@@ -48,6 +48,21 @@ export const SCORE_SETUP = {
 export const SCORE_SHARE = {
   open: '分享到 IG',
   openStats: '今天戰績分享到 IG',
+  openReport: '戰報分享到 IG',
+  // 我的戰績的戰報圖。{n} 場數、{m} 月份、{won}／{lost} 勝敗。
+  report: {
+    week: '這週打了 {n} 場',
+    month: '這個月打了 {n} 場',
+    all: '總共打了 {n} 場',
+    monthName: '{m} 月',
+    allTime: '全部',
+    rate: '勝率',
+    streak: '最長連勝',
+    best: '最佳拍檔',
+    most: '最常搭檔',
+    record: '戰績',
+    wl: '{won} 勝 {lost} 敗',
+  },
   // 今天戰績旁的小按鈕上的字（相機 icon 後面）。
   ig: 'IG',
   title: '分享到 IG',

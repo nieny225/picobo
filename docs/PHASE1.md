@@ -72,7 +72,7 @@ and give 1 and 2 cleaner names to count. 2 needs 1.
   range, now)` returning counts, rate, streaks, partners, opponents. Tested
   with fixed dates (week starts Monday, local time).
 
-## 2. 戰報圖 (weekly / monthly share picture)
+## 2. 戰報圖 (weekly / monthly share picture) — built 2026-10-03
 
 - A new kind in `src/ui/sharecard.js`: `'report'`. Same sheet (限動/貼文,
   拍照/選照片, 小中大 + drag, 分享/存圖).

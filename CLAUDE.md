@@ -62,7 +62,7 @@ src/signup.js           pure 報名訊息 text: 9/5 (Sat) 5-7pm, 📍 place, sho
                         parseSignup reads a pasted list back into sessions of names (抽籤 uses it)
 src/groups.js           pure 常用球團 list: save (same name replaces, max 20), remove, find by members
 src/record.js           pure 個人戰績本: game records (score / draw / koc), who is me, summary for a range
-src/sharecard.js        pure share-image content: a finished game's score card, the 抽籤 戰績 ranking
+src/sharecard.js        pure share-image content: a finished game's score card, the 抽籤 戰績 ranking, the 我的戰績 戰報
 src/meetup.js           pure 揪團卡 logic: check the form, chat summary line, .ics, map / LINE / WhatsApp links
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes
@@ -76,7 +76,7 @@ src/ui/fullscreen.js    full screen for one view at a time (scoreboard, draw): r
 src/ui/groups.js        常用球團 chips + save/delete sheet (picobo.groups), used by 抽籤 and 報名訊息
 src/ui/record.js        戰績 storage (picobo.games, picobo.me); recordGame / unrecordGame for scoreboard and draw
 src/ui/me.js            我的戰績 page (#me), its home card, the top-bar person icon
-src/ui/sharecard.js     share as picture: canvas card (B1 score / 戰績), own photo, IG sticker; share sheet or save
+src/ui/sharecard.js     share as picture: canvas card (B1 score / 戰績 / 戰報), own photo, IG sticker; share sheet or save
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
 src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
 src/ui/install.js       top-bar install button (prompt or steps), an invite/share icon once installed; registers the service worker

@@ -3,6 +3,8 @@ import { summary, namesSeen } from '../record.js';
 import { loadGames, saveGames, loadMe, saveMe } from './record.js';
 import { esc } from './scenes.js';
 import { toast } from './share.js';
+import { openShareSheet, CAMERA_ICON } from './sharecard.js';
+import { SCORE_SHARE } from '../data/nav.js';
 
 // 我的戰績 (#me): who "me" is, then this week / this month / all games of
 // theirs: counts, win rate, streaks, partners, the toughest opponent and the
@@ -90,11 +92,14 @@ export function mountMe(root) {
       return;
     }
     const s = summary(games, me, range);
-    root.innerHTML = `${head}
+    // 戰報: the numbers shown, as a picture for IG (same 「📷 IG」 as 抽籤's 戰績).
+    const ig = s.played ? `<button type="button" class="stats-share" data-report aria-label="${esc(SCORE_SHARE.openReport)}" title="${esc(SCORE_SHARE.openReport)}">${CAMERA_ICON}<span aria-hidden="true">${esc(SCORE_SHARE.ig)}</span></button>` : '';
+    root.innerHTML = `${head.replace('</h2></div>', `</h2>${ig}</div>`)}
       <p class="me-who-line">${esc(T.iAm)} <b>${esc(me.name)}</b>${me.aliases.length ? ` <span class="muted small">${esc(T.alsoKnown)} ${esc(me.aliases.join('、'))}</span>` : ''} <button type="button" class="me-link" data-change>${esc(T.change)}</button></p>
       ${statsHtml(s, range)}
       ${games.length ? `<p class="me-clear"><button type="button" class="me-link" data-clear>${esc(T.clear)}</button></p>` : ''}`;
     root.querySelector('[data-change]').addEventListener('click', () => { picking = true; render(); });
+    root.querySelector('[data-report]')?.addEventListener('click', () => openShareSheet('report', { summary: s, name: me.name, range }));
     for (const b of root.querySelectorAll('[data-range]')) b.addEventListener('click', () => { saveRange(b.dataset.range); render(); });
     root.querySelector('[data-clear]')?.addEventListener('click', () => {
       if (!confirm(T.clearConfirm)) return;

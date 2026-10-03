@@ -1,5 +1,5 @@
 import { SCORE_SHARE as T } from '../data/nav.js';
-import { scoreCard, statsCard } from '../sharecard.js';
+import { scoreCard, statsCard, reportCard } from '../sharecard.js';
 import { esc } from './scenes.js';
 import { toast } from './share.js';
 
@@ -185,6 +185,36 @@ function statsPanel(ctx, card, x, y, w, ph, size) {
   statsGrid(ctx, card.rows, x + 30, y + 140, w - 60, size);
 }
 
+// 戰報 panel: name and dates with the site address, the big headline with
+// the count on yellow, then four tiles in two rows.
+const REPORT_H = 640;
+function reportPanel(ctx, card, x, y, w) {
+  box(ctx, x, y, w, REPORT_H, { fill: C.bg });
+  const bw = brandSmall(ctx, x + w - 48, y + 78, 44);
+  ctx.fillStyle = C.ink; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  fitText(ctx, card.meta, x + 48, y + 80, w - 96 - bw - 30, 46, 900, CJK);
+  // Headline: words, the number on yellow, words.
+  const { before, n, after } = card.headline;
+  const hy = y + 200;
+  ctx.font = `900 84px ${CJK}`; const wb = ctx.measureText(before).width;
+  ctx.font = `700 96px ${NUM}`; const wn = ctx.measureText(n).width;
+  let hx = x + 48;
+  ctx.font = `900 84px ${CJK}`; ctx.fillText(before, hx, hy); hx += wb + 12;
+  ctx.fillStyle = C.mark; ctx.fillRect(hx - 12, hy - 62, wn + 24, 124);
+  ctx.fillStyle = C.ink; ctx.font = `700 96px ${NUM}`; ctx.fillText(n, hx, hy + 4); hx += wn + 12;
+  ctx.font = `900 84px ${CJK}`; ctx.fillText(after, hx, hy);
+  // Tiles.
+  const gap = 24, tw = (w - 96 - gap) / 2, th = 150, ty = y + 300;
+  card.tiles.forEach((t, i) => {
+    const tx = x + 48 + (i % 2) * (tw + gap), yy = ty + Math.floor(i / 2) * (th + gap);
+    box(ctx, tx, yy, tw, th, { fill: C.white, r: 18, border: 6, shadow: 0 });
+    ctx.fillStyle = C.muted; ctx.textAlign = 'left'; ctx.font = `700 34px ${CJK}`; ctx.fillText(t.label, tx + 24, yy + 40);
+    ctx.fillStyle = C.ink;
+    const numeric = /^[\d%–-]+$/.test(t.value);
+    fitText(ctx, t.value, tx + 24, yy + 102, tw - 48, numeric ? 64 : 56, numeric ? 700 : 900, numeric ? NUM : CJK);
+  });
+}
+
 // The part laid over the photo (the score band, or the 戰績 panel): its box
 // at full size, shadow included, and how to draw it there.
 function overlayOf(kind, h, card) {
@@ -192,6 +222,10 @@ function overlayOf(kind, h, card) {
   if (kind === 'score') {
     const bh = 552, y = h - bh - 54;
     return { x, y, w: w + 18, h: bh + 18, draw: ctx => scoreBand(ctx, h, card) };
+  }
+  if (kind === 'report') {
+    const y = h - REPORT_H - 54;
+    return { x, y, w: w + 18, h: REPORT_H + 18, draw: ctx => reportPanel(ctx, card, x, y, w) };
   }
   const size = gridSize(card.rows.length, h * 0.66 - 180, h > 1500 ? 102 : 78);
   const ph = 140 + size.height + 36, y = h - ph - 54;
@@ -272,7 +306,11 @@ function download(blob, name) {
 // The share sheet itself, shared by the scoreboard (kind 'score', data: the
 // finished match) and the draw (kind 'stats', data: the counts).
 export async function openShareSheet(kind, data) {
-  const card = kind === 'score' ? scoreCard(data, today(), T) : statsCard(data, today(), T);
+  // data: the finished match (score), the 抽籤 counts (stats), or
+  // { summary, name, range } from 我的戰績 (report).
+  const card = kind === 'score' ? scoreCard(data, today(), T)
+    : kind === 'report' ? reportCard(data.summary, data.name, data.range, new Date(), T)
+      : statsCard(data, today(), T);
   let format = 'story', mode = 'image', photo = null, photoUrl = '';
   // Size and position of the score band / 戰績 panel. Until the player picks
   // a size, a photo makes it 小 so the photo shows.
