@@ -25,5 +25,7 @@ export const HOME = {
     { route: 'draw', title: '抽籤輪轉', en: 'Draw', desc: '分組、輪轉賽、國王球場，人多也不亂。' },
     { route: 'meetup', title: '揪團', en: 'Find Players', desc: '填時間地點缺幾人，一張卡丟到群組。' },
     { route: 'venues', title: '找場地', en: 'Courts', desc: '哪裡能打、怎麼預約、怎麼去，還能快速揪團。' },
+    // 合作表單（Google 表單，不顯示站長 email）。新加坡的人也會來，所以中英並列。
+    { href: 'https://forms.gle/X8Rsieeez7oDLZMFA', title: '找合作', en: 'Partner with us', desc: 'Venues, coaches, brands, events・場地、教練、品牌、活動' },
   ],
 };

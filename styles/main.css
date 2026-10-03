@@ -177,6 +177,10 @@ button { cursor: pointer; }
 .home-entry:not(.lead):nth-child(2n):last-child { grid-column: 1 / -1; }
 .home-entry.lead { grid-column: 1 / -1; background: var(--mark); color: var(--mark-fg); }
 .home-entry.lead span { color: var(--mark-fg); }
+.home-partner { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; margin-top: 14px; padding: 12px 16px; min-height: 44px; border: 2px dashed var(--ink); border-radius: var(--radius); color: var(--fg); text-decoration: none; }
+.home-partner b { font-weight: 900; }
+.home-partner span { color: var(--muted); font-size: 0.85rem; grid-column: 1; }
+.home-partner .home-partner-go { grid-column: 2; grid-row: 1 / span 2; font-size: 1.3rem; color: var(--fg); }
 .home-entry:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--shadow-ink); }
 
 /* Page column */
