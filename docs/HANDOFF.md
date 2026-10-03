@@ -448,7 +448,8 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   score or runs 抽籤, so the games land on their phone. A, built: 抽籤's
   top-right share button opens one sheet with two choices (user: one share
   button, not two), 「把戰績傳給球友」 first, then 「交給下一位管場」 (the
-  hand-over link); 「把今天的比賽傳給球友」 on 我的戰績
+  hand-over link); the same 「🔗 傳給球友」 also sits next to 「📷 IG」 under
+  今天戰績 (user: the top button may be scrolled away); 「把今天的比賽傳給球友」 on 我的戰績
   (covers scoreboard games too), share today's games on this phone as
   `picobo.net/#me?s=…` (handoff kind 'games', packGames in src/record.js).
   Opening it merges them into picobo.games by game id (mergeGames; opening

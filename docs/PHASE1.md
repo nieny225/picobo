@@ -83,7 +83,7 @@ and give 1 and 2 cleaner names to count. 2 needs 1.
 ## 戰績連結 — A built 2026-10-03, B later
 
 Someone else usually keeps score, so games land on their phone. A: a link
-with today's games (first choice in 抽籤's top-right share sheet, 「把今天的比賽傳給球友」
+with today's games (first choice in 抽籤's top-right share sheet and 「🔗 傳給球友」 next to 📷 IG under 今天戰績, 「把今天的比賽傳給球友」
 on 我的戰績), opened by each player once; merged by game id. B: accounts +
 cloud database with the future login / profile; uploads the games already on
 phones.
