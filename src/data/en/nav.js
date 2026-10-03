@@ -88,7 +88,7 @@ export const SCORE_SHARE = {
   photoFailed: 'Couldn\'t read this photo. Try another one.',
   preview: 'Share image preview',
   brand: 'picobo.',
-  brandZh: '痞克柏',
+  brandZh: '',
   // Every image carries the URL so people know where to find it.
   url: 'picobo.net',
   played: 'P',
@@ -343,6 +343,8 @@ export const DRAW_TEXT = {
 
 // Tabs (top and phone bottom bar), footer, court diagram labels and a few odd bits.
 export const APP_TEXT = {
+  // 頂部的站名和瀏覽器分頁標題（英文版不放中文名）。
+  brand: 'Picobo',
   tabsLabel: 'Main menu',
   tabs: { home: 'Home', rules: 'Rules', score: 'Score', draw: 'Draw', venues: 'Meetup' },
   footer: 'Official rules follow the {rulebook}. Fun formats vary by club; agree on them before you play.',

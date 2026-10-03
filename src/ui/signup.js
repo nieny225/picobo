@@ -48,7 +48,8 @@ export function mountSignup(root) {
         names: state.names.split('\n'), cap, blanks: Number(state.blanks),
       }, T.labels);
       err.hidden = true;
-      save(state);
+      // The names are not kept: each sign-up starts a fresh list.
+      save({ ...state, names: '' });
     } catch (x) {
       text = '';
       err.textContent = T.errors[x.message.replace('signup: ', '')] ?? x.message;
@@ -107,7 +108,7 @@ export function mountSignup(root) {
       const saved = load();
       state = {
         sessions: saved?.sessions?.length ? saved.sessions : [{ place: '', date: today(), start: '17:00', end: '19:00' }],
-        names: saved?.names ?? '', cap: saved?.cap ?? '', blanks: saved?.blanks ?? 3,
+        names: '', cap: saved?.cap ?? '', blanks: saved?.blanks ?? 3,
       };
       // Old dates roll forward to today, keeping the gap between sessions.
       if (state.sessions[0].date < today()) {

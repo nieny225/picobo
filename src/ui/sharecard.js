@@ -68,6 +68,7 @@ function brandTag(ctx) {
   box(ctx, 66, 72, w, 186, { fill: C.mark, r: 0, border: 9, shadow: 24 });
   ctx.fillStyle = C.ink; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   ctx.fillText(T.brand, 102, 168);
+  if (!T.brandZh) return; // English pictures carry the Latin name only.
   ctx.font = `900 54px ${CJK}`;
   const zw = ctx.measureText(T.brandZh).width + 48;
   ctx.fillStyle = C.ink; rect(ctx, 66 + w + 48, 108, zw, 96, 12); ctx.fill();

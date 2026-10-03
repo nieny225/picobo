@@ -344,6 +344,8 @@ export const DRAW_TEXT = {
 
 // 頁籤（頂部和手機底部）、頁尾、球場圖上的字，和幾個零散的小字。
 export const APP_TEXT = {
+  // 頂部的站名和瀏覽器分頁標題（英文版不放中文名）。
+  brand: 'Picobo 痞克柏',
   tabsLabel: '主選單',
   tabs: { home: '首頁', rules: '規則', score: '計分', draw: '抽籤', venues: '揪團' },
   footer: '正統規則依據 {rulebook}。趣味玩法各球場做法不同，開打前先講好。',

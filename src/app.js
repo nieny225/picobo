@@ -62,6 +62,8 @@ const signup = mountSignup(document.getElementById('view-signup'));
 const me = mountMe(document.getElementById('view-me'));
 mountMeButton(document.getElementById('me-btn'));
 document.getElementById('footer').textContent = APP_TEXT.footer.replace('{rulebook}', RULEBOOK);
+document.querySelector('.brand h1').textContent = APP_TEXT.brand;
+document.title = APP_TEXT.brand;
 // Tab labels in the page's language (index.html carries zh-TW for no-JS).
 for (const nav of document.querySelectorAll('.tabs, .bottom-nav')) nav.setAttribute('aria-label', APP_TEXT.tabsLabel);
 for (const t of document.querySelectorAll('.tab[data-route]')) {
