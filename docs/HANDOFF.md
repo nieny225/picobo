@@ -442,6 +442,8 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   tested; reportPanel in src/ui/sharecard.js). It shares the range on screen:
   name・dates (week Mon–Sun, 「10 月」, 全部), 「這週打了 14 場」 with the
   count on yellow, tiles 勝率／最長連勝／最佳拍檔 (else 最常搭檔)／戰績.
+  最難纏的對手 (user: it's a compliment) adds a full-width third row when
+  there is one (≥3 games); the panel grows to fit.
   Photo, 限動／貼文, 小中大 and drag work as for the other pictures.
   Phase 1 is done except 固定場次範本 (skipped).
 - 抽籤 今天戰績 has 「清除今天戰績」 under the table (asks first): counts go to

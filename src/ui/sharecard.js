@@ -186,10 +186,12 @@ function statsPanel(ctx, card, x, y, w, ph, size) {
 }
 
 // 戰報 panel: name and dates with the site address, the big headline with
-// the count on yellow, then four tiles in two rows.
-const REPORT_H = 640;
+// the count on yellow, then four tiles in two rows (and 最難纏的對手 across
+// a third row when there is one).
+const TILE_H = 150, TILE_GAP = 24;
+const reportHeight = card => 640 + (card.tiles.some(t => t.wide) ? TILE_H + TILE_GAP : 0);
 function reportPanel(ctx, card, x, y, w) {
-  box(ctx, x, y, w, REPORT_H, { fill: C.bg });
+  box(ctx, x, y, w, reportHeight(card), { fill: C.bg });
   const bw = brandSmall(ctx, x + w - 48, y + 78, 44);
   ctx.fillStyle = C.ink; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
   fitText(ctx, card.meta, x + 48, y + 80, w - 96 - bw - 30, 46, 900, CJK);
@@ -204,9 +206,10 @@ function reportPanel(ctx, card, x, y, w) {
   ctx.fillStyle = C.ink; ctx.font = `700 96px ${NUM}`; ctx.fillText(n, hx, hy + 4); hx += wn + 12;
   ctx.font = `900 84px ${CJK}`; ctx.fillText(after, hx, hy);
   // Tiles.
-  const gap = 24, tw = (w - 96 - gap) / 2, th = 150, ty = y + 300;
+  const gap = TILE_GAP, half = (w - 96 - gap) / 2, th = TILE_H, ty = y + 300;
   card.tiles.forEach((t, i) => {
-    const tx = x + 48 + (i % 2) * (tw + gap), yy = ty + Math.floor(i / 2) * (th + gap);
+    const tw = t.wide ? w - 96 : half;
+    const tx = x + 48 + (t.wide ? 0 : (i % 2) * (half + gap)), yy = ty + Math.floor(i / 2) * (th + gap);
     box(ctx, tx, yy, tw, th, { fill: C.white, r: 18, border: 6, shadow: 0 });
     ctx.fillStyle = C.muted; ctx.textAlign = 'left'; ctx.font = `700 34px ${CJK}`; ctx.fillText(t.label, tx + 24, yy + 40);
     ctx.fillStyle = C.ink;
@@ -224,8 +227,8 @@ function overlayOf(kind, h, card) {
     return { x, y, w: w + 18, h: bh + 18, draw: ctx => scoreBand(ctx, h, card) };
   }
   if (kind === 'report') {
-    const y = h - REPORT_H - 54;
-    return { x, y, w: w + 18, h: REPORT_H + 18, draw: ctx => reportPanel(ctx, card, x, y, w) };
+    const ph = reportHeight(card), y = h - ph - 54;
+    return { x, y, w: w + 18, h: ph + 18, draw: ctx => reportPanel(ctx, card, x, y, w) };
   }
   const size = gridSize(card.rows.length, h * 0.66 - 180, h > 1500 ? 102 : 78);
   const ph = 140 + size.height + 36, y = h - ph - 54;

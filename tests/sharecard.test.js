@@ -38,6 +38,8 @@ test('戰報: headline split around the count, dates for the range, four tiles',
   assert.equal(reportCard(sum, 'Max', 'all', fri, SCORE_SHARE).headline.before, '總共打了 ');
   const noBest = reportCard({ ...sum, bestPartner: null }, 'Max', 'week', fri, SCORE_SHARE);
   assert.deepEqual(noBest.tiles[2], { label: '最常搭檔', value: 'Ben' });
+  const rival = reportCard({ ...sum, toughest: { name: 'Tom', played: 7, won: 5 } }, 'Max', 'week', fri, SCORE_SHARE);
+  assert.deepEqual(rival.tiles.at(-1), { label: '最難纏的對手', value: 'Tom', wide: true });
   assert.throws(() => reportCard({ ...sum, played: 0 }, 'Max', 'week', fri, SCORE_SHARE), /no games/);
   assert.throws(() => reportCard(sum, 'Max', 'year', fri, SCORE_SHARE), /range/);
 });

@@ -60,6 +60,8 @@ export function reportCard(sum, name, range, now, labels) {
       { label: R.streak, value: String(sum.longestStreak) },
       partner ?? { label: R.best, value: '–' },
       { label: R.record, value: fill(R.wl, { won: sum.won, lost: sum.lost }) },
+      // 最難纏的對手 is a compliment: a full-width row when there is one.
+      ...(sum.toughest ? [{ label: R.toughest, value: sum.toughest.name, wide: true }] : []),
     ],
   };
 }

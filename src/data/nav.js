@@ -61,6 +61,7 @@ export const SCORE_SHARE = {
     best: '最佳拍檔',
     most: '最常搭檔',
     record: '戰績',
+    toughest: '最難纏的對手',
     wl: '{won} 勝 {lost} 敗',
   },
   // 今天戰績旁的小按鈕上的字（相機 icon 後面）。
