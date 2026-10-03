@@ -446,7 +446,7 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   there is one (≥3 games); the panel grows to fit.
   Photo, 限動／貼文, 小中大 and drag work as for the other pictures.
   Phase 1 is done except 固定場次範本 (skipped).
-- 裝備 section (after 共通規則): 球拍規定 (#rules/paddle-rules, 2026 rulebook 3.D /
+- 裝備 section (after 球場與線, user moved it up): 球拍規定 (#rules/paddle-rules, 2026 rulebook 3.D /
   18.A, spin test from 2026-10-01) and 怎麼選球拍 (#rules/paddle-choose: tap a
   past sport → shape / weight / grip / core; general guide below). Sources in
   the rules.js comment; squash / padel left out (no solid source).
