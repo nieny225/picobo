@@ -135,6 +135,8 @@ export const VENUES = [
 
 export const VENUES_PAGE = {
   title: '揪團・找場地',
+  // 目前名錄涵蓋的地區（標題下的小標）。
+  area: '新加坡',
   en: 'Courts',
   disclaimer: '價格和時間整理自場地官網和網路整理（2026 年 10 月），可能會變，預約前以場地公告為準。',
   empty: '場地名錄整理中，很快會放上第一批合作場地。',

@@ -730,6 +730,8 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 .chrome-hidden .venue-bar { top: 0; }
 .venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
 .venue-list { display: grid; gap: 14px; }
+.venue-area { display: inline-flex; align-items: center; gap: 4px; justify-self: start; margin: 4px 0 0; padding: 2px 10px 2px 6px; border: 2px solid var(--ink); border-radius: 999px; font-weight: 700; font-size: 0.9rem; }
+.venue-area svg { width: 16px; height: 16px; color: var(--accent); }
 /* Booking: icon buttons (phone, WhatsApp, LINE) and a short 預約 for the web, then 發報名訊息. */
 .book-btn { gap: 6px; justify-content: center; padding: 8px 12px; }
 .book-btn svg { width: 22px; height: 22px; flex: none; }

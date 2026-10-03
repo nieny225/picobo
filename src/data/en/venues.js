@@ -137,6 +137,8 @@ export const VENUES = [
 
 export const VENUES_PAGE = {
   title: 'Meetup & courts',
+  // 目前名錄涵蓋的地區（標題下的小標）。
+  area: 'Singapore',
   en: 'Courts',
   disclaimer: 'Prices and hours are compiled from venue websites and online round-ups (October 2026) and may change. Check the venue\'s own notice before booking.',
   empty: 'The venue directory is on its way; the first partner venues are coming soon.',

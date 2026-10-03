@@ -135,6 +135,8 @@ export const VENUES = [
 
 export const VENUES_PAGE = {
   title: '约球・找场地',
+  // 目前名錄涵蓋的地區（標題下的小標）。
+  area: '新加坡',
   en: 'Courts',
   disclaimer: '价格和时间整理自场地官网和网络资料（2026 年 10 月），可能会变，预约前以场地公告为准。',
   empty: '场地名录整理中，很快会放上第一批合作场地。',
