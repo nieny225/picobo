@@ -136,7 +136,6 @@ export const VENUES = [
 export const VENUES_PAGE = {
   title: '约球・找场地',
   en: 'Courts',
-  intro: '新加坡可以打匹克球的场地，怎么预约、怎么去。',
   disclaimer: '价格和时间整理自场地官网和网络资料（2026 年 10 月），可能会变，预约前以场地公告为准。',
   empty: '场地名录整理中，很快会放上第一批合作场地。',
   settings: { indoor: '室内', sheltered: '有顶棚', outdoor: '户外' },

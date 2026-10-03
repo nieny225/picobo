@@ -264,7 +264,7 @@ export const RULE_PAGE = {
 export const EXTRA_PAGES = {
   compare: { summary: '兩種計分方式差在哪，一張表看完。' },
   faq: { title: '常見誤解', en: 'Common Misconceptions', summary: '雙打誰先發、碰線算不算，球場上最常吵的幾題。' },
-  glossary: { title: '術語表', en: 'Glossary', summary: 'dink、side-out、ATP 這些詞的中文對照。', intro: '球場上中英文混著講很正常，這裡對照一下。' },
+  glossary: { title: '術語表', en: 'Glossary', summary: 'dink、side-out、ATP 這些詞的中文對照。' },
 };
 
 export const FORMATS_PAGE = {
@@ -282,7 +282,6 @@ export const FORMATS_PAGE = {
 // 用預設名字的比賽不記進我的戰績）。{n}、{team}、{name}、{pos}、{names}、{a}、{b} 會換掉。
 export const SCORE_TEXT = {
   title: '計分板',
-  intro: '按誰贏了這一球，站位、換發、喊分自動算好。',
   teams: { A: '甲隊', B: '乙隊' },
   placeholders: { A: ['甲1', '甲2'], B: ['乙1', '乙2'] },
   player: '球員 {n}',
@@ -317,7 +316,6 @@ export const DRAW_TEXT = {
   // 場上先發球那一隊名字下的小標籤。
   servesFirst: '先發球',
   title: '抽籤輪轉',
-  intro: '先輸入今天的球友，再選要怎麼分。',
   roster: '今天的球友',
   people: '{n} 人',
   remove: '移除 {name}',

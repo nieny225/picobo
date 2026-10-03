@@ -1,7 +1,6 @@
 // 報名訊息（訂完場後貼到群組的接龍名單）。訊息本身用簡單英文，介面用中文。
 export const SIGNUP = {
   title: '報名訊息',
-  intro: '訂好場之後，填時間和已經報名的人，複製貼到 IG、WhatsApp 或 LINE，大家照順序把名字加上去。',
   session: '第 {n} 場',
   addSession: '再加一場',
   removeSession: '刪除這一場',

@@ -1,7 +1,6 @@
 // 报名信息（订完场后贴到群里的接龙名单）。消息本身用简单英文，界面用中文。
 export const SIGNUP = {
   title: '报名接龙',
-  intro: '订好场之后，填时间和已经报名的人，复制贴到 IG、WhatsApp 或 LINE，大家按顺序把名字加上去。',
   session: '第 {n} 场',
   addSession: '再加一场',
   removeSession: '删除这一场',

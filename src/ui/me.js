@@ -86,7 +86,7 @@ export function mountMe(root) {
   const render = () => {
     const games = loadGames(), me = loadMe();
     const range = loadRange();
-    const head = `<div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2></div><p class="intro">${esc(T.intro)}</p></div>`;
+    const head = `<div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2></div></div>`;
     if (!me || picking) {
       picked = me ? [me.name, ...me.aliases] : [];
       root.innerHTML = `${head}${pickerHtml(games, me)}`;

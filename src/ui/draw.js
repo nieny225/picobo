@@ -175,7 +175,7 @@ export function mountDraw(root, { toScore } = {}) {
   };
 
   const html = () => `
-    <div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${handoffButtonHtml()}</div><p class="intro">${esc(T.intro)}</p></div>
+    <div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${handoffButtonHtml()}</div></div>
     <div class="card roster-card">
       <div class="card-head"><h3>${esc(T.roster)} <span class="muted small num">${esc(fill(T.people, { n: roster.names.length }))}</span></h3></div>
       ${(() => { const groups = loadGroups(); return groups.length || roster.names.length ? groupChipsHtml(groups, groupOf(groups, roster.names)?.name, roster.names.length > 0) : ''; })()}

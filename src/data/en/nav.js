@@ -263,7 +263,7 @@ export const RULE_PAGE = {
 export const EXTRA_PAGES = {
   compare: { summary: 'How the two scoring systems differ, in one table.' },
   faq: { title: 'Common misconceptions', en: '', summary: 'Who serves first in doubles, is a line ball in: the arguments you hear most on court.' },
-  glossary: { title: 'Glossary', en: '', summary: 'Dink, side-out, ATP and other terms explained.', intro: 'The words you will hear on court, in plain English.' },
+  glossary: { title: 'Glossary', en: '', summary: 'Dink, side-out, ATP and other terms explained.' },
 };
 
 export const FORMATS_PAGE = {
@@ -281,7 +281,6 @@ export const FORMATS_PAGE = {
 // games with default names are not saved to My stats). {n}, {team}, {name}, {pos}, {names}, {a}, {b} are filled in.
 export const SCORE_TEXT = {
   title: 'Scoreboard',
-  intro: 'Tap who won the rally. Positions, side-outs and the score call are worked out for you.',
   teams: { A: 'Team A', B: 'Team B' },
   placeholders: { A: ['A1', 'A2'], B: ['B1', 'B2'] },
   player: 'Player {n}',
@@ -316,7 +315,6 @@ export const DRAW_TEXT = {
   // 場上先發球那一隊名字下的小標籤。
   servesFirst: 'Serves first',
   title: 'Draw & rotation',
-  intro: 'Enter today\'s players, then pick how to split them.',
   roster: 'Today\'s players',
   people: '{n} {n|player|players}',
   remove: 'Remove {name}',

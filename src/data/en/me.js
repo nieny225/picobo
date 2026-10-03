@@ -2,7 +2,6 @@
 export const ME = {
   title: 'My record',
   entry: 'My record',
-  intro: 'Every game you finish with the scoreboard or the draw is saved on this phone.',
   who: 'Which one is you?',
   whoHint: 'Tap your name. If you show up under several spellings (say Max and max3066), tap them all.',
   whoNone: 'No games yet. Enter your name now and your finished games will count.',

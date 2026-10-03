@@ -181,7 +181,7 @@ function sharedSummary(f) {
 // is one court's own page (the link its share icon sends): just that card,
 // whatever the filters, with a way back to the whole list.
 export function mountVenues(root) {
-  const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(V.intro)}</p><p class="muted small">${esc(V.disclaimer)}</p></div>`;
+  const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><p class="muted small">${esc(V.disclaimer)}</p></div>`;
   if (VENUES.length === 0) { root.innerHTML = `${head}<article class="card"><p>${esc(V.empty)}</p></article>`; return { show() {} }; }
   const f = loadFilter();
   root.innerHTML = `<div class="venue-all">${head}${barHtml(f)}<div class="venue-shared" hidden></div><div class="venue-list"></div></div><div class="venue-one" hidden></div>`;

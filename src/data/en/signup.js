@@ -1,7 +1,6 @@
 // Sign-up message (the numbered list you paste into the group after booking a court). The message itself is simple English.
 export const SIGNUP = {
   title: 'Sign-up message',
-  intro: 'Booked a court? Fill in the time and who\'s in, then copy it to IG, WhatsApp or LINE. Everyone adds their name in order.',
   session: 'Session {n}',
   addSession: 'Add a session',
   removeSession: 'Remove this session',

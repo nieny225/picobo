@@ -77,7 +77,7 @@ function setupHtml(prefill) {
     <input class="input" id="name-${team}-0" value="${esc(list[0] ?? '')}" placeholder="${esc(fill(T.player, { n: 1 }))}" maxlength="6">
     <input class="input" id="name-${team}-1" value="${esc(list[1] ?? '')}" placeholder="${esc(fill(T.player, { n: 2 }))}" maxlength="6" data-doubles-only>
   </div>`;
-  return `<div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(T.intro)}</p></div>
+  return `<div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${shareButtonHtml()}</div></div>
   ${startHtml()}
   <form class="card" id="setup">
     ${p.from ? `<p class="small from-draw">${esc(D.from.replace('{court}', p.from.court))}</p>` : ''}

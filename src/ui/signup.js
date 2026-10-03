@@ -62,7 +62,7 @@ export function mountSignup(root) {
   const render = () => {
     const f = T.fields;
     root.innerHTML = `
-      <div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(T.intro)}</p></div>
+      <div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${shareButtonHtml()}</div></div>
       <form class="card" id="signup-form" novalidate>
         <datalist id="s-venues">${VENUES.map(v => `<option value="${esc(v.name)}">`).join('')}</datalist>
         <div class="signup-sessions">${state.sessions.map((s, i) => sessionHtml(s, i, state.sessions.length > 1)).join('')}</div>
