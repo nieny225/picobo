@@ -9,8 +9,10 @@ import { toast } from './share.js';
 // A game can also go out as a transparent sticker to paste into an IG story.
 // The cards are always the light brand look, whatever the page theme.
 const C = { bg: '#fffbe8', ink: '#111111', mark: '#e4ff3a', muted: '#4d4a3c', line: '#d9d3b8', court: '#2d6cdf', nvz: '#5b93f0', white: '#ffffff' };
-const NUM = '"Space Grotesk", "Noto Sans TC", "PingFang TC", "Helvetica Neue", Arial, sans-serif';
-const CJK = '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Helvetica Neue", Arial, sans-serif';
+// The page's font stacks (they follow the language, styles/main.css).
+const cssFont = (name, fallback) => getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+const NUM = cssFont('--font-num', '"Space Grotesk", "Noto Sans TC", "PingFang TC", "Helvetica Neue", Arial, sans-serif');
+const CJK = cssFont('--font-body', '"Noto Sans TC", "PingFang TC", "Microsoft JhengHei", "Helvetica Neue", Arial, sans-serif');
 const W = 1080;
 const SIZES = { story: 1920, post: 1350 };
 

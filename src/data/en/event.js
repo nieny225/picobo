@@ -1,0 +1,93 @@
+// Pico Bowl tournament page. Date, venue and scoring are not final, so they are marked "TBA" or "Draft";
+// edit here once confirmed. With open false the home card shows Coming soon and can't be tapped,
+// but #picobowl still opens the page.
+export const PICOBOWL = {
+  open: false,
+  name: 'Pico Bowl',
+  tagline: 'The Picobo pickleball tournament',
+  comingSoon: 'Coming soon',
+  cardDesc: 'Men\'s, women\'s and mixed doubles. November 2026, details soon.',
+  draft: 'Draft',
+  draftNote: 'This is a draft plan. The official announcement decides the date, venue, format and scoring.',
+  facts: [
+    { label: 'Date', value: 'November 2026 (date TBA)' },
+    { label: 'Venue', value: 'TBA' },
+    { label: 'Divisions', value: 'Men\'s doubles, women\'s doubles, mixed doubles' },
+  ],
+  divisionsTitle: 'Divisions',
+  // id is for the organizer tool; block 1 is morning, 2 is afternoon.
+  divisions: [
+    { id: 'MD', short: "Men's", name: "Men's doubles", en: '', note: 'About 7 teams expected', block: 1 },
+    { id: 'WD', short: "Women's", name: "Women's doubles", en: '', note: 'About 5 teams expected', block: 1 },
+    { id: 'XD', short: 'Mixed', name: 'Mixed doubles', en: '', note: 'About 10 teams expected', block: 2 },
+  ],
+  divisionsNote: 'You can enter more than one: men\'s or women\'s, plus mixed. Morning and afternoon are separate, so no clashes.',
+  formatTitle: 'Format',
+  format: [
+    'Pool play first: you play every team in your pool, at least 3 games per team.',
+    'Up to 6 teams: one pool, and the top two play the final.',
+    '7 teams or more: pools of 3 to 4, and 4 teams go through to the semifinals and final.',
+    '2 courts. Whichever court finishes first takes the next match.',
+  ],
+  dayTitle: 'On the day',
+  day: [
+    { when: 'Morning', what: 'Men\'s and women\'s doubles at the same time, one court each (no shared players, no clashes)' },
+    { when: 'Afternoon', what: 'Mixed doubles on both courts' },
+  ],
+  scoringTitle: 'Scoring',
+  scoring: [
+    'Rally scoring: every rally scores a point, and the receiving team can score too.',
+    'Pool play: games to 15, win by 2.',
+    'Semifinals and final: games to 21, win by 2.',
+  ],
+  rulesLinks: [
+    { href: '#rules/rally-points', label: 'Rally scoring: how points are scored' },
+    { href: '#rules/rally-positions', label: 'Rally scoring: who serves, where to stand' },
+    { href: '#rules/kitchen', label: 'Kitchen rules' },
+    { href: '#rules/two-bounce', label: 'Two-bounce rule' },
+  ],
+  rankingTitle: 'How pools are ranked',
+  ranking: ['Games won', 'If tied on wins, head-to-head result', 'Then point difference, then total points'],
+  signupTitle: 'Sign up',
+  signupPending: 'Sign-up form TBA',
+  signupUrl: null,
+};
+
+// Organizer tool (#picobowl/manage). Lives only on the organizer's phone, never synced.
+// {n}, {pool} and {round} become numbers or pool names.
+export const MANAGE = {
+  title: 'Organizer tool',
+  intro: 'Data stays on this phone. Enter teams before the event and scores on the day; standings, semifinals and the final fill in by themselves. When a court frees up, the next match goes on, and nobody is put on two courts at once.',
+  courts: 'Courts',
+  teamsHint: 'One team per line, two names separated by "/" or a space',
+  create: 'Make pools and schedule',
+  recreate: 'Remaking clears every score. Are you sure?',
+  onCourt: 'On court',
+  court: 'Court {n}',
+  idle: 'Waiting',
+  submit: 'Submit score',
+  next: 'Up next',
+  nothingNext: 'No matches waiting',
+  pool: 'Pool {pool}',
+  poolRound: 'Pool {pool} round {round}',
+  semi: 'Semifinal {n}',
+  final: 'Final',
+  tbd: 'TBD',
+  cols: ['Team', 'W', 'L', '+/-'],
+  matches: 'All matches',
+  edit: 'Edit score',
+  champion: 'Champion',
+  copy: 'Copy results (for LINE)',
+  copied: 'Copied. Paste it in LINE.',
+  copyFallback: 'Copy the text below:',
+  reset: 'Clear all and start over',
+  resetConfirm: 'Clear all teams and scores?',
+  errors: {
+    teamLine: '{div} line {n} needs exactly two names: {line}',
+    tooFew: '{div} needs at least 2 teams',
+    level: 'Scores can\'t be tied',
+    number: 'Enter both teams\' scores',
+    used: 'This result already sets later matches, so it can\'t be changed',
+  },
+  backToEvent: 'Pico Bowl info',
+};

@@ -51,6 +51,8 @@ export const MEETUP = {
   },
   // src/meetup.js 用的字。
   labels: {
+    // 揪團卡摘要一行裡各段之間的分隔。
+    sep: '｜',
     weekdays: ['週日', '週一', '週二', '週三', '週四', '週五', '週六'],
     plays: { doubles: '雙打', singles: '單打', open: 'Open play' },
     levels: { any: '程度不限', beginner: '新手', intermediate: '中階', advanced: '進階' },

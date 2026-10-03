@@ -9,7 +9,7 @@ import { mountSignup } from './ui/signup.js';
 import { mountMe, mountMeButton } from './ui/me.js';
 import { receiveGames } from './ui/record.js';
 import { autoHideTopbar } from './ui/topbar.js';
-import { mountThemeToggle } from './ui/theme.js';
+import { mountSettings } from './ui/settings.js';
 import { registerServiceWorker, mountInstallButton } from './ui/install.js';
 import { decodeHandoff } from './handoff.js';
 import { routeOf } from './ui/handoff.js';
@@ -39,7 +39,7 @@ function parseHash() {
 }
 
 const topbar = autoHideTopbar(document.querySelector('.topbar'));
-mountThemeToggle(document.getElementById('theme-toggle'));
+mountSettings(document.getElementById('theme-toggle'));
 registerServiceWorker();
 mountInstallButton(document.getElementById('install-btn'));
 const home = mountHome(document.getElementById('view-home'));

@@ -60,7 +60,7 @@ export function whenText(m, labels) {
 // One line for the chat: "週六 10/12 09:00–11:00｜○○球場｜雙打 中階｜缺 2 人"
 export function summaryText(m, labels) {
   const who = `${labels.plays[m.play]}${m.level === 'any' ? '' : ` ${labels.levels[m.level]}`}`;
-  return [whenText(m, labels), m.place, who, needText(m.need, labels)].join('｜');
+  return [whenText(m, labels), m.place, who, needText(m.need, labels)].join(labels.sep);
 }
 
 // Calendar file. Floating local times (no zone): the event is at the court's

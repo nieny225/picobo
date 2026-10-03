@@ -43,7 +43,18 @@
   --gutter: 16px;
   color-scheme: light;
 }
-/* Light by default; dark only when chosen with the toggle (src/ui/theme.js). */
+/* Fonts per language (<html lang> comes from src/lang.js): Simplified Chinese
+   uses SC faces; English puts a Latin stack first. */
+:root:lang(zh-Hans) {
+  --font-display: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --font-num: "Space Grotesk", "Noto Sans SC", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+}
+:root:lang(en) {
+  --font-display: "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+  --font-body: "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+}
+/* Light by default; dark only when chosen in settings (src/ui/settings.js). */
 :root[data-theme="dark"] {
   --bg: #151510; --surface: #22221c; --surface-2: #2c2c24; --fg: #f7f4e4; --muted: #bdb9a3;
   --ink: #f7f4e4; --shadow-ink: #e4ff3a; --line-soft: #45443a; --accent: #8fb2ff; --accent-fg: #0d1530;
@@ -197,6 +208,10 @@ button { cursor: pointer; }
 .filters { display: grid; gap: 10px; padding: 12px; margin-right: 4px; background: var(--surface); border: var(--bw) solid var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); }
 .seg-row { display: flex; align-items: center; gap: 10px; }
 .seg-label { flex: none; width: 2.5em; font-weight: 900; }
+/* English labels and buttons are longer than two Chinese characters. */
+:lang(en) .seg-label { width: 4.6em; font-size: 0.9rem; }
+:lang(en) .seg button { padding-left: 6px; padding-right: 6px; font-size: 0.9rem; }
+:lang(en) .bar-seg button { padding: 0 6px; font-size: 0.8rem; }
 .seg { flex: 1; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: var(--bw) solid var(--ink); border-radius: var(--radius-sm); overflow: hidden; }
 .seg button { border: 0; background: var(--surface); color: var(--fg); min-height: 44px; padding: 6px 8px; font-weight: 700; }
 .seg button + button { border-left: var(--bw) solid var(--ink); }
@@ -305,6 +320,8 @@ button { cursor: pointer; }
   background: var(--mark); color: var(--mark-fg); border: 2px solid var(--ink); border-left: 0; border-radius: 0 10px 10px 0;
   box-shadow: 2px 2px 0 var(--shadow-ink); opacity: 0.92;
 }
+/* Latin text reads sideways, not one stacked letter at a time. */
+:lang(en) .drawer-tab span { text-orientation: mixed; letter-spacing: 0.05em; transform: rotate(180deg); }
 .drawer-tab:active span { transform: translateX(3px); }
 @media (max-width: 767px) { .drawer-tab { bottom: calc(112px + env(safe-area-inset-bottom, 0px)); } }
 #view-rules[hidden] .drawer-tab { display: none; }

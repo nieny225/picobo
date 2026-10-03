@@ -4,7 +4,7 @@
 // failure get zh-TW. Switching saves and reloads, since copy is module-level.
 export const LANGS = ['zh-TW', 'zh-CN', 'en'];
 // Languages whose copy is in src/data/<lang>/; anything else falls back to zh-TW.
-export const AVAILABLE = ['zh-TW'];
+export const AVAILABLE = ['zh-TW', 'zh-CN', 'en'];
 const KEY = 'picobo.lang';
 export const HTML_LANG = { 'zh-TW': 'zh-Hant-TW', 'zh-CN': 'zh-Hans', en: 'en' };
 

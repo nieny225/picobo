@@ -446,6 +446,15 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   there is one (≥3 games); the panel grows to fit.
   Photo, 限動／貼文, 小中大 and drag work as for the other pictures.
   Phase 1 is done except 固定場次範本 (skipped).
+- 三語 (2026-10-03, user: gear sheet, browser default, translate everything):
+  zh-TW is the source in src/data/zh-TW/, with zh-CN and en beside it (same
+  exports; tests/i18n.test.js). src/lang.js picks ?lang= > saved > browser
+  (first zh/en tag wins; zh-Hant/TW/HK/MO → 繁, other zh → 简, else en).
+  ⚙︎ settings sheet (src/ui/settings.js) replaces the theme button. Translated
+  by subagents, reviewed: zh-CN tab 约球, 揪团→组局/约球卡, 报名接龙, 民众俱乐部,
+  米/厘米; en tabs Home/Rules/Score/Draw/Meetup, Team A/B, A1…B2. English hides
+  the （English） tags. Not yet read by a native speaker: ask the user to skim
+  EN and 简中 on a phone. Brand badge 痞克柏 stays on English share images.
 - 裝備 section (after 球場與線, user moved it up): 球拍規定 (#rules/paddle-rules, 2026 rulebook 3.D /
   18.A, spin test from 2026-10-01) and 怎麼選球拍 (#rules/paddle-choose: tap a
   past sport → shape / weight / grip / core; general guide below). Sources in

@@ -3,6 +3,7 @@
 // and a swipe on the court itself.
 import { renderCourt } from '../court.js';
 import { SCENE_NAV } from '../data/nav.js';
+import { LANG } from '../lang.js';
 
 // On phones the court is drawn lying down so a whole step (court, caption,
 // buttons) fits on one screen; desktop keeps it upright.
@@ -11,7 +12,8 @@ export const LANDSCAPE = matchMedia('(max-width: 767px)');
 export const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // English term after a title, e.g. 發球（Serve）.
-export const enTag = en => (en ? `<span class="en-tag">（${esc(en)}）</span>` : '');
+// In English the title already is the English term, so no tag.
+export const enTag = en => (en && LANG !== 'en' ? `<span class="en-tag">（${esc(en)}）</span>` : '');
 
 export function sceneBlock(item) {
   if (!item.scenes || item.scenes.length === 0) return '';

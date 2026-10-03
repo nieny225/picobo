@@ -33,8 +33,14 @@ static site later. There is no backend and no build step.
   `node --test` fails otherwise. Registration fails quietly in the artifact.
 - Persistence is `localStorage` only, every read/write wrapped in try/catch,
   and the page must render correctly when storage is empty or throws.
-- No i18n framework. All user-facing copy is zh-TW and lives in `src/data/`.
-  An English version is a separate decision for later.
+- Three languages, no i18n framework: zh-TW (繁中, the source), zh-CN (简中)
+  and en. All user-facing copy lives in `src/data/<lang>/*.js`, same exports
+  and shape in every language (tests/i18n.test.js checks keys, lengths,
+  {placeholders} and that ids/links/court spots are untouched). Each
+  `src/data/<name>.js` is a two-line switch that loads the page language's
+  file, so UI code imports `../data/<name>.js` as before. `src/lang.js` picks
+  the language (?lang=, saved choice, browser) and `setLang` reloads.
+  New copy: add it to zh-TW and to en and zh-CN in the same change.
 
 ## Layout
 
@@ -83,7 +89,8 @@ src/ui/record.js        戰績 storage (picobo.games, picobo.me); recordGame / u
 src/ui/me.js            我的戰績 page (#me), its home card, the top-bar person icon
 src/ui/sharecard.js     share as picture: canvas card (B1 score / 戰績 / 戰報), own photo, IG sticker; share sheet or save
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
-src/ui/theme.js         light/dark toggle in the top bar (light unless dark is chosen)
+src/ui/settings.js      ⚙︎ in the top bar: 語言 (繁中｜简中｜English) and 外觀 (light｜dark)
+src/lang.js             which language the page speaks; setLang saves and reloads
 src/ui/install.js       top-bar install button (prompt or steps), an invite/share icon once installed; registers the service worker
 src/ui/event.js         Pico Bowl tournament page + its home-page card
 src/ui/tournament.js    organizer screen at #picobowl/manage (local to one phone)
@@ -142,6 +149,10 @@ tests/*.test.js         node:test for the pure modules
 - 圖解是這個網站的特色（使用者 2026-10-03 提醒）：每一頁新內容都要配圖，能用圖講的不要只寫字。
   球場用 `court.js`，球拍用 `src/paddle.js`；文字放 `src/data/`，圖上字少、放大，說明放圖下。
 - 繁體中文，台灣用語。全形標點「，。、：；？！」，中英文之間留一個半形空格。
+- 简中（zh-CN）：写给新加坡和大陆读者的自然简体，不是逐字转换；用“”引号，术语照
+  src/data/zh-CN/glossary.js。English (en): USA Pickleball terms, short labels
+  (they sit on phone buttons), same voice; local practices say "varies by club".
+  English titles get no （English） tag (enTag hides it).
 - 術語以 `src/data/glossary.js` 為準。第一次出現寫「中文（English）」，之後只用中文，
   例外是球友日常直接講英文的詞（dink、side-out、drop serve）可以中英並用。
 - 正統規則以 USA Pickleball Official Rulebook 現行版為準，頁尾標示版本年份；
