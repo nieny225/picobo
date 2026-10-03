@@ -366,6 +366,14 @@ svg.court { width: 100%; height: auto; display: block; overflow: visible; }
 .setup-group { display: grid; gap: 8px; border-top: 2px solid var(--line-soft); padding-top: 12px; }
 .setup-group h4 { margin: 0; font-size: 1.05rem; }
 .setup-group svg.setup { max-width: 520px; }
+/* 怎麼選球拍: sport chips, then the suggestion. */
+.picker { display: grid; gap: 10px; margin: 12px 0; padding: 14px; border: var(--bw) solid var(--ink); border-radius: var(--radius); background: var(--surface-2); }
+.picker p { margin: 0; }
+.picker-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.picker-result:empty { display: none; }
+.picker-result { display: grid; gap: 8px; }
+.picker-result .me-row > span { flex: none; }
+.picker-result ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 .setup-group ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 .setup-floor { fill: var(--floor); stroke: var(--ink); stroke-width: 6; }
 .setup-pb { stroke: none; }

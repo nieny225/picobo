@@ -20,14 +20,45 @@ function ruleCard(item, applies = '') {
       ${st.groups.map(g => `<section class="setup-group"><h4>${esc(g.name)}</h4>${setupSvg(g.host, g.name)}<ul>${g.items.map(p => `<li>${esc(p)}</li>`).join('')}</ul></section>`).join('')}
       <p class="muted small">${esc(st.note)}</p></div>`
     : '';
+  // Plain bullet groups shown in full (球拍規定, 怎麼選球拍), each with an optional heading.
+  const blocks = item.blocks
+    ? `<div class="setup-body">${item.blocks.map(b => `<section class="setup-group">${b.name ? `<h4>${esc(b.name)}</h4>` : ''}<ul>${b.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul></section>`).join('')}</div>`
+    : '';
   return `<article class="card rule" id="rules-${item.id}">
     <div class="card-head"><h3>${esc(item.title)}${enTag(item.en)}</h3></div>
     ${applies}
     <p class="summary">${esc(item.summary)}</p>
     ${sceneBlock(item)}
     ${setup}
+    ${pickerHtml(item.picker)}
+    ${blocks}
     ${detail}
   </article>`;
+}
+
+// 你以前打什麼？ one chip per sport; the suggestion shows under it (wirePicker).
+function pickerHtml(pk) {
+  if (!pk) return '';
+  return `<div class="picker"><p class="picker-q"><b>${esc(pk.prompt)}</b></p>
+    <div class="picker-options">${pk.options.map(o => `<button type="button" class="group-chip" data-pick="${o.id}" aria-pressed="false">${esc(o.label)}</button>`).join('')}</div>
+    <div class="picker-result" aria-live="polite"></div><p class="muted small">${esc(pk.note)}</p></div>`;
+}
+function pickResultHtml(pk, o) {
+  const L = pk.labels;
+  const row = k => `<div class="me-row"><span class="muted">${esc(L[k])}</span><b>${esc(o[k])}</b></div>`;
+  return `${['shape', 'weight', 'grip', 'face'].map(row).join('')}
+    <p><b>${esc(L.why)}</b>：${esc(o.why)}</p>
+    ${o.watch.length ? `<p><b>${esc(L.watch)}</b></p><ul>${o.watch.map(w => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}`;
+}
+function wirePicker(el, pk) {
+  const box = el.querySelector('.picker');
+  if (!box) return;
+  box.addEventListener('click', e => {
+    const b = e.target.closest('[data-pick]');
+    if (!b) return;
+    for (const x of box.querySelectorAll('[data-pick]')) x.setAttribute('aria-pressed', String(x === b));
+    box.querySelector('.picker-result').innerHTML = pickResultHtml(pk, pk.options.find(o => o.id === b.dataset.pick));
+  });
 }
 
 function compareTable(c) {
@@ -297,6 +328,7 @@ export function mountRules(root) {
     if (p?.kind === 'rule') {
       const wrap = pageEl.querySelector('.scene-wrap');
       if (wrap) wireScene(wrap, p.item.scenes);
+      if (p.item.picker) wirePicker(pageEl, p.item.picker);
     }
   };
   // Switching play or scoring, from the bar or a rule page. A rule that does
