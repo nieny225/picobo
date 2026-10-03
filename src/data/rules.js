@@ -117,7 +117,7 @@ export const SECTIONS = [
     title: '側出計分',
     en: 'Side-out Scoring',
     subtitle: 'USA Pickleball 正式比賽',
-    note: '最重要也最難的一段。先在上面選好單打／雙打，再照順序看：怎麼得分、怎麼喊分、誰發球站哪裡。',
+    note: '先在上面選好單打／雙打，再照順序看：怎麼得分、怎麼喊分、誰發球站哪裡。',
     scoring: 'sideout',
     intro: '正式比賽和大多數球場用的計分。只有發球方能得分。',
     items: [
@@ -217,7 +217,7 @@ export const SECTIONS = [
     title: '每球得分',
     en: 'Rally Scoring',
     subtitle: '2026 暫行規則',
-    note: '最重要也最難的一段。先在上面選好單打／雙打，再照順序看：怎麼得分、怎麼喊分、誰發球站哪裡。',
+    note: '先在上面選好單打／雙打，再照順序看：怎麼得分、怎麼喊分、誰發球站哪裡。',
     scoring: 'rally',
     intro: '每一球都有人得分，一局比較快結束，很多球場的社交球用這個。USA Pickleball 2025 年起把它列為暫行規則（provisional），2026 年繼續沿用。',
     items: [
