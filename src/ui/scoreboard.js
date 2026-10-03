@@ -47,32 +47,25 @@ function save(state) {
   try { state ? localStorage.setItem(KEY, JSON.stringify(state)) : localStorage.removeItem(KEY); } catch { /* storage unavailable */ }
 }
 
-// 直接開始: the last game's settings (or the defaults) and placeholder names,
-// so a game can start with one tap; the full form below is for changing them.
-function quickSettings() {
-  const last = loadSettings();
-  const mode = last?.mode ?? modeOf(defaultChoice().play, defaultChoice().scoring);
-  const doubles = !mode.endsWith('-singles');
-  const teams = { A: T.placeholders.A.slice(0, doubles ? 2 : 1), B: T.placeholders.B.slice(0, doubles ? 2 : 1) };
-  return { mode, target: last?.target ?? 11, winBy: last?.winBy ?? 2, teams };
-}
-function quickHtml() {
-  const q = quickSettings();
-  const play = FILTER.play.options.find(o => o.id === (q.teams.A.length > 1 ? 'doubles' : 'singles'));
-  const scoring = q.mode === 'fun' ? SCORE_SETUP.fun : FILTER.scoring.options.find(o => q.mode.startsWith(o.id));
-  const mode = fill(SCORE_SETUP.playing, { play: play.label, scoring: scoring.label, target: q.target });
-  return `<div class="card quick-start"><button type="button" class="btn btn-primary btn-block" id="quick">${esc(T.quick)}</button>
-    <p class="small muted">${esc(fill(T.quickHint, { mode, names: [...q.teams.A, ...q.teams.B].join(' ') }))}</p></div>
+// The one start button sits above the settings, with a line saying what it
+// will start; the form below only changes settings (last game's by default).
+function startHtml() {
+  return `<div class="card quick-start"><button type="submit" form="setup" class="btn btn-primary btn-block" id="quick">${esc(T.start)}</button>
+    <p class="small muted" id="start-summary"></p></div>
     <h3 class="quick-or">${esc(T.custom)}</h3>`;
 }
 
 function setupHtml(prefill) {
-  const p = prefill ?? { target: 11, A: T.placeholders.A.slice(), B: T.placeholders.B.slice() };
+  const p = prefill ?? { A: T.placeholders.A.slice(), B: T.placeholders.B.slice() };
   // A game from 抽籤 brings names (and who serves first) but no mode.
+  // No mode given: the last game's settings, else the rules filter's.
+  const last = prefill?.mode ? null : loadSettings();
+  const fromMode = m => ({ play: m.endsWith('-singles') ? 'singles' : 'doubles', scoring: m === 'fun' ? 'fun' : m.split('-')[0] });
   const choice = prefill?.mode
     ? { play: p.A.length > 1 ? 'doubles' : 'singles', scoring: p.mode === 'fun' ? 'fun' : p.mode.split('-')[0] }
-    : { ...defaultChoice(), ...(prefill ? { play: p.A.length > 1 ? 'doubles' : 'singles' } : {}) };
-  const target = p.target ?? 11;
+    : { ...(last ? fromMode(last.mode) : defaultChoice()), ...(prefill ? { play: p.A.length > 1 ? 'doubles' : 'singles' } : {}) };
+  const target = p.target ?? last?.target ?? 11;
+  const winBy = last?.winBy ?? 2;
   const seg = (k, label, options) => `<div class="seg-row"><span class="seg-label">${esc(label)}</span>
     <div class="seg" role="group" aria-label="${esc(label)}">${options.map(o =>
       `<button type="button" data-k="${k}" data-v="${o.id}" aria-pressed="${choice[k] === o.id}">${esc(o.label)}${o.en ? `<span class="seg-en" aria-hidden="true">${esc(o.en)}</span>` : ''}</button>`).join('')}</div></div>`;
@@ -85,13 +78,13 @@ function setupHtml(prefill) {
     <input class="input" id="name-${team}-1" value="${esc(list[1] ?? '')}" placeholder="${esc(fill(T.player, { n: 2 }))}" maxlength="6" data-doubles-only>
   </div>`;
   return `<div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${shareButtonHtml()}</div><p class="intro">${esc(T.intro)}</p></div>
-  ${prefill ? '' : quickHtml()}
+  ${startHtml()}
   <form class="card" id="setup">
     ${p.from ? `<p class="small from-draw">${esc(D.from.replace('{court}', p.from.court))}</p>` : ''}
     <div class="field"><span class="field-label">${esc(SCORE_SETUP.mode)}</span>${modes}</div>
     <div class="row">
       <div class="field"><label for="target">${esc(T.target)}</label><select class="input" id="target">${[7, 11, 15, 21].map(n => `<option value="${n}"${n === target ? ' selected' : ''}>${esc(fill(T.points, { n }))}</option>`).join('')}</select></div>
-      <div class="field"><label for="winby">${esc(T.winBy)}</label><select class="input" id="winby"><option value="2">${esc(T.winBy2)}</option><option value="1">${esc(T.winBy1)}</option></select></div>
+      <div class="field"><label for="winby">${esc(T.winBy)}</label><select class="input" id="winby"><option value="2">${esc(T.winBy2)}</option><option value="1"${winBy === 1 ? ' selected' : ''}>${esc(T.winBy1)}</option></select></div>
     </div>
     <div class="team-fields">${names('A', p.A)}${names('B', p.B)}</div>
     <div class="row">
@@ -99,7 +92,6 @@ function setupHtml(prefill) {
       <div class="field"><label>&nbsp;</label><button type="button" class="btn" id="flip">${esc(T.flip)}</button></div>
     </div>
     <label class="row" style="align-items:center;gap:8px"><input type="checkbox" id="deciding" style="flex:none;width:20px;height:20px"> <span style="flex:1">${esc(T.deciding)}</span></label>
-    <button type="submit" class="btn btn-primary btn-block">${esc(T.start)}</button>
   </form>`;
 }
 
@@ -243,7 +235,20 @@ export function mountScoreboard(root, { toDraw } = {}) {
       for (const el of form.querySelectorAll('[data-doubles-only]')) el.hidden = play !== 'doubles';
       if (mode === 'fun') { form.winby.value = '1'; }
       if (mode === 'fun' && !prefill) { form.target.value = '7'; }
+      summary();
     };
+    // "雙打・側出計分・打到 11 分，甲1 甲2 乙1 乙2": what 開始計分 will start.
+    const summary = () => {
+      const play = pick('play'), mode = form.mode.value;
+      const scoring = mode === 'fun' ? SCORE_SETUP.fun : FILTER.scoring.options.find(o => mode.startsWith(o.id));
+      const names = ['A', 'B'].flatMap(id => [0, 1].slice(0, play === 'doubles' ? 2 : 1).map(i => form[`name-${id}-${i}`].value.trim() || T.placeholders[id][i]));
+      root.querySelector('#start-summary').textContent = fill(T.quickHint, {
+        mode: fill(SCORE_SETUP.playing, { play: FILTER.play.options.find(o => o.id === play).label, scoring: scoring.label, target: form.target.value }),
+        names: names.join(' '),
+      });
+    };
+    form.addEventListener('input', summary);
+    form.addEventListener('change', summary);
     form.addEventListener('click', e => {
       const b = e.target.closest('[data-k]');
       if (!b) return;
@@ -251,13 +256,6 @@ export function mountScoreboard(root, { toDraw } = {}) {
       syncMode();
     });
     syncMode();
-    root.querySelector('#quick')?.addEventListener('click', () => {
-      const q = quickSettings();
-      state = createMatch({ ...q, firstServer: 'A', decidingGame: false });
-      saveSettings({ mode: q.mode, target: q.target, winBy: q.winBy });
-      save(state); renderPlay();
-      window.scrollTo({ top: 0 });
-    });
     form.querySelector('#flip').addEventListener('click', () => {
       form.first.value = coinFlip();
       form.querySelector('#flip').textContent = fill(T.flipped, { team: T.teams[form.first.value] });
