@@ -9,7 +9,7 @@ import { parseSignup } from '../signup.js';
 import { toast } from './share.js';
 import { isFull, toggleFull, onFullChange, fullIcon } from './fullscreen.js';
 import { handoffButtonHtml, openHandoff } from './handoff.js';
-import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, courtOfGame } from '../draw.js';
+import { roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, courtOfGame, clearOpenPlayStats } from '../draw.js';
 
 const ROSTER_KEY = 'picobo.roster';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -213,7 +213,8 @@ export function mountDraw(root, { toScore } = {}) {
       ${play.leaving.length ? `<p class="waiting">${esc(OPEN_PLAY.leaving)}${play.leaving.map(esc).join('、')}</p>` : ''}
       <h3 class="stats-title"><span>${esc(OPEN_PLAY.stats)}</span>${ranked.some(([, r]) => r.played > 0) ? `<span class="stats-btns"><button type="button" class="stats-share" data-pass aria-label="${esc(ME.link.button)}" title="${esc(ME.link.button)}">${LINK_ICON}<span aria-hidden="true">${esc(ME.link.short)}</span></button><button type="button" class="stats-share" data-ig aria-label="${esc(SCORE_SHARE.openStats)}" title="${esc(SCORE_SHARE.openStats)}">${CAMERA_ICON}<span aria-hidden="true">${esc(SCORE_SHARE.ig)}</span></button></span>` : ''}</h3>
       <table class="stats"><thead><tr>${OPEN_PLAY.cols.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>
-      <tbody>${ranked.map(([n, r]) => `<tr><td>${esc(n)}</td><td class="num">${r.played}</td><td class="num">${r.won}</td></tr>`).join('')}</tbody></table>`;
+      <tbody>${ranked.map(([n, r]) => `<tr><td>${esc(n)}</td><td class="num">${r.played}</td><td class="num">${r.won}</td></tr>`).join('')}</tbody></table>
+      ${ranked.some(([, r]) => r.played > 0) ? `<p class="me-clear"><button type="button" class="me-link" data-clear-stats>${esc(OPEN_PLAY.clear)}</button></p>` : ''}`;
     for (const b of out.querySelectorAll('[data-win]')) b.addEventListener('click', () => {
       // Into 我的戰績 too (win/loss only: no score in 抽籤).
       recordGame({ source: 'draw', teams: play.courts[Number(b.dataset.court)].teams, winner: Number(b.dataset.win) });
@@ -223,6 +224,10 @@ export function mountDraw(root, { toScore } = {}) {
     wireSwaps(out, play, next => { setPlay(next); renderPlay(out); });
     wireScore(out, play, 'open', c => c.first, toScore);
     out.querySelector('[data-ig]')?.addEventListener('click', () => openShareSheet('stats', play.stats));
+    out.querySelector('[data-clear-stats]')?.addEventListener('click', () => {
+      if (!confirm(OPEN_PLAY.clearConfirm)) return;
+      setPlay(clearOpenPlayStats(play)); renderPlay(out); toast(esc(OPEN_PLAY.cleared));
+    });
     // 戰績連結 here too: the top share button may be scrolled out of sight.
     out.querySelector('[data-pass]')?.addEventListener('click', () => shareTodayGames());
     wireFull(out);

@@ -444,6 +444,9 @@ branch was the old session branch `ccr-e7df49dc-8t69j2`.
   count on yellow, tiles 勝率／最長連勝／最佳拍檔 (else 最常搭檔)／戰績.
   Photo, 限動／貼文, 小中大 and drag work as for the other pictures.
   Phase 1 is done except 固定場次範本 (skipped).
+- 抽籤 今天戰績 has 「清除今天戰績」 under the table (asks first): counts go to
+  zero for everyone still in the session (clearOpenPlayStats in src/draw.js);
+  courts, queue and 我的戰績 stay.
 - 戰績連結 (user, 2026-10-03: "A 先做，B 之後"). Usually someone else keeps
   score or runs 抽籤, so the games land on their phone. A, built: 抽籤's
   top-right share button opens one sheet with two choices (user: one share

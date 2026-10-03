@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, mixTeams, courtOfGame } from '../src/draw.js';
+import { shuffle, makeTeams, assignCourts, roundRobin, createKingOfCourt, advanceKingOfCourt, createOpenPlay, finishOpenPlayGame, joinOpenPlay, leaveOpenPlay, swapPlayers, renamePlayer, mixTeams, courtOfGame, clearOpenPlayStats } from '../src/draw.js';
 
 function seeded(seed) {
   let s = seed >>> 0;
@@ -202,4 +202,19 @@ test('a scored game finds its court again, unless it changed', () => {
   assert.equal(courtOfGame(s, { court: 1, teams: [['A', 'C'], ['B', 'D']] }), -1);
   assert.equal(courtOfGame(s, { court: 3, teams: [] }), -1);
   assert.equal(courtOfGame(null, { court: 1, teams: [['A', 'B'], ['C', 'D']] }), -1);
+});
+
+test('清除今天戰績: counts to zero for players still here, courts and queue kept', () => {
+  let s = createOpenPlay(['A', 'B', 'C', 'D', 'E', 'F'], 1, () => 0.3);
+  s = finishOpenPlayGame(s, 0, 0, () => 0.3);
+  const gone = s.queue[0];
+  s = leaveOpenPlay(s, gone);
+  const c = clearOpenPlayStats(s);
+  assert.deepEqual(c.courts, s.courts);
+  assert.deepEqual(c.queue, s.queue);
+  assert.equal(gone in c.stats, false);
+  const here = [...s.courts.flatMap(x => x.teams.flat()), ...s.queue];
+  assert.deepEqual(Object.keys(c.stats).sort(), here.sort());
+  assert.ok(Object.values(c.stats).every(v => v.played === 0 && v.won === 0));
+  assert.ok(Object.values(s.stats).some(v => v.played > 0)); // not mutated
 });

@@ -169,6 +169,13 @@ export function finishOpenPlayGame(state, courtIndex, winnerIndex, rng = Math.ra
   return { courts, queue, stats, leaving };
 }
 
+// 清除今天戰績: counts back to zero for everyone still in the session (on a
+// court or in the queue); courts and queue stay as they are.
+export function clearOpenPlayStats(state) {
+  const names = [...state.courts.flatMap(c => c.teams.flat()), ...state.queue];
+  return { ...state, stats: Object.fromEntries(names.map(n => [n, { played: 0, won: 0 }])) };
+}
+
 // A new player (or one who left earlier) joins the back of the queue; an idle
 // court starts if it can. Someone on court who was leaving just stays.
 export function joinOpenPlay(state, name, rng = Math.random, genders = null) {
