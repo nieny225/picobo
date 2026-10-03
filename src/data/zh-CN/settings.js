@@ -4,6 +4,11 @@ export const SETTINGS = {
   title: '设置',
   language: '语言',
   langHint: '切换语言会重新加载页面，数据都会保留。',
+  // 地區：場地名錄涵蓋哪裡。目前只有新加坡，台灣先預告。
+  region: '地区',
+  regions: { sg: '新加坡', tw: '台湾' },
+  soon: '即将推出',
+  regionHint: '场地名录目前只有新加坡，台湾即将推出。',
   theme: '外观',
   light: '浅色',
   dark: '深色',

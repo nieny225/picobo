@@ -28,6 +28,9 @@ function sheet() {
     dlg.innerHTML = `<div class="share-sheet-head"><b>${esc(T.title)}</b><button type="button" class="btn btn-ghost" data-close>${esc(T.close)}</button></div>
       ${seg('lang', T.language, AVAILABLE.map(l => [l, T.langNames[l], l]), LANG)}
       ${AVAILABLE.length > 1 ? `<p class="muted small">${esc(T.langHint)}</p>` : ''}
+      <div class="seg-row"><span class="seg-label">${esc(T.region)}</span>
+        <div class="seg" role="group" aria-label="${esc(T.region)}"><button type="button" aria-pressed="true">${esc(T.regions.sg)}</button><button type="button" disabled aria-disabled="true">${esc(T.regions.tw)} <span class="soon-tag">${esc(T.soon)}</span></button></div></div>
+      <p class="muted small">${esc(T.regionHint)}</p>
       ${seg('theme', T.theme, [['light', T.light], ['dark', T.dark]], theme())}`;
   };
   render();
