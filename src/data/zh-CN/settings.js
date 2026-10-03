@@ -7,7 +7,7 @@ export const SETTINGS = {
   // 地區：場地名錄涵蓋哪裡。目前只有新加坡，台灣先預告。
   region: '地区',
   regions: { sg: '新加坡', tw: '台湾' },
-  soon: '即将推出',
+  soon: 'Coming soon',
   regionHint: '场地名录目前只有新加坡，台湾即将推出。',
   theme: '外观',
   light: '浅色',

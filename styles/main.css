@@ -735,7 +735,7 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 .venue-areas .venue-area { margin: 0; }
 .venue-area.is-soon { border-style: dashed; color: var(--muted); }
 /* "Coming soon" on a region that is not out yet (courts page, settings). */
-.soon-tag { padding: 0 6px; border-radius: 999px; background: var(--mark); color: var(--mark-fg); font-size: 0.72rem; font-weight: 900; white-space: nowrap; }
+.soon-tag { color: var(--muted); font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
 .seg button:disabled { color: var(--muted); cursor: default; }
 .venue-area svg { width: 16px; height: 16px; color: var(--accent); }
 /* Booking: icon buttons (phone, WhatsApp, LINE) and a short 預約 for the web, then 發報名訊息. */
