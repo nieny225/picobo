@@ -15,7 +15,9 @@ export const SIGNUP = {
     cap: '人数上限（选填）',
     blanks: '留几个空位',
   },
-  preview: '消息预览',
+  preview: '接龙消息预览',
+  // 預覽下面一句：第一次用的人不知道這段訊息是拿來接龍的。
+  previewHint: '发到微信、LINE 或 WhatsApp 群里，大家复制整段、在名单里加上自己的名字再发回群里，就是接龙。',
   copy: '复制消息',
   copied: '已复制，贴到群里吧',
   copyFailed: '没办法自动复制，请长按预览的文字自己复制。',

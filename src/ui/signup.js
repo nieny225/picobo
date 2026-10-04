@@ -75,7 +75,7 @@ export function mountSignup(root) {
         </div>
         <p class="form-error" hidden></p>
       </form>
-      <article class="card"><h3>${esc(T.preview)}</h3><pre class="signup-preview"></pre>
+      <article class="card"><h3>${esc(T.preview)}</h3><p class="muted small">${esc(T.previewHint)}</p><pre class="signup-preview"></pre>
         <button type="button" class="btn btn-primary btn-block" id="signup-copy">${esc(T.copy)}</button></article>`;
     const form = root.querySelector('#signup-form');
     form.addEventListener('input', e => {
