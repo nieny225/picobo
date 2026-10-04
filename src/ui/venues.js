@@ -127,7 +127,7 @@ function openFilter(f, onChange) {
     `<button type="button" class="chip" data-${k}="${o.id}" aria-pressed="${on(o.id)}">${esc(o.label)}</button>`).join('')}</div>`;
   const render = () => {
     dlg.innerHTML = `<div class="share-sheet-head"><b>${esc(V.filterTitle)}</b><button type="button" class="btn btn-ghost" data-close>${esc(SETTINGS.close)}</button></div>
-      <section><h4>${esc(V.regionLabel)}</h4>${chips('regionpick', V.regions[f.country], id => (id ? f.regions.includes(id) : f.regions.length === 0))}</section>
+      <section><h4>${esc(V.regionLabel)}</h4>${chips('regionpick', V.regions[f.country].filter(r => !r.id || VENUES.some(v => v.city === r.id)), id => (id ? f.regions.includes(id) : f.regions.length === 0))}</section>
       <section><h4>${esc(V.priceLabel)}</h4>${chips('price', V.prices[f.country], id => f.prices.includes(id))}<p class="muted small">${esc(V.priceHint[f.country])}</p></section>
       <section><h4>${esc(V.opLabel)}</h4>${chips('op', V.ops, id => f.ops.includes(id))}<p class="muted small">${esc(V.opHint[f.country])}</p></section>
       <section><h4>${esc(V.courtsLabel)}</h4>${chips('courts', V.courtSteps, id => f.minCourts === id)}</section>
@@ -165,7 +165,9 @@ function listHtml(f) {
   if (shown.length === 0) return `<article class="card"><p>${esc(f.fav && favs.size === 0 && !f.q ? V.noFav : V.none)}</p></article>${unlisted}`;
   const count = `<p class="muted small">${esc(fill(V.count, { n: shown.length }))}</p>`;
   if (f.sort !== 'region') return `${count}${shown.map(venueCard).join('')}${unlisted}`;
-  const cities = [...new Set(shown.map(v => v.city))];
+  // Region headings in the order the regions are listed (Taipei: by district).
+  const order = REGION_IDS[f.country ?? 'sg'];
+  const cities = [...new Set(shown.map(v => v.city))].sort((x, y) => order.indexOf(x) - order.indexOf(y));
   return `${count}
     ${cities.map(c => `<section class="rule-group"><h3>${esc(c)}</h3>${shown.filter(v => v.city === c).map(venueCard).join('')}</section>`).join('')}
     ${unlisted}`;
