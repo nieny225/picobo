@@ -1,6 +1,6 @@
 # Handoff — read this first when resuming
 
-Last updated: 2026-10-03, branch `ccr-7b6d14a5-myo5fh` (also pushed to `main`,
+Last updated: 2026-10-04, branch `ccr-7b6d14a5-myo5fh` (also pushed to `main`,
 which is live at https://picobo.net). The latest commit is on both; the
 working tree was clean at hand-over. A new session gets its own branch name:
 work there and fast-forward `main` the same way.
@@ -33,6 +33,14 @@ work there and fast-forward `main` the same way.
 
 ## Open items
 
+- 台北場地 (2026-10-04): 21 Taipei City courts behind a 📍 新加坡｜台北 switch
+  (courts page and Settings → 地區; default from the phone's time zone; stored
+  as `picobo.country`). Regions are four district groups; price bands in NT$
+  (500 / 1,500). The data was checked only against search-result snippets:
+  this environment's proxy blocked every page fetch and Firecrawl was out of
+  credits. Entries with one source end with 「出發前先確認」. Worth a spot
+  check of prices and hours on the official sites when fetches work. Dropped
+  (with reasons) are listed in the zh-TW data file header. 新北 not covered.
 - 場地篩選 (2026-10-03): the bar is search, region, ♥ (favourites only), 篩選
   (sheet: 價位 / 類型 / 場地數 2・4・6 面以上 / 不怕下雨) and sort 依區域｜最便宜. Logic in
   `src/venues.js`. Every venue carries `price` (lowest non-member hourly S$,

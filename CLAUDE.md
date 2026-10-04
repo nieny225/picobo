@@ -72,7 +72,8 @@ src/groups.js           pure 常用球團 list: save (same name replaces, max 20
 src/record.js           pure 個人戰績本: game records (score / draw / koc), who is me, summary for a range;
                         pack / merge for the 戰績連結 (today's games by link, #me?s=…)
 src/sharecard.js        pure share-image content: a finished game's score card, the 抽籤 戰績 ranking, the 我的戰績 戰報
-src/venues.js           pure 場地名錄 filters: price bands, operator, rain-proof, minimum courts (2/4/6), favourites; sort by region / price; filter ↔ link query (#venues?r=east&p=low…)
+src/venues.js           pure 場地名錄 filters: country (sg / tw), price bands per country (S$ / NT$), operator, rain-proof, minimum courts (2/4/6), favourites; sort by region / price; filter ↔ link query (#venues?cc=tw&r=east&p=low…)
+src/country.js          which country's courts the directory shows (新加坡｜台北): saved choice, else time zone; setCountry fires 'picobo:country'
 src/meetup.js           pure 揪團卡 logic: check the form, chat summary line, .ics, map / LINE / WhatsApp links
 src/ui/home.js          home: slogan, hero court, entry cards
 src/ui/rules.js         rules index + one page per rule + left drawer, drives court scenes
@@ -90,13 +91,13 @@ src/ui/record.js        戰績 storage (picobo.games, picobo.me); recordGame / u
 src/ui/me.js            我的戰績 page (#me), its home card, the top-bar person icon
 src/ui/sharecard.js     share as picture: canvas card (B1 score / 戰績 / 戰報), own photo, IG sticker; share sheet or save
 src/ui/topbar.js        hides the top bar while scrolling down; sets --topbar-h for sticky bars
-src/ui/settings.js      ⚙︎ in the top bar: 語言 (繁中｜简中｜English) and 外觀 (light｜dark)
+src/ui/settings.js      ⚙︎ in the top bar: 語言 (繁中｜简中｜English), 地區 (新加坡｜台北) and 外觀 (light｜dark)
 src/lang.js             which language the page speaks; setLang saves and reloads
 src/ui/install.js       top-bar install button (prompt or steps), an invite/share icon once installed; registers the service worker
 src/ui/event.js         Pico Bowl tournament page + its home-page card
 src/ui/tournament.js    organizer screen at #picobowl/manage (local to one phone)
 src/ui/meetup.js        揪團: form, card preview, shared card (#meetup?s=…, shown only, never loaded)
-src/ui/venues.js        場地名錄 by region; bar (search, ♥, 篩選 sheet with region, filters and sort); #venues/<id> one court (card share icon); #venues?… a friend's filter (shown, not saved); 發報名訊息 → #signup?venue=<id>
+src/ui/venues.js        場地名錄 by region, 📍 新加坡｜台北 switch under the title; bar (search, ♥, 篩選 sheet with region, filters and sort); #venues/<id> one court (card share icon); #venues?… a friend's filter (shown, not saved); 發報名訊息 → #signup?venue=<id>
 src/ui/signup.js        報名訊息: sessions, names, optional cap → live preview, copy / share as text
 src/data/rules.js       rule copy + court scene definitions
 src/data/formats.js     fun formats + court scenes, grouped by purpose: 人多場地少 (國王球場, 輪轉賽, 快打短局),
@@ -108,7 +109,7 @@ src/data/nav.js         目錄、上一條／下一條、玩法頁的介面文�
 src/data/event.js       Pico Bowl 比賽資訊（open: false 時首頁卡片顯示 Coming soon）
 src/data/signup.js      報名訊息的介面文字和訊息裡的英文固定字
 src/data/meetup.js      揪團卡的介面文字
-src/data/venues.js      新加坡場地名錄（依區域分組；只放有來源的資料，來源寫在 source 欄）
+src/data/venues.js      場地名錄：新加坡和台北（country 欄；依區域分組；只放有來源的資料，來源寫在 source 欄）
 tests/*.test.js         node:test for the pure modules
 ```
 
