@@ -181,7 +181,7 @@ export const VENUES_PAGE = {
   regionLabel: 'Region',
   regions: {
     sg: [{ id: '', label: 'All' }, { id: 'Central', label: 'Central' }, { id: 'East', label: 'East' }, { id: 'West', label: 'West' }, { id: 'North', label: 'North' }, { id: 'North-East', label: 'NE' }],
-    tw: [{ id: '', label: 'All' }, { id: 'Zhongzheng', label: 'Zhongzheng' }, { id: 'Datong', label: 'Datong' }, { id: 'Zhongshan', label: 'Zhongshan' }, { id: 'Songshan', label: 'Songshan' }, { id: 'Da\'an', label: 'Da\'an' }, { id: 'Wanhua', label: 'Wanhua' }, { id: 'Xinyi', label: 'Xinyi' }, { id: 'Shilin', label: 'Shilin' }, { id: 'Beitou', label: 'Beitou' }, { id: 'Neihu', label: 'Neihu' }, { id: 'Nangang', label: 'Nangang' }, { id: 'Wenshan', label: 'Wenshan' }],
+    tw: [{ id: '', label: 'All' }, { id: 'Zhongzheng', label: 'Zhongzheng' }, { id: 'Wanhua', label: 'Wanhua' }, { id: 'Datong', label: 'Datong' }, { id: 'Zhongshan', label: 'Zhongshan' }, { id: 'Songshan', label: 'Songshan' }, { id: 'Xinyi', label: 'Xinyi' }, { id: 'Da\'an', label: 'Da\'an' }, { id: 'Wenshan', label: 'Wenshan' }, { id: 'Nangang', label: 'Nangang' }, { id: 'Neihu', label: 'Neihu' }, { id: 'Shilin', label: 'Shilin' }, { id: 'Beitou', label: 'Beitou' }],
   },
   // Filters: heart toggle, Filter button (opens a sheet), sort.
   back: 'All courts',

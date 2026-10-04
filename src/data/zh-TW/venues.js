@@ -184,7 +184,7 @@ export const VENUES_PAGE = {
   regionLabel: '區域',
   regions: {
     sg: [{ id: '', label: '全部' }, { id: '中區', label: '中' }, { id: '東區', label: '東' }, { id: '西區', label: '西' }, { id: '北區', label: '北' }, { id: '東北區', label: '東北' }],
-    tw: [{ id: '', label: '全部' }, { id: '中正區', label: '中正' }, { id: '大同區', label: '大同' }, { id: '中山區', label: '中山' }, { id: '松山區', label: '松山' }, { id: '大安區', label: '大安' }, { id: '萬華區', label: '萬華' }, { id: '信義區', label: '信義' }, { id: '士林區', label: '士林' }, { id: '北投區', label: '北投' }, { id: '內湖區', label: '內湖' }, { id: '南港區', label: '南港' }, { id: '文山區', label: '文山' }],
+    tw: [{ id: '', label: '全部' }, { id: '中正區', label: '中正' }, { id: '萬華區', label: '萬華' }, { id: '大同區', label: '大同' }, { id: '中山區', label: '中山' }, { id: '松山區', label: '松山' }, { id: '信義區', label: '信義' }, { id: '大安區', label: '大安' }, { id: '文山區', label: '文山' }, { id: '南港區', label: '南港' }, { id: '內湖區', label: '內湖' }, { id: '士林區', label: '士林' }, { id: '北投區', label: '北投' }],
   },
   // 篩選：愛心鈕、篩選鈕（打開面板）、排序。面板裡的選項同一排可以多選（或），不同排要同時符合（且）。
   back: '全部場地',

@@ -70,7 +70,7 @@ export const activeCount = f => (f.prices?.length ?? 0) + (f.ops?.length ?? 0) +
 // on the sharer's phone.
 export const REGION_KEYS = {
   sg: ['', 'central', 'east', 'west', 'north', 'northeast'],
-  tw: ['', 'zhongzheng', 'datong', 'zhongshan', 'songshan', 'daan', 'wanhua', 'xinyi', 'shilin', 'beitou', 'neihu', 'nangang', 'wenshan'],
+  tw: ['', 'zhongzheng', 'wanhua', 'datong', 'zhongshan', 'songshan', 'xinyi', 'daan', 'wenshan', 'nangang', 'neihu', 'shilin', 'beitou'],
 };
 
 // regionIds: { sg: [...], tw: [...] }, the page language's region ids in REGION_KEYS order.

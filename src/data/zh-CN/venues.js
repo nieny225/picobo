@@ -179,7 +179,7 @@ export const VENUES_PAGE = {
   regionLabel: '区域',
   regions: {
     sg: [{ id: '', label: '全部' }, { id: '中区', label: '中' }, { id: '东区', label: '东' }, { id: '西区', label: '西' }, { id: '北区', label: '北' }, { id: '东北区', label: '东北' }],
-    tw: [{ id: '', label: '全部' }, { id: '中正区', label: '中正' }, { id: '大同区', label: '大同' }, { id: '中山区', label: '中山' }, { id: '松山区', label: '松山' }, { id: '大安区', label: '大安' }, { id: '万华区', label: '万华' }, { id: '信义区', label: '信义' }, { id: '士林区', label: '士林' }, { id: '北投区', label: '北投' }, { id: '内湖区', label: '内湖' }, { id: '南港区', label: '南港' }, { id: '文山区', label: '文山' }],
+    tw: [{ id: '', label: '全部' }, { id: '中正区', label: '中正' }, { id: '万华区', label: '万华' }, { id: '大同区', label: '大同' }, { id: '中山区', label: '中山' }, { id: '松山区', label: '松山' }, { id: '信义区', label: '信义' }, { id: '大安区', label: '大安' }, { id: '文山区', label: '文山' }, { id: '南港区', label: '南港' }, { id: '内湖区', label: '内湖' }, { id: '士林区', label: '士林' }, { id: '北投区', label: '北投' }],
   },
   // 筛选：爱心钮、筛选钮（打开面板）、排序。
   back: '全部场地',
