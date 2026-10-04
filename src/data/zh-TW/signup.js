@@ -16,8 +16,8 @@ export const SIGNUP = {
     blanks: '留幾個空號',
   },
   preview: '接龍訊息預覽',
-  // 預覽下面一句：第一次用的人不知道這段訊息是拿來接龍的。
-  previewHint: '貼到 LINE 或 WhatsApp 群組，大家複製整段、在名單加上自己的名字再貼回去，就是接龍。',
+  // 預覽下面一句：貼到哪裡。
+  previewHint: '貼到 LINE 或 WhatsApp 群組。',
   copy: '複製訊息',
   copied: '已複製，貼到群組吧',
   copyFailed: '沒辦法自動複製，請長按預覽的文字自己複製。',

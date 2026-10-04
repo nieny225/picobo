@@ -17,7 +17,7 @@ export const SIGNUP = {
   },
   preview: 'Sign-up list preview',
   // 預覽下面一句：第一次用的人不知道這段訊息是拿來接龍的。
-  previewHint: 'Post it in your group chat. Each player copies it, adds their name to the list and posts it back.',
+  previewHint: 'Post it in your group chat.',
   copy: 'Copy message',
   copied: 'Copied. Paste it in the group.',
   copyFailed: 'Couldn\'t copy automatically. Long-press the preview text to copy it.',
