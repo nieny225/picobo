@@ -7,7 +7,8 @@ import { shareButtonHtml, sharePage, shareIcon } from './share.js';
 import { SHARE } from '../data/nav.js';
 import { fill } from '../fill.js';
 import { SETTINGS } from '../data/settings.js';
-import { matchVenue, sortVenues, activeCount, PRICE_BANDS, OPERATORS, SORTS, COURT_STEPS, filterToQuery, queryToFilter, isFiltered } from '../venues.js';
+import { matchVenue, sortVenues, activeCount, BAND_IDS, OPERATORS, SORTS, COURT_STEPS, filterToQuery, queryToFilter, isFiltered } from '../venues.js';
+import { COUNTRIES, getCountry, setCountry } from '../country.js';
 
 // A court's setting: one of indoor / sheltered / outdoor, or a list when it has both kinds.
 const settingsOf = v => [v.setting ?? []].flat().map(k => { if (!V.settings[k]) throw new Error(`venues: unknown setting ${k}`); return k; });
@@ -70,20 +71,21 @@ const heart = on => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="${on ? 'c
 
 // Filters: search, region and a favourites toggle on the bar; price, type,
 // minimum courts and rain-proof in the 篩選 sheet; sort by region or price.
-// Remembered per device (not the search text).
+// Remembered per device (not the search text). The country (新加坡｜台北) is
+// its own setting (src/country.js); switching it clears the region.
 const FILTER_KEY = 'picobo.venueFilter';
-const blank = () => ({ q: '', region: '', prices: [], ops: [], dry: false, fav: false, minCourts: 0, sort: 'region' });
+const blank = () => ({ q: '', country: getCountry(), region: '', prices: [], ops: [], dry: false, fav: false, minCourts: 0, sort: 'region' });
 function loadFilter() {
   const f = blank();
   try {
     const s = JSON.parse(localStorage.getItem(FILTER_KEY));
     if (!s || typeof s !== 'object') return f;
-    if (V.regions.some(r => r.id === s.region)) f.region = s.region;
+    if (V.regions[f.country].some(r => r.id === s.region)) f.region = s.region;
     // Before the sheet there was one `kind` switch: dry, free or fav.
     if (s.kind === 'dry') f.dry = true;
     if (s.kind === 'free') f.prices = ['free'];
     if (s.kind === 'fav') f.fav = true;
-    if (Array.isArray(s.prices)) f.prices = s.prices.filter(b => b in PRICE_BANDS);
+    if (Array.isArray(s.prices)) f.prices = s.prices.filter(b => BAND_IDS.includes(b));
     if (Array.isArray(s.ops)) f.ops = s.ops.filter(o => OPERATORS.includes(o));
     for (const k of ['dry', 'fav']) if (typeof s[k] === 'boolean') f[k] = s[k];
     if (s.big === true) f.minCourts = 4; // before the 場地數 row there was one 4+ chip
@@ -92,7 +94,7 @@ function loadFilter() {
   } catch { /* storage unavailable or corrupt */ }
   return f;
 }
-function saveFilter({ q, ...rest }) {
+function saveFilter({ q, country, ...rest }) {
   try { localStorage.setItem(FILTER_KEY, JSON.stringify(rest)); } catch { /* storage unavailable */ }
 }
 const shownOf = f => sortVenues(VENUES.filter(v => matchVenue(v, f, favs)), f.sort);
@@ -123,9 +125,9 @@ function openFilter(f, onChange) {
     `<button type="button" class="chip" data-${k}="${o.id}" aria-pressed="${on(o.id)}">${esc(o.label)}</button>`).join('')}</div>`;
   const render = () => {
     dlg.innerHTML = `<div class="share-sheet-head"><b>${esc(V.filterTitle)}</b><button type="button" class="btn btn-ghost" data-close>${esc(SETTINGS.close)}</button></div>
-      <section><h4>${esc(V.regionLabel)}</h4>${chips('regionpick', V.regions, id => f.region === id)}</section>
-      <section><h4>${esc(V.priceLabel)}</h4>${chips('price', V.prices, id => f.prices.includes(id))}<p class="muted small">${esc(V.priceHint)}</p></section>
-      <section><h4>${esc(V.opLabel)}</h4>${chips('op', V.ops, id => f.ops.includes(id))}<p class="muted small">${esc(V.opHint)}</p></section>
+      <section><h4>${esc(V.regionLabel)}</h4>${chips('regionpick', V.regions[f.country], id => f.region === id)}</section>
+      <section><h4>${esc(V.priceLabel)}</h4>${chips('price', V.prices[f.country], id => f.prices.includes(id))}<p class="muted small">${esc(V.priceHint[f.country])}</p></section>
+      <section><h4>${esc(V.opLabel)}</h4>${chips('op', V.ops, id => f.ops.includes(id))}<p class="muted small">${esc(V.opHint[f.country])}</p></section>
       <section><h4>${esc(V.courtsLabel)}</h4>${chips('courts', V.courtSteps, id => f.minCourts === id)}</section>
       <section><h4>${esc(V.otherLabel)}</h4>${chips('other', V.others, id => f[id])}</section>
       <section><h4>${esc(V.sortLabel)}</h4>${chips('sort', V.sorts, id => f.sort === id)}</section>
@@ -167,13 +169,14 @@ function listHtml(f) {
     ${unlisted}`;
 }
 
-const REGION_IDS = V.regions.map(r => r.id);
-// 東區 / S$10 以下 / 不怕下雨: the parts of the strip over a friend's filtered list.
+const REGION_IDS = Object.fromEntries(COUNTRIES.map(c => [c, V.regions[c].map(r => r.id)]));
+// 台北・東區 / S$10 以下 / 不怕下雨: the parts of the strip over a friend's filtered list.
 function sharedSummary(f) {
   const label = (list, id) => list.find(o => o.id === id).label;
   return [
+    V.area[f.country],
     f.region,
-    ...f.prices.map(b => label(V.prices, b)),
+    ...f.prices.map(b => label(V.prices[f.country], b)),
     ...f.ops.map(o => label(V.ops, o)),
     f.dry && label(V.others, 'dry'),
     f.minCourts && label(V.courtSteps, f.minCourts),
@@ -185,7 +188,10 @@ function sharedSummary(f) {
 // is one court's own page (the link its share icon sends): just that card,
 // whatever the filters, with a way back to the whole list.
 export function mountVenues(root) {
-  const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><div class="venue-areas"><p class="venue-area"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>${esc(V.area)}</p><span class="venue-area is-soon">${esc(V.areaSoon)} <span class="soon-tag">${esc(V.soon)}</span></span></div><p class="muted small">${esc(V.disclaimer)}</p></div>`;
+  const PIN = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+  // 📍 新加坡｜台北 under the title: which country's courts the list shows.
+  const areas = c => COUNTRIES.map(k => `<button type="button" class="venue-area" data-country="${k}" aria-pressed="${k === c}">${PIN}${esc(V.area[k])}</button>`).join('');
+  const head = `<div class="section-head"><div class="head-row"><h2>${esc(V.title)}</h2>${shareButtonHtml()}</div><div class="venue-areas" role="group" aria-label="${esc(V.areaLabel)}">${areas(getCountry())}</div><p class="muted small">${esc(V.disclaimer)}</p></div>`;
   if (VENUES.length === 0) { root.innerHTML = `${head}<article class="card"><p>${esc(V.empty)}</p></article>`; return { show() {} }; }
   const f = loadFilter();
   root.innerHTML = `<div class="venue-all">${head}${barHtml(f)}<div class="venue-shared" hidden></div><div class="venue-list"></div></div><div class="venue-one" hidden></div>`;
@@ -200,9 +206,26 @@ export function mountVenues(root) {
   const renderOne = () => {
     one.innerHTML = `<nav class="rule-top"><a class="back" href="#venues">${esc(V.back)}</a></nav>${venueCard(current)}`;
   };
-  const render = () => { if (current) renderOne(); else list.innerHTML = listHtml(shared ?? f); };
+  const areaBox = root.querySelector('.venue-areas');
+  const render = () => {
+    areaBox.innerHTML = areas((shared ?? f).country);
+    if (current) renderOne(); else list.innerHTML = listHtml(shared ?? f);
+  };
   render();
+  // Another country (here or in Settings): its own regions, so the region resets.
+  const toCountry = c => {
+    if (c === f.country) return;
+    Object.assign(f, { country: c, region: '' });
+    redraw();
+  };
+  window.addEventListener('picobo:country', e => toCountry(e.detail));
   root.addEventListener('click', e => {
+    const a = e.target.closest('[data-country]');
+    if (a) {
+      if (shared) location.hash = '#venues'; // leave a friend's filter for your own list
+      if (a.dataset.country !== getCountry()) setCountry(a.dataset.country);
+      return;
+    }
     // With filters on (and not already a friend's link), the link carries them.
     if (e.target.closest('.share-btn')) {
       if (!shared && isFiltered(f)) sharePage(V.title, `${SHARE.url}#venues?${filterToQuery(f, REGION_IDS)}`);

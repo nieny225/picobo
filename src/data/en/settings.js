@@ -4,11 +4,10 @@ export const SETTINGS = {
   title: 'Settings',
   language: 'Language',
   langHint: 'Switching language reloads the page; your data stays.',
-  // 地區：場地名錄涵蓋哪裡。目前只有新加坡，台灣先預告。
+  // 地區：場地名錄列出哪裡的球場。台灣目前只有台北市。
   region: 'Region',
-  regions: { sg: 'Singapore', tw: 'Taiwan' },
-  soon: 'Coming soon',
-  regionHint: 'The courts list covers Singapore for now. Taiwan is coming soon.',
+  regions: { sg: 'Singapore', tw: 'Taipei' },
+  regionHint: 'Which courts the directory lists. You can also switch on the courts page.',
   theme: 'Appearance',
   light: 'Light',
   dark: 'Dark',

@@ -4,11 +4,10 @@ export const SETTINGS = {
   title: '设置',
   language: '语言',
   langHint: '切换语言会重新加载页面，数据都会保留。',
-  // 地區：場地名錄涵蓋哪裡。目前只有新加坡，台灣先預告。
+  // 地區：場地名錄列出哪裡的球場。台灣目前只有台北市。
   region: '地区',
-  regions: { sg: '新加坡', tw: '台湾' },
-  soon: 'Coming soon',
-  regionHint: '场地名录目前只有新加坡，台湾即将推出。',
+  regions: { sg: '新加坡', tw: '台北' },
+  regionHint: '场地名录列出这个地区的球场，在约球页也能直接切换。',
   theme: '外观',
   light: '浅色',
   dark: '深色',

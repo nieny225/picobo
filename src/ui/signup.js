@@ -1,5 +1,6 @@
 import { SIGNUP as T } from '../data/signup.js';
 import { VENUES } from '../data/venues.js';
+import { getCountry } from '../country.js';
 import { signupText, nextDay, shortMapLink } from '../signup.js';
 import { esc } from './scenes.js';
 import { shareButtonHtml, shareText, toast } from './share.js';
@@ -64,7 +65,7 @@ export function mountSignup(root) {
     root.innerHTML = `
       <div class="section-head"><div class="head-row"><h2>${esc(T.title)}</h2>${shareButtonHtml()}</div></div>
       <form class="card" id="signup-form" novalidate>
-        <datalist id="s-venues">${VENUES.map(v => `<option value="${esc(v.name)}">`).join('')}</datalist>
+        <datalist id="s-venues">${VENUES.filter(v => v.country === getCountry()).map(v => `<option value="${esc(v.name)}">`).join('')}</datalist>
         <div class="signup-sessions">${state.sessions.map((s, i) => sessionHtml(s, i, state.sessions.length > 1)).join('')}</div>
         <button type="button" class="btn" id="signup-add">＋ ${esc(T.addSession)}</button>
         <div class="field"><label for="s-names">${esc(f.names)}</label><textarea class="input" id="s-names" rows="3" placeholder="${esc(f.namesHint)}">${esc(state.names)}</textarea></div>

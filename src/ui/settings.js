@@ -1,9 +1,10 @@
 import { SETTINGS as T } from '../data/settings.js';
 import { LANG, AVAILABLE, setLang } from '../lang.js';
 import { esc } from './scenes.js';
+import { COUNTRIES, getCountry, setCountry } from '../country.js';
 
-// The gear in the top bar: one small sheet for 語言 (繁中｜简中｜English)
-// and 外觀 (light｜dark). Theme: the page is light unless dark was chosen; the
+// The gear in the top bar: one small sheet for 語言 (繁中｜简中｜English),
+// 地區 (新加坡｜台北, which courts the directory lists) and 外觀 (light｜dark). Theme: the page is light unless dark was chosen; the
 // choice is kept in localStorage and set as data-theme on <html> (an inline
 // script in index.html applies it before first paint), and the browser bar
 // colour follows. Language: src/lang.js saves it and reloads.
@@ -28,8 +29,7 @@ function sheet() {
     dlg.innerHTML = `<div class="share-sheet-head"><b>${esc(T.title)}</b><button type="button" class="btn btn-ghost" data-close>${esc(T.close)}</button></div>
       ${seg('lang', T.language, AVAILABLE.map(l => [l, T.langNames[l], l]), LANG)}
       ${AVAILABLE.length > 1 ? `<p class="muted small">${esc(T.langHint)}</p>` : ''}
-      <div class="seg-row"><span class="seg-label">${esc(T.region)}</span>
-        <div class="seg" role="group" aria-label="${esc(T.region)}"><button type="button" aria-pressed="true">${esc(T.regions.sg)}</button><button type="button" disabled aria-disabled="true">${esc(T.regions.tw)} <span class="soon-tag">${esc(T.soon)}</span></button></div></div>
+      ${seg('country', T.region, COUNTRIES.map(c => [c, T.regions[c]]), getCountry())}
       <p class="muted small">${esc(T.regionHint)}</p>
       ${seg('theme', T.theme, [['light', T.light], ['dark', T.dark]], theme())}`;
   };
@@ -38,6 +38,8 @@ function sheet() {
     if (e.target === dlg || e.target.closest('[data-close]')) { dlg.close(); return; }
     const l = e.target.closest('[data-lang]');
     if (l && l.dataset.lang !== LANG) { setLang(l.dataset.lang); return; }
+    const c = e.target.closest('[data-country]');
+    if (c) { setCountry(c.dataset.country); render(); return; }
     const t = e.target.closest('[data-theme]');
     if (t) { setTheme(t.dataset.theme); render(); }
   });

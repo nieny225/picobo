@@ -730,14 +730,12 @@ html[data-route="home"] #footer, html[data-route="me"] #footer { display: none; 
 .chrome-hidden .venue-bar { top: 0; }
 .venue-bar .seg button { padding: 6px 4px; font-size: 0.9rem; }
 .venue-list { display: grid; gap: 14px; }
-.venue-area { display: inline-flex; align-items: center; gap: 4px; justify-self: start; margin: 4px 0 0; padding: 2px 10px 2px 6px; border: 2px solid var(--ink); border-radius: 999px; font-weight: 700; font-size: 0.9rem; }
+/* 📍 新加坡｜台北 under the courts title: the shown country is solid, the other dashed. */
 .venue-areas { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.venue-areas .venue-area { margin: 0; }
-.venue-area.is-soon { border-style: dashed; color: var(--muted); }
-/* "Coming soon" on a region that is not out yet (courts page, settings). */
-.soon-tag { color: var(--muted); font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
-.seg button:disabled { color: var(--muted); cursor: default; }
+.venue-area { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 14px 0 8px; border: 2px solid var(--ink); border-radius: 999px; background: var(--mark); color: var(--mark-fg); font: inherit; font-weight: 700; font-size: 0.95rem; cursor: pointer; }
+.venue-area[aria-pressed="false"] { border-style: dashed; background: transparent; color: var(--muted); }
 .venue-area svg { width: 16px; height: 16px; color: var(--accent); }
+.venue-area[aria-pressed="false"] svg { color: inherit; }
 /* Booking: icon buttons (phone, WhatsApp, LINE) and a short 預約 for the web, then 發報名訊息. */
 .book-btn { gap: 6px; justify-content: center; padding: 8px 12px; }
 .book-btn svg { width: 22px; height: 22px; flex: none; }

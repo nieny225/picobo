@@ -8,9 +8,9 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 const DIR = new URL('../src/data/', import.meta.url);
 const FILES = readdirSync(new URL('zh-TW/', DIR)).filter(f => f.endsWith('.js'));
 const LANGS = ['en', 'zh-CN'];
-const SAME = new Set(['id', 'route', 'href', 'kind', 'host', 'shapes', 'url', 'signupUrl', 'source', 'path', 'highlight', 'bounces', 'side', 'pos', 'depth', 'team', 'play', 'scoring', 'step', 'at', 'address', 'block', 'open', 'operator']);
+const SAME = new Set(['id', 'route', 'href', 'kind', 'host', 'shapes', 'url', 'signupUrl', 'source', 'path', 'highlight', 'bounces', 'side', 'pos', 'depth', 'team', 'play', 'scoring', 'step', 'at', 'address', 'block', 'open', 'operator', 'country']);
 // Translated on purpose, together with what they key: venue regions and format groups.
-const TRANSLATED_IDS = [/^VENUES\.\d+\.city$/, /^VENUES_PAGE\.regions\.\d+\.id$/, /^FORMATS\.\d+\.group$/];
+const TRANSLATED_IDS = [/^VENUES\.\d+\.city$/, /^VENUES_PAGE\.regions\.\w+\.\d+\.id$/, /^FORMATS\.\d+\.group$/];
 const KEYS_TRANSLATED = [/^FORMATS_PAGE\.groupShort$/];
 const holes = s => [...s.matchAll(/\{(\w+)\}/g)].map(m => m[1]).sort();
 // A key like `scoring` or `address` is an id in one place and copy in another:

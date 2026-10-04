@@ -1,5 +1,6 @@
 import { MEETUP as T } from '../data/meetup.js';
 import { VENUES } from '../data/venues.js';
+import { getCountry } from '../country.js';
 import { SHARE } from '../data/nav.js';
 import { PLAYS, LEVELS, normalizeMeetup, whenText, needText, summaryText, icsText, mapUrl, contactLinks } from '../meetup.js';
 import { encodeHandoff, decodeHandoff } from '../handoff.js';
@@ -33,7 +34,7 @@ function formHtml(d) {
       ${text('end', T.fields.end, d.end, ' type="time"')}
     </div>
     ${text('place', T.fields.place, d.place, ` placeholder="${esc(T.fields.placeHint)}" list="m-venues" maxlength="40"`)}
-    <datalist id="m-venues">${VENUES.map(v => `<option value="${esc(v.name)}">`).join('')}</datalist>
+    <datalist id="m-venues">${VENUES.filter(v => v.country === getCountry()).map(v => `<option value="${esc(v.name)}">`).join('')}</datalist>
     ${text('address', T.fields.address, d.address, ' maxlength="80"')}
     <div class="field"><span class="field-label">${esc(T.fields.play)}</span>${seg('play', PLAYS, d.play)}</div>
     <div class="field"><span class="field-label">${esc(T.fields.level)}</span>${seg('level', LEVELS, d.level)}</div>
