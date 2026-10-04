@@ -32,14 +32,14 @@ function inBand(price, band, country = 'sg') {
   return price !== undefined && price >= b.min && price <= b.max;
 }
 
-// f = { country, region, q, prices: [], ops: [], dry, fav, minCourts }. Groups combine with AND,
-// choices inside a group (prices, ops) with OR. Unknown prices only drop out
+// f = { country, regions: [], q, prices: [], ops: [], dry, fav, minCourts }. Groups combine with AND,
+// choices inside a group (regions, prices, ops) with OR. Unknown prices only drop out
 // while a price band is chosen; unknown court counts while a minimum is set.
 export function matchVenue(v, f, favs = new Set()) {
   if (f.minCourts && !COURT_STEPS.includes(f.minCourts)) throw new Error(`venues: unknown court step ${f.minCourts}`);
   for (const o of f.ops ?? []) if (!OPERATORS.includes(o)) throw new Error(`venues: unknown operator ${o}`);
   if (f.country && v.country !== f.country) return false;
-  if (f.region && v.city !== f.region) return false;
+  if (f.regions?.length && !f.regions.includes(v.city)) return false;
   if (f.q && !`${v.name} ${v.address ?? ''}`.toLowerCase().includes(f.q.toLowerCase())) return false;
   if (f.prices?.length && !f.prices.some(b => inBand(v.price, b, v.country))) return false;
   if (f.ops?.length && !f.ops.includes(v.operator)) return false;
@@ -64,7 +64,7 @@ export function sortVenues(list, by) {
 // and favourites have their own controls and don't count).
 export const activeCount = f => (f.prices?.length ?? 0) + (f.ops?.length ?? 0) + (f.dry ? 1 : 0) + (f.minCourts ? 1 : 0);
 
-// A filter in a shared link (#venues?cc=tw&r=east&p=free,low&op=public&dry=1&c=4&sort=price).
+// A filter in a shared link (#venues?cc=tw&r=east,south&p=free,low&op=public&dry=1&c=4&sort=price).
 // No cc means Singapore (links from before Taipei). Regions go by position, as
 // keys that read the same in every language; search text and favourites stay
 // on the sharer's phone.
@@ -79,9 +79,12 @@ export function filterToQuery(f, regionIds) {
   if (!REGION_KEYS[country]) throw new Error(`venues: unknown country ${country}`);
   const q = new URLSearchParams();
   if (country !== 'sg') q.set('cc', country);
-  const r = regionIds[country].indexOf(f.region);
-  if (r < 0) throw new Error(`venues: unknown region ${f.region}`);
-  if (r > 0) q.set('r', REGION_KEYS[country][r]);
+  const rs = (f.regions ?? []).map(id => {
+    const r = regionIds[country].indexOf(id);
+    if (r < 1) throw new Error(`venues: unknown region ${id}`);
+    return REGION_KEYS[country][r];
+  });
+  if (rs.length) q.set('r', rs.join(','));
   if (f.prices?.length) q.set('p', f.prices.join(','));
   if (f.ops?.length) q.set('op', f.ops.join(','));
   if (f.dry) q.set('dry', '1');
@@ -97,11 +100,10 @@ export function queryToFilter(query, regionIds) {
   if (!['cc', 'r', 'p', 'op', 'dry', 'c', 'sort'].some(k => q.has(k))) return null;
   const list = k => (q.get(k) ?? '').split(',').filter(Boolean);
   const country = q.get('cc') in REGION_KEYS ? q.get('cc') : 'sg';
-  const r = REGION_KEYS[country].indexOf(q.get('r') ?? '');
   const c = Number(q.get('c'));
   return {
     q: '', fav: false, country,
-    region: r > 0 ? regionIds[country][r] : '',
+    regions: list('r').map(k => REGION_KEYS[country].indexOf(k)).filter(r => r > 0).map(r => regionIds[country][r]),
     prices: list('p').filter(b => BAND_IDS.includes(b)),
     ops: list('op').filter(o => OPERATORS.includes(o)),
     dry: q.get('dry') === '1',
@@ -111,4 +113,4 @@ export function queryToFilter(query, regionIds) {
 }
 
 // Anything worth putting in a link (otherwise the share is the whole Singapore list).
-export const isFiltered = f => (f.country ?? 'sg') !== 'sg' || !!f.region || activeCount(f) > 0 || (f.sort ?? 'region') !== 'region';
+export const isFiltered = f => (f.country ?? 'sg') !== 'sg' || (f.regions?.length ?? 0) > 0 || activeCount(f) > 0 || (f.sort ?? 'region') !== 'region';

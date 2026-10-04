@@ -74,13 +74,15 @@ const heart = on => `<svg aria-hidden="true" viewBox="0 0 24 24" fill="${on ? 'c
 // Remembered per device (not the search text). The country (新加坡｜台北) is
 // its own setting (src/country.js); switching it clears the region.
 const FILTER_KEY = 'picobo.venueFilter';
-const blank = () => ({ q: '', country: getCountry(), region: '', prices: [], ops: [], dry: false, fav: false, minCourts: 0, sort: 'region' });
+const blank = () => ({ q: '', country: getCountry(), regions: [], prices: [], ops: [], dry: false, fav: false, minCourts: 0, sort: 'region' });
 function loadFilter() {
   const f = blank();
   try {
     const s = JSON.parse(localStorage.getItem(FILTER_KEY));
     if (!s || typeof s !== 'object') return f;
-    if (V.regions[f.country].some(r => r.id === s.region)) f.region = s.region;
+    // Before multi-select there was one `region` string.
+    const ids = V.regions[f.country].map(r => r.id).filter(Boolean);
+    f.regions = (Array.isArray(s.regions) ? s.regions : [s.region]).filter(r => ids.includes(r));
     // Before the sheet there was one `kind` switch: dry, free or fav.
     if (s.kind === 'dry') f.dry = true;
     if (s.kind === 'free') f.prices = ['free'];
@@ -102,7 +104,7 @@ const shownOf = f => sortVenues(VENUES.filter(v => matchVenue(v, f, favs)), f.so
 const FUNNEL = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>';
 
 // What the badge on 篩選 counts: everything in the sheet, region and sort included.
-const sheetCount = f => activeCount(f) + (f.region ? 1 : 0) + (f.sort !== 'region' ? 1 : 0);
+const sheetCount = f => activeCount(f) + f.regions.length + (f.sort !== 'region' ? 1 : 0);
 
 // One row: search, ♥ (used most, so it stays out here) and 篩選; the rest is in the sheet.
 function barHtml(f) {
@@ -125,7 +127,7 @@ function openFilter(f, onChange) {
     `<button type="button" class="chip" data-${k}="${o.id}" aria-pressed="${on(o.id)}">${esc(o.label)}</button>`).join('')}</div>`;
   const render = () => {
     dlg.innerHTML = `<div class="share-sheet-head"><b>${esc(V.filterTitle)}</b><button type="button" class="btn btn-ghost" data-close>${esc(SETTINGS.close)}</button></div>
-      <section><h4>${esc(V.regionLabel)}</h4>${chips('regionpick', V.regions[f.country], id => f.region === id)}</section>
+      <section><h4>${esc(V.regionLabel)}</h4>${chips('regionpick', V.regions[f.country], id => (id ? f.regions.includes(id) : f.regions.length === 0))}</section>
       <section><h4>${esc(V.priceLabel)}</h4>${chips('price', V.prices[f.country], id => f.prices.includes(id))}<p class="muted small">${esc(V.priceHint[f.country])}</p></section>
       <section><h4>${esc(V.opLabel)}</h4>${chips('op', V.ops, id => f.ops.includes(id))}<p class="muted small">${esc(V.opHint[f.country])}</p></section>
       <section><h4>${esc(V.courtsLabel)}</h4>${chips('courts', V.courtSteps, id => f.minCourts === id)}</section>
@@ -140,13 +142,13 @@ function openFilter(f, onChange) {
     if (e.target === dlg || e.target.closest('[data-close]')) { dlg.close(); return; }
     const b = e.target.closest('button');
     if (!b) return;
-    if ('regionpick' in b.dataset) f.region = b.dataset.regionpick;
+    if ('regionpick' in b.dataset) f.regions = b.dataset.regionpick ? toggle(f.regions, b.dataset.regionpick) : []; // 全部 clears
     else if (b.dataset.sort) f.sort = b.dataset.sort;
     else if (b.dataset.price) f.prices = toggle(f.prices, b.dataset.price);
     else if (b.dataset.op) f.ops = toggle(f.ops, b.dataset.op);
     else if (b.dataset.courts) { const n = Number(b.dataset.courts); f.minCourts = f.minCourts === n ? 0 : n; }
     else if (b.dataset.other) f[b.dataset.other] = !f[b.dataset.other];
-    else if ('clear' in b.dataset) Object.assign(f, { region: '', prices: [], ops: [], dry: false, minCourts: 0, sort: 'region' });
+    else if ('clear' in b.dataset) Object.assign(f, { regions: [], prices: [], ops: [], dry: false, minCourts: 0, sort: 'region' });
     else return;
     render();
     onChange();
@@ -175,7 +177,7 @@ function sharedSummary(f) {
   const label = (list, id) => list.find(o => o.id === id).label;
   return [
     V.area[f.country],
-    f.region,
+    ...f.regions,
     ...f.prices.map(b => label(V.prices[f.country], b)),
     ...f.ops.map(o => label(V.ops, o)),
     f.dry && label(V.others, 'dry'),
@@ -212,10 +214,10 @@ export function mountVenues(root) {
     if (current) renderOne(); else list.innerHTML = listHtml(shared ?? f);
   };
   render();
-  // Another country (here or in Settings): its own regions, so the region resets.
+  // Another country (here or in Settings): its own regions, so the regions reset.
   const toCountry = c => {
     if (c === f.country) return;
-    Object.assign(f, { country: c, region: '' });
+    Object.assign(f, { country: c, regions: [] });
     redraw();
   };
   window.addEventListener('picobo:country', e => toCountry(e.detail));

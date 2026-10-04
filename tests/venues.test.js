@@ -14,7 +14,9 @@ const ids = (f, favs) => ALL.filter(v => matchVenue(v, f, favs)).map(v => v.id).
 
 test('no filter shows everything', () => assert.equal(ids({}), 'abcd'));
 test('region and search', () => {
-  assert.equal(ids({ region: '中區' }), 'ac');
+  assert.equal(ids({ regions: ['中區'] }), 'ac');
+  assert.equal(ids({ regions: ['中區', '東區'] }), 'abcd');
+  assert.equal(ids({ regions: [] }), 'abcd');
   assert.equal(ids({ q: 'club' }), 'b');
 });
 test('price bands: OR inside, unknown price only hidden while a band is on', () => {
@@ -43,7 +45,7 @@ test('country: only that country, prices in its own currency', () => {
   assert.equal(of({ country: 'tw', prices: ['low'] }), 't'); // NT$400 is cheap in Taipei
   assert.equal(of({ prices: ['high'] }), 'c'); // S$40 is not NT$400
 });
-test('groups combine with AND', () => assert.equal(ids({ region: '東區', dry: true, ops: ['private'] }), 'd'));
+test('groups combine with AND', () => assert.equal(ids({ regions: ['東區'], dry: true, ops: ['private'] }), 'd'));
 test('sort by price: cheapest first, unknown last; region keeps data order', () => {
   assert.equal(sortVenues([C, D, B, A], 'price').map(v => v.id).join(''), 'abcd');
   assert.equal(sortVenues([C, A], 'region').map(v => v.id).join(''), 'ca');
@@ -70,24 +72,24 @@ test('shared filter link: round trip, language-free regions, junk dropped', asyn
   const ids = P => Object.fromEntries(COUNTRIES.map(c => [c, P.regions[c].map(r => r.id)]));
   const tw = ids(TW), en = ids(EN);
   for (const c of COUNTRIES) assert.equal(tw[c].length, REGION_KEYS[c].length, c);
-  const f = { q: 'abc', region: '東區', prices: ['free', 'low'], ops: ['public'], dry: true, fav: true, minCourts: 4, sort: 'price' };
+  const f = { q: 'abc', regions: ['東區', '西區'], prices: ['free', 'low'], ops: ['public'], dry: true, fav: true, minCourts: 4, sort: 'price' };
   const qs = filterToQuery(f, tw);
-  assert.equal(qs, 'r=east&p=free%2Clow&op=public&dry=1&c=4&sort=price');
-  assert.deepEqual(queryToFilter(qs, en), { q: '', fav: false, country: 'sg', region: 'East', prices: ['free', 'low'], ops: ['public'], dry: true, minCourts: 4, sort: 'price' });
+  assert.equal(qs, 'r=east%2Cwest&p=free%2Clow&op=public&dry=1&c=4&sort=price');
+  assert.deepEqual(queryToFilter(qs, en), { q: '', fav: false, country: 'sg', regions: ['East', 'West'], prices: ['free', 'low'], ops: ['public'], dry: true, minCourts: 4, sort: 'price' });
   assert.equal(queryToFilter('', tw), null);
   assert.equal(queryToFilter('s=xyz', tw), null);
-  assert.deepEqual(queryToFilter('r=mars&p=cheap,free&c=3&sort=near', tw), { q: '', fav: false, country: 'sg', region: '', prices: ['free'], ops: [], dry: false, minCourts: 0, sort: 'region' });
-  assert.equal(isFiltered({ region: '', prices: [], ops: [], sort: 'region' }), false);
-  assert.equal(isFiltered({ region: '', prices: [], ops: [], sort: 'price' }), true);
-  assert.throws(() => filterToQuery({ region: 'Mars' }, tw), /unknown region/);
+  assert.deepEqual(queryToFilter('r=mars&p=cheap,free&c=3&sort=near', tw), { q: '', fav: false, country: 'sg', regions: [], prices: ['free'], ops: [], dry: false, minCourts: 0, sort: 'region' });
+  assert.equal(isFiltered({ regions: [], prices: [], ops: [], sort: 'region' }), false);
+  assert.equal(isFiltered({ regions: [], prices: [], ops: [], sort: 'price' }), true);
+  assert.throws(() => filterToQuery({ regions: ['Mars'] }, tw), /unknown region/);
   // Taipei: cc=tw, its own region keys; a bare cc=tw is still a shared list
-  const t = { country: 'tw', region: tw.tw[2], prices: ['low'], ops: [], sort: 'region' };
+  const t = { country: 'tw', regions: [tw.tw[2]], prices: ['low'], ops: [], sort: 'region' };
   const tq = filterToQuery(t, tw);
   assert.equal(tq, `cc=tw&r=${REGION_KEYS.tw[2]}&p=low`);
-  assert.equal(queryToFilter(tq, en).region, en.tw[2]);
+  assert.deepEqual(queryToFilter(tq, en).regions, [en.tw[2]]);
   assert.equal(queryToFilter('cc=tw', tw).country, 'tw');
   assert.equal(queryToFilter('cc=xx&r=east', tw).country, 'sg');
-  assert.equal(isFiltered({ country: 'tw', region: '', prices: [], ops: [], sort: 'region' }), true);
+  assert.equal(isFiltered({ country: 'tw', regions: [], prices: [], ops: [], sort: 'region' }), true);
 });
 
 test('country from the time zone', () => {
